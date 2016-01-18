@@ -9,13 +9,12 @@ public interface RobotInterface {
 	
 	/////** ARM **/////
 	public int getArmLength();
-	public int getArmAngle();
 	public int getArmMaxAngle();
-	public int getArmRotationSpeed();
-	public int getMaxFeed();
+	public double getArmAngle();
+	public double getArmRotationSpeed();
 	public void setArmSpeed(int speed) throws IndexOutOfBoundsException;
-	public void moveArmTo(int angle) throws MotorException;
-	public void moveArmTo(int armAngle, boolean immediateReturn) throws MotorException;
+	public void moveArmTo(double angle) throws MotorException;
+	public void moveArmTo(double armAngle, boolean immediateReturn) throws MotorException;
 	public void waitForArm();
 	public void stopArm();
 	
@@ -24,9 +23,10 @@ public interface RobotInterface {
 	public void stopPen();
 	
 	/////** Wheels **/////	
-	public int getFeed();
+	public int getMaxFeed();
+	public double getFeed();
 	public void setWheelSpeed(int speed) throws IndexOutOfBoundsException;
-	public void moveWheels(int length) throws MotorException;
+	public void moveWheels(double length) throws MotorException;
 	public void moveWheelsForward() throws MotorException;
 	public void moveWheelsBackward() throws MotorException;
 	public void waitForWheels();

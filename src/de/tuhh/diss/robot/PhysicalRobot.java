@@ -23,9 +23,16 @@ public class PhysicalRobot implements RobotInterface{
 	
 	public PhysicalRobot() throws MotorException{
 		
-		arm = new ArmModule();
-		pen = new PenModule();
-		wheels = new WheelsModule();
+		
+		try {
+			pen = new PenModule();
+			arm = new ArmModule();
+			wheels = new WheelsModule();
+		} catch (OutOfWorkspaceException e) {
+			stopAllMotors();
+			throw new MotorException();
+		}
+		
 	}
 	
 	public void stopAllMotors(){
@@ -35,9 +42,9 @@ public class PhysicalRobot implements RobotInterface{
 	}
 	
 	public void movePenTo(int xTarget, int yTarget){
-		int yCenterToPen = (int) CoordTrans.getYCenterToPen(getArmLength(), getArmAngle());
-		int yCenterOfRobot = getFeed() - getArmLength();
-		int distanceToTravel = yTarget - yCenterOfRobot - yCenterToPen;
+		double yCenterToPen = CoordTrans.getYCenterToPen(getArmLength(), getArmAngle());
+		double yCenterOfRobot = getFeed() - getArmLength();
+		double distanceToTravel = yTarget - yCenterOfRobot - yCenterToPen;
 		
 		try{
 			moveArmTo((int)CoordTrans.getAnglePen(getArmLength(), xTarget));
@@ -54,14 +61,32 @@ public class PhysicalRobot implements RobotInterface{
 	/////  ARM
 	/////////////////
 	
-	public int getArmAngle(){return arm.getArmAngle();}
 	public int getArmLength(){return arm.getArmLength();}
 	public int getArmMaxAngle(){return arm.getArmMaxAngle();}
-	public int getArmRotationSpeed(){return arm.getRotationSpeed();}
+	public double getArmAngle(){return arm.getAngle();}
+	public double getArmRotationSpeed(){return arm.getRotationSpeed();}
 	
 	public void setArmSpeed(int speed) throws IndexOutOfBoundsException {arm.setArmSpeed(speed);}
-	public void moveArmTo(int targetAngle) throws MotorException{arm.moveArmTo(targetAngle);}
-	public void moveArmTo(int targetAngle, boolean immediateReturn) throws MotorException{arm.moveArmTo(targetAngle, immediateReturn);}
+	public void moveArmTo(double targetAngle) throws MotorException{
+		
+		try {
+			arm.moveArmTo(targetAngle);
+		} catch (OutOfWorkspaceException e) {
+			stopAllMotors();
+			throw new MotorException();
+		}
+	}
+	
+	public void moveArmTo(double targetAngle, boolean immediateReturn) throws MotorException{
+		
+		try {
+			arm.moveArmTo(targetAngle, immediateReturn);
+		} catch (OutOfWorkspaceException e) {
+			stopAllMotors();
+			throw new MotorException();
+		}
+	}
+	
 	public void waitForArm(){arm.waitForArm();}
 	public void stopArm(){arm.stopArm();}
 	
@@ -78,13 +103,37 @@ public class PhysicalRobot implements RobotInterface{
 	/////  WHEELS
 	/////////////////
 	
-	public int getFeed(){return wheels.getFeed();}
 	public int getMaxFeed(){return wheels.getMaxFeed();}
+	public double getFeed(){return wheels.getYCenter();}
 
 	public void setWheelSpeed(int speed) throws IndexOutOfBoundsException {wheels.setWheelSpeed(speed);}
-	public void moveWheels(int distance) throws MotorException {wheels.moveWheels(distance);}
-	public void moveWheelsForward() throws MotorException{wheels.moveWheelsForward();}
-	public void moveWheelsBackward() throws MotorException{wheels.moveWheelsBackward();}
+	
+	public void moveWheels(double distance) throws MotorException{
+		try {
+			wheels.moveWheels(distance);
+		} catch (OutOfWorkspaceException e) {
+			stopAllMotors();
+			throw new MotorException();
+		}
+	}
+	public void moveWheelsForward() throws MotorException{
+		try {
+			wheels.moveWheelsForward();
+		} catch (OutOfWorkspaceException e) {
+			stopAllMotors();
+			throw new MotorException();
+		}
+	}
+	
+	public void moveWheelsBackward() throws MotorException{
+		try {
+			wheels.moveWheelsBackward();
+		} catch (OutOfWorkspaceException e) {
+			stopAllMotors();
+			throw new MotorException();
+		}
+	}
+	
 	public void waitForWheels(){wheels.waitForWheels();}
 	public void stopWheels(){wheels.stopWheels();}
 }

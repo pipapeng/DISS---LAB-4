@@ -13,9 +13,8 @@ public class PenModule {
 	///////////////////////////////////////////////////////
 	
 	private static final int PENANGLEUP = 0;
-	private static final int PENANGLEDOWN = 180;
+	private static final int PENANGLEDOWN = -180;
 	private final float PENMAXSPEED;
-	private final float PENMINSPEED = 0;
 	
 	private boolean penDown;
 
@@ -55,16 +54,17 @@ public class PenModule {
 	}
 	
 	public void calibrateMotorPen(){
-		LCD.drawString("Calibrating pen ...", 0, 1);
+		LCD.drawString("Calibrating pen ...", 0, 1); //TODO: Lennart findet drawString doof!
 		motorPen.setSpeed(PENMAXSPEED/5);
 		motorPen.forward();
 		
-		//wait until sensor button is pressed then stop the motor of the pen
 		while (!sensorPen.isPressed()){
 		}
 		stopPen();
 		
 		motorPen.resetTachoCount();
 		penDown = false;
+		
+		motorPen.setSpeed(PENMAXSPEED/2);
 	}
 }
