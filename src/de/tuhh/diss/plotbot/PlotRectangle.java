@@ -1,7 +1,7 @@
 package de.tuhh.diss.plotbot;
 
 public class PlotRectangle {
-	
+	//testkommentar
 	public static RobotInterface robot;
 	private static final double scale = 1/6;
 	private static final int start = 230;
