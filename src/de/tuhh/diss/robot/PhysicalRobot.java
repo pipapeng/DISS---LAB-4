@@ -35,10 +35,11 @@ public class PhysicalRobot implements RobotInterface{
 		
 	}
 	
-	public void stopAllMotors(){
+	public void stopAllMotors() throws MotorException{
 		stopArm();
 		stopPen();
 		stopWheels();
+		throw new MotorException();
 	}
 	
 	public void movePenTo(int xTarget, int yTarget){
@@ -73,7 +74,6 @@ public class PhysicalRobot implements RobotInterface{
 			arm.moveArmTo(targetAngle);
 		} catch (OutOfWorkspaceException e) {
 			stopAllMotors();
-			throw new MotorException();
 		}
 	}
 	
@@ -83,7 +83,6 @@ public class PhysicalRobot implements RobotInterface{
 			arm.moveArmTo(targetAngle, immediateReturn);
 		} catch (OutOfWorkspaceException e) {
 			stopAllMotors();
-			throw new MotorException();
 		}
 	}
 	
@@ -113,7 +112,6 @@ public class PhysicalRobot implements RobotInterface{
 			wheels.moveWheels(distance);
 		} catch (OutOfWorkspaceException e) {
 			stopAllMotors();
-			throw new MotorException();
 		}
 	}
 	public void moveWheelsForward() throws MotorException{
@@ -121,7 +119,6 @@ public class PhysicalRobot implements RobotInterface{
 			wheels.moveWheelsForward();
 		} catch (OutOfWorkspaceException e) {
 			stopAllMotors();
-			throw new MotorException();
 		}
 	}
 	
@@ -130,7 +127,6 @@ public class PhysicalRobot implements RobotInterface{
 			wheels.moveWheelsBackward();
 		} catch (OutOfWorkspaceException e) {
 			stopAllMotors();
-			throw new MotorException();
 		}
 	}
 	
