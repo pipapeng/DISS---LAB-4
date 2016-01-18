@@ -1,6 +1,6 @@
 package de.tuhh.diss.robot;
 
-import de.tuhh.diss.exceptions.MotorException;
+import de.tuhh.diss.exceptions.OutOfWorkspaceException;
 import lejos.nxt.LCD;
 import lejos.nxt.Motor;
 import lejos.nxt.NXTRegulatedMotor;
@@ -14,13 +14,16 @@ public class ArmModule{
 	///////////////////////////////////////////////////////
 	
 	private final int ARMGEARRATIO = 85;
-	private final int ARMLENGTH = 80;
+	private static final int ARMLENGTH = 80;
+	private final int BEARINGPLAY = 6;	//half of the total bearing play. 		nomma MESSEN!!!
 	private final int ARMMINANGLE = 30; //TODO: Messen
+	private final int REST = ARMMINANGLE - BEARINGPLAY;	//TODO: umbenennen
 	private final int ARMMAXANGLE = 180 - ARMMINANGLE; //TODO: bearingPlay
 	private final float ARMMAXSPEED;
 	private final float ARMMINSPEED = 0;
 	
-	private int bearingPlay = 6;
+	private boolean armBehindMotor;
+	
 	private NXTRegulatedMotor motorArm;
 	private TouchSensor sensorArm;
 	
@@ -29,20 +32,30 @@ public class ArmModule{
 	//	METHODS
 	///////////////////////////////////////////////////////	
 
-	public ArmModule() throws MotorException{
+	public ArmModule() throws OutOfWorkspaceException{
 		motorArm = Motor.A;
 		ARMMAXSPEED = motorArm.getMaxSpeed();
+		
 		sensorArm = new TouchSensor(SensorPort.S1);
 		
 		calibrateMotorArm();
 	}
 	
-	public int getArmAngle(){return ARMMINANGLE + (motorArm.getPosition() / ARMGEARRATIO);}
-	public int getArmLength(){return ARMLENGTH;}
+	public static int getArmLength(){return ARMLENGTH;}
 	public int getArmMaxAngle(){return ARMMAXANGLE;}
 	public int getRotationSpeed(){return motorArm.getRotationSpeed();}
 	
-	public void setArmSpeed(int speed) throws IndexOutOfBoundsException{
+	public double getAngle(){
+		
+		if(armBehindMotor == true){
+			return REST - BEARINGPLAY + (motorArm.getPosition() / ARMGEARRATIO) ;
+		}
+		else{
+			return REST + BEARINGPLAY + (motorArm.getPosition() / ARMGEARRATIO) ;
+		}
+	}
+	
+	public void setArmSpeed(int speed) throws IndexOutOfBoundsException{ //TODO: handle?
 		
 		if (speed >= ARMMINSPEED && speed <= ARMMAXSPEED){
 			motorArm.setSpeed(speed);
@@ -52,48 +65,44 @@ public class ArmModule{
 		}
 	}
 	
-	//TODO: was passiert wenn schon da?
-	public void moveArmTo(int targetAngle) throws MotorException{
+	public void moveArmTo(double targetAngle) throws OutOfWorkspaceException{
 			
-		if (targetAngle >= ARMMINANGLE && targetAngle <= ARMMAXANGLE){
+		if (targetAngle != getAngle() && targetAngle >= ARMMINANGLE && targetAngle <= ARMMAXANGLE){
 				
-			int motorAngle = targetAngle * ARMGEARRATIO;
-				
-			if (motorArm.getPosition() != motorAngle){
-				if(motorArm.getPosition() < motorAngle){
-					motorAngle = motorAngle + bearingPlay;
-				}
-				if(motorArm.getPosition() > motorAngle){
-					motorAngle = motorAngle - bearingPlay;	
-				}
+			if(getAngle() < targetAngle){
+				targetAngle = targetAngle + BEARINGPLAY;
+				armBehindMotor = true;
 			}
+			else{
+				targetAngle = targetAngle - BEARINGPLAY;
+				armBehindMotor = false;
+			}
+				
+			motorArm.rotateTo((int) Math.round(targetAngle * ARMGEARRATIO));
 		}
 		else{
-			stopArm();
-			throw new MotorException();
+			throw new OutOfWorkspaceException();
 		}
 	}
 		
-	//TODO: Bearing play untersuchen
-	public void moveArmTo(int targetAngle, boolean immediateReturn) throws MotorException{
+	
+	public void moveArmTo(double targetAngle, boolean immediateReturn) throws OutOfWorkspaceException{
 			
-		if (targetAngle >= ARMMINANGLE && targetAngle <= ARMMAXANGLE){
+		if (targetAngle != getAngle() && targetAngle >= ARMMINANGLE && targetAngle <= ARMMAXANGLE){
 			
-			int motorAngle = targetAngle * ARMGEARRATIO;
-				
-			if (motorArm.getPosition() != motorAngle){
-				if(motorArm.getPosition() < motorAngle){
-					motorAngle = motorAngle + bearingPlay;
-				}
-				if(motorArm.getPosition() > motorAngle){
-					motorAngle = motorAngle - bearingPlay;	
-				}
-				motorArm.rotateTo(motorAngle, immediateReturn);
+			if(getAngle() < targetAngle){
+				targetAngle = targetAngle + BEARINGPLAY;
+				armBehindMotor = true;
 			}
+			else{
+				targetAngle = targetAngle - BEARINGPLAY;
+				armBehindMotor = false;
+			}
+				
+			motorArm.rotateTo((int) Math.round(targetAngle * ARMGEARRATIO), immediateReturn);
 		}
 		else{
-			stopArm();
-			throw new MotorException();
+			throw new OutOfWorkspaceException();
 		}
 	}		
 	
@@ -105,8 +114,8 @@ public class ArmModule{
 		motorArm.stop();
 	}
 		
-	private void calibrateMotorArm() throws MotorException{
-		LCD.drawString("Calibrating arm ...", 0, 1);
+	private void calibrateMotorArm() throws OutOfWorkspaceException{
+		LCD.drawString("Calibrating arm ...", 0, 1); //TODO: Lennart...
 		
 		motorArm.setSpeed((int)(ARMMAXSPEED*.75));
 		motorArm.backward();
@@ -115,10 +124,11 @@ public class ArmModule{
 		}
 		stopArm();
 		motorArm.resetTachoCount();
+		armBehindMotor = false;
 		
 		motorArm.setSpeed(ARMMAXSPEED);
-		moveArmTo(ARMMAXANGLE/2);
+		moveArmTo(ARMMAXANGLE/2); 		//TODO: Das muss in calibrateMotorWheels
 
-		LCD.drawString("Arm calibrated successfully!", 0, 2);
+		LCD.drawString("Arm calibrated successfully!", 0, 2); //TODO: Lennart...
 	}
 }
