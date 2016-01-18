@@ -4,7 +4,7 @@ import de.tuhh.diss.plotbot.OutOfWorkspaceException;
 
 public class PlotHorizontalLine extends PlotLine{
 
-	public PlotHorizontalLine(RobotInterface robot,int xStart, int yStart, int length) throws MotorsHasBeenStoppedException{
+	public PlotHorizontalLine(RobotInterface robot,int xStart, int yStart, int length) throws MotorException{
 		super(robot, xStart, yStart);
 		robot.setPen(true);
 		moveHorizontal(xStart,length);
@@ -16,14 +16,14 @@ public class PlotHorizontalLine extends PlotLine{
 		return (int) (robot.getArmLength() * robot.getArmRotationalSpeed() * Math.sin(Math.toRadians(angle)));
 	}
 
-	private void moveHorizontal(int xStart, int length) throws MotorsHasBeenStoppedException{
+	private void moveHorizontal(int xStart, int length) throws MotorException{
 		
 		try {
 			//TODO: adjust speed 
 			robot.moveArmTo(CoordTrans.getAngle(robot.getArmLength(), xStart+length), true);
 		} catch (OutOfWorkspaceException e) {
 			robot.stopAll();
-			throw new MotorsHasBeenStoppedException();
+			throw new MotorException();
 		}	
 		
 		while(robot.getArmRotationalSpeed() != 0){

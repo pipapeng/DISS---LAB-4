@@ -18,12 +18,12 @@ public class PlotString {
 	private void drawT(int s){
 	try {
 		new PlotVerticalLine(robot, (int) (center*s), (int) (start-2*scale*s), (int) (-4*scale*s));
-	} catch (MotorsHasBeenStoppedException e) {
+	} catch (MotorException e) {
 		e.printStackTrace();
 	}
 	try {
 		new PlotHorizontalLine(robot, (int) (center*s), (int) (start-4*scale*s), -s);
-	} catch (MotorsHasBeenStoppedException e) {
+	} catch (MotorException e) {
 		e.printStackTrace();
 	}
 	}
@@ -31,17 +31,17 @@ public class PlotString {
 	private void drawU(int s){
 		try {
 			new PlotHorizontalLine(robot, (int) (center*s), (int) (start-9*scale*s), -s);
-		} catch (MotorsHasBeenStoppedException e) {
+		} catch (MotorException e) {
 			e.printStackTrace();
 		}
 		try {
 			new PlotVerticalLine(robot, (int) (-center*s), (int) (start-9*scale*s), (int) (-center*s));
-		} catch (MotorsHasBeenStoppedException e) {
+		} catch (MotorException e) {
 			e.printStackTrace();
 		}
 		try {
 			new PlotHorizontalLine(robot, (int) (-center*s), (int) (start-12*scale*s), s);
-		} catch (MotorsHasBeenStoppedException e) {
+		} catch (MotorException e) {
 			e.printStackTrace();
 		}
 		}
@@ -49,17 +49,17 @@ public class PlotString {
 	private void drawH1(int s){
 		try {
 			new PlotHorizontalLine(robot, (int) (center*s), (int) (start-15*scale*s), -s);
-		} catch (MotorsHasBeenStoppedException e) {
+		} catch (MotorException e) {
 			e.printStackTrace();
 		}
 		try {
 			new PlotVerticalLine(robot, 0, (int) (start-15*scale*s), (int) (-3*scale*s));
-		} catch (MotorsHasBeenStoppedException e) {
+		} catch (MotorException e) {
 			e.printStackTrace();
 		}
 		try {
 			new PlotHorizontalLine(robot, (int) (-center*s), (int) (start-18*scale*s), s);
-		} catch (MotorsHasBeenStoppedException e) {
+		} catch (MotorException e) {
 			e.printStackTrace();
 		}
 		}	
@@ -67,17 +67,17 @@ public class PlotString {
 	private void drawH2(int s){
 		try {
 			new PlotHorizontalLine(robot, (int) (center*s), (int) (start-21*scale*s), -s);
-		} catch (MotorsHasBeenStoppedException e) {
+		} catch (MotorException e) {
 			e.printStackTrace();
 		}
 		try {
 			new PlotVerticalLine(robot, 0, (int) (start-21*scale*s), (int) (-3*scale*s));
-		} catch (MotorsHasBeenStoppedException e) {
+		} catch (MotorException e) {
 			e.printStackTrace();
 		}
 		try {
 			new PlotHorizontalLine(robot, (int) (-center*s), (int) (start-24*scale*s), s);
-		} catch (MotorsHasBeenStoppedException e) {
+		} catch (MotorException e) {
 			e.printStackTrace();
 		}
 		}

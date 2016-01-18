@@ -1,6 +1,6 @@
 package de.tuhh.diss.plotbot;
 
-public class MotorsHasBeenStoppedException extends Exception{
+public class MotorException extends Exception{
 
 	public String getMessage(){
 		

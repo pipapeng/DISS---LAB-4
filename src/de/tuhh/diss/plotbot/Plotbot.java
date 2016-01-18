@@ -10,7 +10,7 @@ public class Plotbot {
 		
 		try {
 			new PlotRectangle(20,true);
-		} catch (MotorsHasBeenStoppedException e) {
+		} catch (MotorException e) {
 			LCD.drawString("Motors has been stopped!", 0, 2);
 		}
 		

@@ -11,8 +11,8 @@ public interface RobotInterface {
 	public int getArmRotationalSpeed();
 	public int getMaxFeed();
 	public void setArmSpeed(int speed) throws IndexOutOfBoundsException;
-	public void moveArmTo(int angle) throws MotorsHasBeenStoppedException;
-	public void moveArmTo(int armAngle, boolean immediateReturn) throws MotorsHasBeenStoppedException;
+	public void moveArmTo(int angle) throws MotorException;
+	public void moveArmTo(int armAngle, boolean immediateReturn) throws MotorException;
 	public void waitForArm();
 	public void stopArm();
 	
@@ -23,9 +23,9 @@ public interface RobotInterface {
 	/////** Wheels **/////	
 	public int getFeed();
 	public void setWheelSpeed(int speed) throws IndexOutOfBoundsException;
-	public void moveWheels(int length) throws MotorsHasBeenStoppedException;
-	public void moveWheelsForward() throws MotorsHasBeenStoppedException;
-	public void moveWheelsBackward() throws MotorsHasBeenStoppedException;
+	public void moveWheels(int length) throws MotorException;
+	public void moveWheelsForward() throws MotorException;
+	public void moveWheelsBackward() throws MotorException;
 	public void waitForWheels();
 	public void stopWheels();	
 }
