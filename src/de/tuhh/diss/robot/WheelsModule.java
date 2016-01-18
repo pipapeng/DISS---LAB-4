@@ -1,4 +1,4 @@
-package de.tuhh.diss.modules;
+package de.tuhh.diss.robot;
 
 import de.tuhh.diss.plotbot.MotorException;
 import lejos.nxt.Button;
@@ -41,8 +41,8 @@ public class WheelsModule {
 		
 		calibrateMotorWheels();
 	}
-	
-	public int getFeed(){return (int) ((WHEELDIAMETER/(2*WHEELGEARRATIO)) * Math.toRadians(motorWheels.getPosition()));}
+	//TODO: Wie wird sichergestellt was der Feed ist, bisher: y Wert zu der Position an der die wheels kalibiert werden ?
+	public int getFeed(){return (int) ((WHEELDIAMETER/(2*WHEELGEARRATIO)) * Math.toRadians(motorWheels.getPosition()));} //TODO: überprüfen
 	public int getMaxFeed(){return MAXFEED;}
 	
 	public void setWheelSpeed(int speed) throws IndexOutOfBoundsException{
@@ -91,10 +91,9 @@ public class WheelsModule {
 	}
 	
 	public void calibrateMotorWheels() throws MotorException{
-		LCD.drawString("Calibrating wheels", 0, 1);
-		LCD.drawString("Light sensor", 0, 2);
-		LCD.drawString("'dark'", 0, 3);
-		LCD.drawString("Press ESC!", 0, 5);
+		LCD.drawString("Calibrating wheels ...", 0, 1);
+		LCD.drawString("Press ESC when Lightsensor", 0, 2);
+		LCD.drawString("is above black bar!", 0, 3);
 		Button.ESCAPE.waitForPressAndRelease();
 		LCD.clear();
 		
@@ -110,6 +109,7 @@ public class WheelsModule {
 		
 		moveWheels(DISTANCETOLIGHTSENSOR - ARMLENGTH);
 		motorWheels.resetTachoCount();
-		
+		LCD.clear();;
+		LCD.drawString("Calibration successful!", 0, 1);
 	}
 }

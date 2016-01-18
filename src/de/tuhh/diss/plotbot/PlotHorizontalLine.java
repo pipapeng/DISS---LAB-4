@@ -13,7 +13,7 @@ public class PlotHorizontalLine extends PlotLine{
 	
 	private int calcWheelSpeed(int angle){
 		
-		return (int) (robot.getArmLength() * robot.getArmRotationalSpeed() * Math.sin(Math.toRadians(angle)));
+		return (int) (robot.getArmLength() * robot.getArmRotationSpeed() * Math.sin(Math.toRadians(angle)));
 	}
 
 	private void moveHorizontal(int xStart, int length) throws MotorException{
@@ -22,11 +22,11 @@ public class PlotHorizontalLine extends PlotLine{
 			//TODO: adjust speed 
 			robot.moveArmTo(CoordTrans.getAngle(robot.getArmLength(), xStart+length), true);
 		} catch (OutOfWorkspaceException e) {
-			robot.stopAll();
+			robot.stopAllMotors();
 			throw new MotorException();
 		}	
 		
-		while(robot.getArmRotationalSpeed() != 0){
+		while(robot.getArmRotationSpeed() != 0){
 			
 			robot.setWheelSpeed(calcWheelSpeed(robot.getArmAngle()));
 			robot.moveWheelsForward();

@@ -1,6 +1,10 @@
-package de.tuhh.diss.plotbot;
+package de.tuhh.diss.robot;
 
-import de.tuhh.diss.modules.*;
+import de.tuhh.diss.plotbot.CoordTrans;
+import de.tuhh.diss.plotbot.MotorException;
+import de.tuhh.diss.plotbot.OutOfWorkspaceException;
+import de.tuhh.diss.plotbot.RobotInterface;
+import de.tuhh.diss.robot.*;
 
 
 public class PhysicalRobot implements RobotInterface{
@@ -29,6 +33,21 @@ public class PhysicalRobot implements RobotInterface{
 		stopArm();
 		stopPen();
 		stopWheels();
+	}
+	
+	public void movePenTo(int xTarget, int yTarget){
+		int yCenterToPen = CoordTrans.getYCenterToPen(getArmLength(), getArmAngle());
+		int yCenterOfRobot = getFeed() - getArmLength();
+		int distanceToTravel = yTarget - yCenterOfRobot - yCenterToPen;
+		
+		try{
+			moveArmTo(CoordTrans.getAngle(getArmLength(), xTarget));
+			moveWheels(distanceToTravel);
+		} catch (MotorException motorException) {
+			motorException.getMessage();
+		} catch (OutOfWorkspaceException oowException) {
+			
+		}
 	}
 	
 	

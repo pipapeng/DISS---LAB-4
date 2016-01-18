@@ -1,4 +1,4 @@
-package de.tuhh.diss.modules;
+package de.tuhh.diss.robot;
 
 import de.tuhh.diss.plotbot.MotorException;
 import lejos.nxt.LCD;
@@ -37,7 +37,7 @@ public class ArmModule{
 		calibrateMotorArm();
 	}
 	
-	public int getArmAngle(){return motorArm.getPosition() / ARMGEARRATIO;}
+	public int getArmAngle(){return ARMMINANGLE + (motorArm.getPosition() / ARMGEARRATIO);}
 	public int getArmLength(){return ARMLENGTH;}
 	public int getArmMaxAngle(){return ARMMAXANGLE;}
 	public int getRotationSpeed(){return motorArm.getRotationSpeed();}

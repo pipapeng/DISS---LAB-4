@@ -1,4 +1,4 @@
-package de.tuhh.diss.modules;
+package de.tuhh.diss.robot;
 
 import lejos.nxt.LCD;
 import lejos.nxt.Motor;
