@@ -51,7 +51,7 @@ public class WheelsModule {
 	public void setWheelSpeed(int speed) throws IndexOutOfBoundsException{
 
 		if (speed>=WHEELMINSPEED && speed<=WHEELMAXSPEED){
-			motorWheels.setSpeed(speed);
+			motorWheels.setSpeed(speed / WHEELGEARRATIO);
 		}
 		else{
 			throw new IndexOutOfBoundsException();

@@ -30,7 +30,7 @@ public class PlotHorizontalLine extends PlotLine{
 		
 		while(robot.getArmRotationSpeed() != 0){
 			
-			robot.setWheelSpeed(calcWheelSpeed(robot.getArmAngle()));
+			robot.setWheelSpeed(calcWheelSpeed((int)robot.getArmAngle()));
 			robot.moveWheelsForward();
 		}
 		robot.stopWheels();
@@ -55,7 +55,6 @@ public class PlotHorizontalLine extends PlotLine{
 	}
 	
 	public void drawHorizontalLineAlternative(int xStart, int yStart, int length, int steps) throws OutOfWorkspaceException{
-		boolean lineDone = false;
 		double startAngle = CoordTrans.getAnglePen(robot.getArmLength(), xStart);
 		double endAngle = CoordTrans.getAnglePen(robot.getArmLength(), xStart + length);
 		double angleDifference = endAngle - startAngle;
@@ -69,12 +68,23 @@ public class PlotHorizontalLine extends PlotLine{
 		
 		double fromAngle = startAngle;
 		double toAngle = fromAngle + angleStep;
+		double timePerStep = angleStep / robot.getArmRotationSpeed();
 		double yDeviance;
-		for(int it = 0; it = steps; it++){
-			
-			robot.moveArmTo(toAngle);
-			
-					
+		double necessaryWheelspeed;
+		
+		for(int it = 0; it == steps; it++){
+			yDeviance = CoordTrans.getYCenterToPen(robot.getArmLength(), toAngle) - CoordTrans.getYCenterToPen(robot.getArmLength(), fromAngle);
+			necessaryWheelspeed = yDeviance / timePerStep;
+			try{
+				robot.moveArmTo(toAngle);
+				robot.setWheelSpeed((int)necessaryWheelspeed);
+				robot.moveWheels(yDeviance);
+			} catch (MotorException e) {
+				e.printStackTrace();
+				System.out.print(e.getMessage());
+				break;
+			}
+				
 		}
 		
 		
