@@ -2,13 +2,13 @@ package de.tuhh.diss.plotbot;
 
 public interface RobotInterface {
 	
-	public void stopAll();
+	public void stopAllMotors();
 	
 	/////** ARM **/////
 	public int getArmLength();
 	public int getArmAngle();
-	public int getMaxArmAngle();
-	public int getArmRotationalSpeed();
+	public int getArmMaxAngle();
+	public int getArmRotationSpeed();
 	public int getMaxFeed();
 	public void setArmSpeed(int speed) throws IndexOutOfBoundsException;
 	public void moveArmTo(int angle) throws MotorException;
