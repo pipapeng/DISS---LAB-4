@@ -1,4 +1,4 @@
-package de.tuhh.diss.plotbot;
+package de.tuhh.diss.exceptions;
 
 public class MotorException extends Exception{
 

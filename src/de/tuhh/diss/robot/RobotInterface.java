@@ -1,4 +1,6 @@
-package de.tuhh.diss.plotbot;
+package de.tuhh.diss.robot;
+
+import de.tuhh.diss.exceptions.MotorException;
 
 public interface RobotInterface {
 	

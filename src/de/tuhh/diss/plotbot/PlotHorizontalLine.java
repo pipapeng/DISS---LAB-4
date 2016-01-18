@@ -1,6 +1,8 @@
 package de.tuhh.diss.plotbot;
 
-import de.tuhh.diss.plotbot.OutOfWorkspaceException;
+import de.tuhh.diss.exceptions.MotorException;
+import de.tuhh.diss.exceptions.OutOfWorkspaceException;
+import de.tuhh.diss.robot.RobotInterface;
 
 public class PlotHorizontalLine extends PlotLine{
 
