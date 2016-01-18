@@ -15,8 +15,8 @@ public class ArmModule{
 	
 	private final int ARMGEARRATIO = 85;
 	private final int ARMLENGTH = 80;
-	private final int ARMMINANGLE = 0; //TODO: Messen
-	private final int ARMMAXANGLE = 110; //TODO: Messen
+	private final int ARMMINANGLE = 30; //TODO: Messen
+	private final int ARMMAXANGLE = 180 - ARMMINANGLE; //TODO: bearingPlay
 	private final float ARMMAXSPEED;
 	private final float ARMMINSPEED = 0;
 	
