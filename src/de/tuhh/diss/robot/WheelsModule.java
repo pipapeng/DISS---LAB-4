@@ -1,6 +1,6 @@
 package de.tuhh.diss.robot;
 
-import de.tuhh.diss.exceptions.MotorException;
+import de.tuhh.diss.exceptions.OutOfWorkspaceException;
 import lejos.nxt.Button;
 import lejos.nxt.LCD;
 import lejos.nxt.Motor;
@@ -13,12 +13,11 @@ public class WheelsModule {
 	///////////////////////////////////////////////////////
 	//	VARIABLES
 	///////////////////////////////////////////////////////
-	
-	private final int ARMLENGTH = 80;	
+		
 	private static final int WHEELGEARRATIO = 5;
 	private static final int WHEELDIAMETER = 56;
-	private static final int MINFEED = 0;
-	private static final int MAXFEED = 2300;
+	private static final int MINFEED = -ArmModule.getArmLength();
+	private static final int MAXFEED = 2300 -ArmModule.getArmLength();
 	private static final int DISTANCETOLIGHTSENSOR = 105;
 	private static final double FACTORLIGHT = 1.05;
 	
@@ -33,7 +32,7 @@ public class WheelsModule {
 	//	METHODS
 	///////////////////////////////////////////////////////		
 	
-	public WheelsModule() throws MotorException{
+	public WheelsModule() throws OutOfWorkspaceException{
 		motorWheels = Motor.C;
 		WHEELMAXSPEED = motorWheels.getMaxSpeed();
 		
@@ -41,9 +40,13 @@ public class WheelsModule {
 		
 		calibrateMotorWheels();
 	}
-	//TODO: Wie wird sichergestellt was der Feed ist, bisher: y Wert zu der Position an der die wheels kalibiert werden ?
-	public int getFeed(){return (int) ((WHEELDIAMETER/(2*WHEELGEARRATIO)) * Math.toRadians(motorWheels.getPosition()));} //TODO: überprüfen
+	
 	public int getMaxFeed(){return MAXFEED;}
+	
+	public double getYCenter(){  //TODO: ueberpruefen
+		
+		return WHEELDIAMETER * Math.toRadians(motorWheels.getPosition()) / (2 * WHEELGEARRATIO) - ArmModule.getArmLength();
+	}
 	
 	public void setWheelSpeed(int speed) throws IndexOutOfBoundsException{
 
@@ -55,31 +58,30 @@ public class WheelsModule {
 		}
 	}
 	
-	public void moveWheels(int distance) throws MotorException{
-		if ((getFeed() + distance) <= MAXFEED && (getFeed() + distance) >= MINFEED){
-			motorWheels.rotate((int) (distance*360*WHEELGEARRATIO/(2*WHEELDIAMETER*Math.PI)));
+	public void moveWheels(double distance) throws OutOfWorkspaceException{
+		if ((getYCenter() + distance) <= MAXFEED && (getYCenter() + distance) >= MINFEED){
+			motorWheels.rotate((int) Math.round((distance*360*WHEELGEARRATIO/(2*WHEELDIAMETER*Math.PI))));
 		}
 		else
-			stopWheels();
-			throw new MotorException();
+			throw new OutOfWorkspaceException();
 	}
 	
 	//TODO: Eigentlich Listener noetig
-	public void moveWheelsForward() throws MotorException{
-		if(getFeed() <= MAXFEED)
+	public void moveWheelsForward() throws OutOfWorkspaceException{
+		if(getYCenter() <= MAXFEED)
 			motorWheels.forward();
 		else
 			stopWheels();
-			throw new MotorException();
+			throw new OutOfWorkspaceException();
 	}
 
 	//TODO: Eigentlich Listener noetig
-	public void moveWheelsBackward() throws MotorException{
-		if(getFeed() >= MINFEED)
+	public void moveWheelsBackward() throws OutOfWorkspaceException{
+		if(getYCenter() >= MINFEED)
 			motorWheels.backward();
 		else
 			stopWheels();
-			throw new MotorException();
+			throw new OutOfWorkspaceException();
 	}
 	
 	public void waitForWheels(){
@@ -90,7 +92,7 @@ public class WheelsModule {
 		motorWheels.stop();
 	}
 	
-	public void calibrateMotorWheels() throws MotorException{
+	public void calibrateMotorWheels() throws OutOfWorkspaceException{
 		LCD.drawString("Calibrating wheels ...", 0, 1);
 		LCD.drawString("Press ESC when Lightsensor", 0, 2);
 		LCD.drawString("is above black bar!", 0, 3);
@@ -100,6 +102,7 @@ public class WheelsModule {
 		int dark = lightSensor.getNormalizedLightValue();
 		lightSensor.setLow(dark);
 		
+		motorWheels.resetTachoCount(); // safety first (evtl. outOFBounds)
 		motorWheels.setSpeed(WHEELMAXSPEED/5);
 		while (lightSensor.getNormalizedLightValue() <= (FACTORLIGHT*dark)){
 			motorWheels.forward();
@@ -107,8 +110,9 @@ public class WheelsModule {
 		motorWheels.stop();
 		lightSensor.setHigh(lightSensor.getNormalizedLightValue());
 		
-		moveWheels(DISTANCETOLIGHTSENSOR - ARMLENGTH);
+		moveWheels(DISTANCETOLIGHTSENSOR - ArmModule.getArmLength());
 		motorWheels.resetTachoCount();
+		
 		LCD.clear();;
 		LCD.drawString("Calibration successful!", 0, 1);
 	}
