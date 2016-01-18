@@ -5,7 +5,7 @@ import de.tuhh.diss.plotbot.OutOfWorkspaceException;
 public class CoordTrans {
 	
 	static public int getXPosition(int armLength, int angle){
-		// Lennart ist ein bloeder Ficker
+		// Lennart ist ein toller typ
 		return (int) (armLength * Math.cos(Math.toRadians(angle)));
 	}
 	
