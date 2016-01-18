@@ -22,7 +22,7 @@ public class PlotHorizontalLine extends PlotLine{
 		
 		try {
 			//TODO: adjust speed 
-			robot.moveArmTo(CoordTrans.getAngle(robot.getArmLength(), xStart+length), true);
+			robot.moveArmTo((int)CoordTrans.getAnglePen(robot.getArmLength(), xStart+length), true);
 		} catch (OutOfWorkspaceException e) {
 			robot.stopAllMotors();
 			throw new MotorException();
@@ -54,18 +54,31 @@ public class PlotHorizontalLine extends PlotLine{
 //		robot.stopWheels();
 	}
 	
-//	public static void drawHorizontalLineAlternative(int xStart, int yStart, int length){
-//		boolean lineDone = false;
-//		double startAngle = CoordinateTransformer.cartesianToPolar(xStart, yStart, PhysicalRobot.ARMLENGTH_);
-//		double endAngle = CoordinateTransformer.cartesianToPolar(xStart + Length, yStart, PhysicalRobot.ARMLENGTH_);
-//		int steps = 100;
-//		
-//		robot.movePenTo(xStart, yStart);
-//		robot.waitForArm();
-//		robot.waitForRobot();
-//		robot.movePenDown();
-//		robot.waitForPen();
-//	}
+	public void drawHorizontalLineAlternative(int xStart, int yStart, int length, int steps) throws OutOfWorkspaceException{
+		boolean lineDone = false;
+		double startAngle = CoordTrans.getAnglePen(robot.getArmLength(), xStart);
+		double endAngle = CoordTrans.getAnglePen(robot.getArmLength(), xStart + length);
+		double angleDifference = endAngle - startAngle;
+		double angleStep = angleDifference / steps;
+		
+		robot.setPen(false);
+		robot.movePenTo(xStart, yStart);
+		robot.waitForArm();
+		robot.setPen(true);
+		
+		
+		double fromAngle = startAngle;
+		double toAngle = fromAngle + angleStep;
+		double yDeviance;
+		for(int it = 0; it = steps; it++){
+			
+			robot.moveArmTo(toAngle);
+			
+					
+		}
+		
+		
+	}
 	
 	
 }

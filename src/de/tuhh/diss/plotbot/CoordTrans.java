@@ -4,37 +4,33 @@ import de.tuhh.diss.exceptions.OutOfWorkspaceException;
 
 public class CoordTrans {
 	
-	static public int getXPosition(int armLength, int angle){
-		return (int) (armLength * Math.cos(Math.toRadians(angle)));
+	static public double getXPositionPen(int armLength, double angle){
+		return (armLength * Math.cos(Math.toRadians(angle)));
 	}
 	
-	static public int getYPosition(int armLength, int feed, int angle){
-		return (int) (feed + armLength * Math.sin(Math.toRadians(angle)));
+	static public double getYPositionPen(int armLength, double feed, double angle){
+		return (feed + armLength * Math.sin(Math.toRadians(angle)));
 	}
 	
-	static public int getYCenterToPen(int armLength, int angle){
-		return (int) (armLength * Math.sin(Math.toRadians(angle)));
+	static public double getYCenterToPen(int armLength, double angle){
+		return (armLength * Math.sin(Math.toRadians(angle)));
 	}
 	
-	static public int getAngle(int armLength, int x) throws OutOfWorkspaceException{
-		
+	static public double getAnglePen(int armLength, double x) throws OutOfWorkspaceException{
 		if(Math.abs(x) <= armLength){
-			
-			return (int) Math.toDegrees(Math.cos(x/armLength));
-		}
-		else{
+			return Math.toDegrees(Math.acos(x/armLength));
+		} else {
 			throw new OutOfWorkspaceException();
 		}
 	}
 	
-	static public int getFeed(int armLength, int maxFeed, int x, int y) throws OutOfWorkspaceException{
+	static public double getFeed(int armLength, int maxFeed, double x, double y) throws OutOfWorkspaceException{	
 		
-		int feed = (int) (y-armLength*Math.sin(Math.toRadians(getAngle(armLength, x))));
+		double feed = (y-armLength*Math.sin(Math.toRadians(getAnglePen(armLength, x))));
 		
 		if(feed >= 0 && feed <= maxFeed){
 			return feed;
-		}
-		else{
+		} else {
 			throw new OutOfWorkspaceException();
 		}
 	}

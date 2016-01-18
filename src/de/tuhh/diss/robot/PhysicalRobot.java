@@ -35,12 +35,12 @@ public class PhysicalRobot implements RobotInterface{
 	}
 	
 	public void movePenTo(int xTarget, int yTarget){
-		int yCenterToPen = CoordTrans.getYCenterToPen(getArmLength(), getArmAngle());
+		int yCenterToPen = (int) CoordTrans.getYCenterToPen(getArmLength(), getArmAngle());
 		int yCenterOfRobot = getFeed() - getArmLength();
 		int distanceToTravel = yTarget - yCenterOfRobot - yCenterToPen;
 		
 		try{
-			moveArmTo(CoordTrans.getAngle(getArmLength(), xTarget));
+			moveArmTo((int)CoordTrans.getAnglePen(getArmLength(), xTarget));
 			moveWheels(distanceToTravel);
 		} catch (MotorException motorException) {
 			motorException.getMessage();
