@@ -43,7 +43,7 @@ public class ArmModule{
 	
 	public static int getArmLength(){return ARMLENGTH;}
 	public int getArmMaxAngle(){return ARMMAXANGLE;}
-	public int getRotationSpeed(){return motorArm.getRotationSpeed();}
+	public int getRotationSpeed(){return motorArm.getRotationSpeed() / ARMGEARRATIO;}
 	
 	public double getAngle(){
 		
