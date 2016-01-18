@@ -1,6 +1,6 @@
 package de.tuhh.diss.plotbot;
 
-import de.tuhh.diss.plotbot.OutOfWorkspaceException;
+import de.tuhh.diss.exceptions.OutOfWorkspaceException;
 
 public class CoordTrans {
 	

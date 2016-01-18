@@ -1,5 +1,8 @@
 package de.tuhh.diss.plotbot;
 
+import de.tuhh.diss.exceptions.MotorException;
+import de.tuhh.diss.robot.RobotInterface;
+
 public class PlotString {
 
 	public RobotInterface robot;

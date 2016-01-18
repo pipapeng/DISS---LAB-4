@@ -1,6 +1,6 @@
 package de.tuhh.diss.robot;
 
-import de.tuhh.diss.plotbot.MotorException;
+import de.tuhh.diss.exceptions.MotorException;
 import lejos.nxt.Button;
 import lejos.nxt.LCD;
 import lejos.nxt.Motor;

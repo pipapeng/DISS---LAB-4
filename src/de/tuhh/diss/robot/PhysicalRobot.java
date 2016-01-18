@@ -1,10 +1,9 @@
 package de.tuhh.diss.robot;
 
+import de.tuhh.diss.exceptions.MotorException;
+import de.tuhh.diss.exceptions.OutOfWorkspaceException;
 import de.tuhh.diss.plotbot.CoordTrans;
-import de.tuhh.diss.plotbot.MotorException;
-import de.tuhh.diss.plotbot.OutOfWorkspaceException;
-import de.tuhh.diss.plotbot.RobotInterface;
-import de.tuhh.diss.robot.*;
+
 
 
 public class PhysicalRobot implements RobotInterface{
