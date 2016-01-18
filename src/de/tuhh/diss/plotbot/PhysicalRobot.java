@@ -42,7 +42,7 @@ public class PhysicalRobot implements RobotInterface{
 	private NXTRegulatedMotor motorPen;
 	private NXTRegulatedMotor motorWheels;
 	
-	public PhysicalRobot() throws MotorsHasBeenStoppedException{
+	public PhysicalRobot() throws MotorException{
 		
 		touchArm = new TouchSensor(SensorPort.S1);
 		touchPen = new TouchSensor(SensorPort.S2);
@@ -105,7 +105,7 @@ public class PhysicalRobot implements RobotInterface{
 	
 	
 	//TODO: was passiert wenn schon da?
-	public void moveArmTo(int armAngle) throws MotorsHasBeenStoppedException{
+	public void moveArmTo(int armAngle) throws MotorException{
 		
 		if (armAngle>=armMinAngle && armAngle<=armMaxAngle){
 			
@@ -122,11 +122,11 @@ public class PhysicalRobot implements RobotInterface{
 		}
 		else{
 			stopAll();
-			throw new MotorsHasBeenStoppedException();
+			throw new MotorException();
 		}
 	}
 	
-	public void moveArmTo(int armAngle, boolean immediateReturn) throws MotorsHasBeenStoppedException{
+	public void moveArmTo(int armAngle, boolean immediateReturn) throws MotorException{
 		
 		if (armAngle>=armMinAngle && armAngle<=armMaxAngle){
 			
@@ -144,7 +144,7 @@ public class PhysicalRobot implements RobotInterface{
 		}
 		else{
 			stopAll();
-			throw new MotorsHasBeenStoppedException();
+			throw new MotorException();
 		}
 	}
 	
@@ -204,31 +204,31 @@ public class PhysicalRobot implements RobotInterface{
 		}
 	}
 	
-	public void moveWheels(int length) throws MotorsHasBeenStoppedException{
+	public void moveWheels(int length) throws MotorException{
 		if ((getFeed() + length) <= maxFeed && (getFeed() + length) >= minFeed){
 			motorWheels.rotate((int) (length*360*wheelGearRatio/(2*wheelDiameter*Math.PI)));
 		}
 		else
 			stopAll();
-			throw new MotorsHasBeenStoppedException();
+			throw new MotorException();
 	}
 	
 	//TODO: Eigentlich Listener noetig
-	public void moveWheelsForward() throws MotorsHasBeenStoppedException{
+	public void moveWheelsForward() throws MotorException{
 		if(getFeed() <= maxFeed)
 			motorWheels.forward();
 		else
 			stopAll();
-			throw new MotorsHasBeenStoppedException();
+			throw new MotorException();
 	}
 
 	//TODO: Eigentlich Listener noetig
-	public void moveWheelsBackward() throws MotorsHasBeenStoppedException{
+	public void moveWheelsBackward() throws MotorException{
 		if(getFeed() >= minFeed)
 			motorWheels.backward();
 		else
 			stopAll();
-			throw new MotorsHasBeenStoppedException();
+			throw new MotorException();
 	}
 	
 	public void waitForWheels(){
@@ -262,7 +262,7 @@ public class PhysicalRobot implements RobotInterface{
 		penDown = false;
 	}
 	
-	private void calibrationWheels() throws MotorsHasBeenStoppedException{
+	private void calibrationWheels() throws MotorException{
 		
 		motorArm.setSpeed(armMaxSpeed);
 		moveArmTo(armMaxAngle/2);

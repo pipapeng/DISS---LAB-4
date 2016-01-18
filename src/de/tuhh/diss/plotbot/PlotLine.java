@@ -8,13 +8,13 @@ public abstract class PlotLine {
 	
 	protected RobotInterface robot;
 
-	public PlotLine(RobotInterface robot, int xStart, int yStart) throws MotorsHasBeenStoppedException{
+	public PlotLine(RobotInterface robot, int xStart, int yStart) throws MotorException{
 		
 		this.robot = robot; 
 		moveToCoord(xStart, yStart);
 	}
 
-	protected void moveToCoord(int x, int y) throws MotorsHasBeenStoppedException{
+	protected void moveToCoord(int x, int y) throws MotorException{
 		
 		robot.setWheelSpeed(speed);
 		robot.setArmSpeed(speed);
@@ -24,7 +24,7 @@ public abstract class PlotLine {
 			robot.moveWheels(CoordTrans.getFeed(robot.getArmLength(), robot.getMaxFeed(), x, y) - CoordTrans.getYPosition(robot.getArmLength(), robot.getFeed(), robot.getArmAngle()));
 		} catch (OutOfWorkspaceException e) {
 			robot.stopAll();
-			throw new MotorsHasBeenStoppedException();
+			throw new MotorException();
 		}
 		
 				
