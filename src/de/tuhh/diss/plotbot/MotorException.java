@@ -4,7 +4,7 @@ public class MotorException extends Exception{
 
 	public String getMessage(){
 		
-		return ("One Motor went or will go out of his Boundries! ALL Motors has been stopped!");
+		return ("One Motor went or will go out of its Boundries! ALL Motors have been stopped!");
 	}
 	
 	public static long getSerialversionuid() {

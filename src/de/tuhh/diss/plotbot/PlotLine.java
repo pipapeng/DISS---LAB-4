@@ -23,7 +23,7 @@ public abstract class PlotLine {
 			robot.moveArmTo(CoordTrans.getAngle(robot.getArmLength(), x), true);
 			robot.moveWheels(CoordTrans.getFeed(robot.getArmLength(), robot.getMaxFeed(), x, y) - CoordTrans.getYPosition(robot.getArmLength(), robot.getFeed(), robot.getArmAngle()));
 		} catch (OutOfWorkspaceException e) {
-			robot.stopAll();
+			robot.stopAllMotors();
 			throw new MotorException();
 		}
 		

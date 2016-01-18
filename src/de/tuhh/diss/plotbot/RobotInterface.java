@@ -3,6 +3,7 @@ package de.tuhh.diss.plotbot;
 public interface RobotInterface {
 	
 	public void stopAllMotors();
+	public void movePenTo(int xTarget, int yTarget);
 	
 	/////** ARM **/////
 	public int getArmLength();

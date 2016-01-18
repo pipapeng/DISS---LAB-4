@@ -12,6 +12,10 @@ public class CoordTrans {
 		return (int) (feed + armLength * Math.sin(Math.toRadians(angle)));
 	}
 	
+	static public int getYCenterToPen(int armLength, int angle){
+		return (int) (armLength * Math.sin(Math.toRadians(angle)));
+	}
+	
 	static public int getAngle(int armLength, int x) throws OutOfWorkspaceException{
 		
 		if(Math.abs(x) <= armLength){
