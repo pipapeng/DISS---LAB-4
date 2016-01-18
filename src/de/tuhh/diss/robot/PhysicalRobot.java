@@ -47,7 +47,7 @@ public class PhysicalRobot implements RobotInterface{
 		double distanceToTravel = yTarget - yCenterOfRobot - yCenterToPen;
 		
 		try{
-			moveArmTo(CoordTrans.getAngle(getArmLength(), xTarget));
+			moveArmTo((int)CoordTrans.getAnglePen(getArmLength(), xTarget));
 			moveWheels(distanceToTravel);
 		} catch (MotorException motorException) {
 			motorException.getMessage();
