@@ -5,7 +5,7 @@ import de.tuhh.diss.robot.RobotInterface;
 
 public class PlotVerticalLine extends PlotLine{
 	
-	public PlotVerticalLine(RobotInterface robot,int xStart, int yStart, int length) throws MotorException{
+	public PlotVerticalLine(RobotInterface robot,double xStart, double yStart, double length) throws MotorException{
 		super(robot,xStart,yStart);
 		robot.setPen(true);
 		robot.moveWheels(length);

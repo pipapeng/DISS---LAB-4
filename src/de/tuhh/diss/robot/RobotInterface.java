@@ -5,7 +5,7 @@ import de.tuhh.diss.exceptions.MotorException;
 public interface RobotInterface {
 	
 	public void stopAllMotors() throws MotorException;
-	public void movePenTo(int xTarget, int yTarget);
+	public void movePenTo(double xTarget, double yTarget);
 	
 	/////** ARM **/////
 	public int getArmLength();

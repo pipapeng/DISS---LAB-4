@@ -6,7 +6,7 @@ public abstract class PlotLine {
 
 	protected RobotInterface robot;
 
-	public PlotLine(RobotInterface robot, int xStart, int yStart){
+	public PlotLine(RobotInterface robot, double xStart, double yStart){
 		
 		this.robot = robot; 
 		robot.movePenTo(xStart, yStart);

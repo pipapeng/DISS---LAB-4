@@ -20,7 +20,7 @@ public class PlotString {
 	
 	private void drawT(int s){
 	try {
-		new PlotVerticalLine(robot, (int) (center*s), (int) (start-2*scale*s), (int) (-4*scale*s));
+		new PlotVerticalLine(robot, center*s, start-2*scale*s, -4*scale*s);
 	} catch (MotorException e) {
 		e.printStackTrace();
 	}
