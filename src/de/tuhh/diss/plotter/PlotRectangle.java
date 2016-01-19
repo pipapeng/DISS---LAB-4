@@ -1,4 +1,4 @@
-package de.tuhh.diss.plotbot;
+package de.tuhh.diss.plotter;
 
 import de.tuhh.diss.exceptions.MotorException;
 import de.tuhh.diss.robot.PhysicalRobot;
