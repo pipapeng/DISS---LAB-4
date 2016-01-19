@@ -42,7 +42,7 @@ public class PhysicalRobot implements RobotInterface{
 		throw new MotorException();
 	}
 	
-	public void movePenTo(int xTarget, int yTarget){
+	public void movePenTo(double xTarget, double yTarget){
 		double yCenterToPen = CoordTrans.getYCenterToPen(getArmLength(), getArmAngle());
 		double yCenterOfRobot = getFeed() - getArmLength();
 		double distanceToTravel = yTarget - yCenterOfRobot - yCenterToPen;
