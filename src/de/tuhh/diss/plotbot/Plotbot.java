@@ -7,6 +7,8 @@ import lejos.nxt.LCD;
 
 public class Plotbot{
 	
+	private static int choice;
+	
 	private static PlotterInterface plotter;
 	private static UserInterface userInterface;
 	
@@ -16,7 +18,21 @@ public class Plotbot{
 		plotter = new Plotter();
 		userInterface = new UserInterface();
 		
-		int choice = userInterface.mainMenu();
+		do{
+			choice = userInterface.mainMenu();
+			
+			switch(choice){
+			
+			case 1:
+				
+			case 2:
+				
+			}
+			
+		}while(choice != 0);
+		
+		plotter.shutDown();
+		userInterface.shutDown();
 		
 		
 
