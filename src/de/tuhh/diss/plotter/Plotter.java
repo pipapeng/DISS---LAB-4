@@ -7,6 +7,30 @@ public class Plotter implements PlotterInterface{
 	}
 
 	@Override
+	public int getMinSizeRectangle() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public int getMaxSizeRectangle() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public int getMinSizeString() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public int getMaxSizeString() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+	
+	@Override
 	public void plotRectangle(double size) {
 		// TODO Auto-generated method stub
 		
@@ -29,4 +53,6 @@ public class Plotter implements PlotterInterface{
 		// TODO Auto-generated method stub
 		
 	}
+
+	
 }
