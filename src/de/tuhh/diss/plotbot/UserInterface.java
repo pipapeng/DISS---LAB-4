@@ -15,17 +15,17 @@ public class UserInterface implements ButtonListener{
 	
 	private boolean mainMenu;
 	private boolean sizeMenu;
-	private boolean stopImmediatly;
 	
 	public UserInterface(){
 		
 		curserPosition = 1;
 		repeatsLeft = 0;
 		repeatsRight = 0;
-		stopImmediatly = false;
 		
-		LCD.drawString("Welcome to", 3, 0);
-		LCD.drawString("Plotbot!", 4, 1);
+		LCD.drawString("Welcome to", 3, 1);
+		LCD.drawString("Plotbot!", 4, 2);
+		
+		LCD.drawString("Calibration...", 0, 4);
 	}
 	
 	public int mainMenu() {
@@ -73,6 +73,8 @@ public class UserInterface implements ButtonListener{
 		// nochmal oder reicht das einmal?
 		Button.LEFT.addButtonListener(this);
 		Button.RIGHT.addButtonListener(this);
+		Button.ESCAPE.addButtonListener(this);
+		//TODO: ESCAPE -> return to main menu
 		
 		Button.ENTER.waitForPressAndRelease();
 		sizeMenu = false;
@@ -91,12 +93,31 @@ public class UserInterface implements ButtonListener{
 		LCD.drawString("to stop", 0, 5);
 	}
 	
+	public void plotComplete(){
+		
+		LCD.clear();
+		LCD.drawString("Plot complete!", 0, 3);
+		//TODO: time delay
+	}
+	
+	public void stopedImmediatly(){
+		
+		LCD.clear();
+		LCD.drawString("You have", 0, 1);
+		LCD.drawString("pressed ESC", 0, 2);
+		
+		LCD.drawString("Robot has", 0, 4);
+		LCD.drawString("been stopped!", 0, 5);
+		
+		//TODO: time delay
+	}
+	
 	public void shutDown(){
 
 		LCD.clear();
 		LCD.drawString("Shut down", 0, 2);
 		LCD.drawString("Bye Bye...", 0, 4);
-		Button.ESCAPE.waitForPressAndRelease();		// time delay
+		Button.ESCAPE.waitForPressAndRelease();		//TODO: time delay
 	}
 	
 	public void buttonPressed(Button b) {
@@ -108,9 +129,11 @@ public class UserInterface implements ButtonListener{
 		if(b.getId() == Button.ID_RIGHT){
 			
 			if(mainMenu == true){
+				
 				incrementCurserPosition();
 			}
 			if(sizeMenu == true){
+				
 				incrementSize();
 				sizeMenu(minSize, maxSize);
 			}
@@ -119,11 +142,22 @@ public class UserInterface implements ButtonListener{
 		if(b.getId() == Button.ID_LEFT){
 			
 			if(mainMenu == true){
+				
 				decrementCurserPosition();
 			}
 			if(sizeMenu == true){
+				
 				decrementSize();
 				sizeMenu(minSize, maxSize);
+			}
+		}
+		
+		if(b.getId() == Button.ID_ESCAPE){
+			
+			if(sizeMenu == true){
+				
+				sizeMenu = false;
+				// raus aus size und mainMenu() aufrufen
 			}
 		}
 	}
