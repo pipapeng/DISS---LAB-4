@@ -8,6 +8,8 @@ import lejos.nxt.NXTRegulatedMotor;
 import lejos.nxt.SensorPort;
 import lejos.nxt.LightSensor;
 //bla
+
+// Lennart ist voll cool
 public class WheelsModule {
 	
 	///////////////////////////////////////////////////////
