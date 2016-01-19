@@ -50,8 +50,8 @@ public class WheelsModule {
 	
 	public void setWheelSpeed(int speed) throws IndexOutOfBoundsException{
 
-		if (speed>=WHEELMINSPEED && speed<=WHEELMAXSPEED){
-			motorWheels.setSpeed(speed / WHEELGEARRATIO);
+		if (speed/WHEELGEARRATIO >= WHEELMINSPEED && speed/WHEELGEARRATIO <= WHEELMAXSPEED){
+			motorWheels.setSpeed(speed/WHEELGEARRATIO);
 		}
 		else{
 			throw new IndexOutOfBoundsException();
@@ -114,6 +114,6 @@ public class WheelsModule {
 		motorWheels.resetTachoCount();
 		
 		LCD.clear();;
-		LCD.drawString("Calibration successful!", 0, 1);
+		LCD.drawString("Wheel calibration successful!", 0, 1);
 	}
 }
