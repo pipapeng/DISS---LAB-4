@@ -7,9 +7,17 @@ import lejos.nxt.LCD;
 
 public class Plotbot{
 	
+	private static PlotterInterface plotter;
+	private static UserInterface userInterface;
+	
+	
 	public static void main(String[] args)
 	{
-		PlotterInterface plotter = new Plotter();
+		plotter = new Plotter();
+		userInterface = new UserInterface();
+		
+		int choice = userInterface.mainMenu();
+		
 		
 
 
