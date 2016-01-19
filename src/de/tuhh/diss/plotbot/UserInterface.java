@@ -9,6 +9,7 @@ public class UserInterface implements ButtonListener{
 	private int curserPosition;
 	private int repeatsLeft;
 	private int repeatsRight;
+	private int minSize;
 	private int maxSize;
 	private int size;
 	
@@ -50,9 +51,15 @@ public class UserInterface implements ButtonListener{
 		return curserPosition;
 	}
 	
-	public int sizeMenu(int maxSize){
+	public int sizeMenu(int minSize, int maxSize){
 		
-		this.maxSize = maxSize; 
+		this.minSize = minSize;
+		this.maxSize = maxSize;
+		
+		if(sizeMenu == false){
+			size = (int) ((minSize + maxSize) / 20) * 10;
+		}
+		
 		sizeMenu = true;
 		
 		LCD.clear();
@@ -66,7 +73,6 @@ public class UserInterface implements ButtonListener{
 		// nochmal oder reicht das einmal?
 		Button.LEFT.addButtonListener(this);
 		Button.RIGHT.addButtonListener(this);
-		
 		
 		Button.ENTER.waitForPressAndRelease();
 		sizeMenu = false;
@@ -106,7 +112,7 @@ public class UserInterface implements ButtonListener{
 			}
 			if(sizeMenu == true){
 				incrementSize();
-				sizeMenu(maxSize);
+				sizeMenu(minSize, maxSize);
 			}
 		}
 		
@@ -117,6 +123,7 @@ public class UserInterface implements ButtonListener{
 			}
 			if(sizeMenu == true){
 				decrementSize();
+				sizeMenu(minSize, maxSize);
 			}
 		}
 	}
@@ -147,6 +154,9 @@ public class UserInterface implements ButtonListener{
 		else{
 			size = size + 10;
 		}
+		if(size > maxSize){
+			size = maxSize;
+		}
 	}
 	
 	private void decrementSize(){
@@ -158,6 +168,9 @@ public class UserInterface implements ButtonListener{
 		}
 		else{
 			size = size + 10;
+		}
+		if(size < minSize){
+			size = minSize;
 		}
 	}
 }
