@@ -3,7 +3,7 @@ package de.tuhh.diss.plotbot;
 import de.tuhh.diss.exceptions.OutOfWorkspaceException;
 
 public class CoordTrans {
-	//fickhen
+
 	static public double getXPositionPen(int armLength, double angle){
 		return (armLength * Math.cos(Math.toRadians(angle)));
 	}
