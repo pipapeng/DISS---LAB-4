@@ -10,80 +10,94 @@ public class PlotString {
 	private static final int start = 230;
 	private static final double center = 1/2;
 	
-	public PlotString(int size){
+	public double PlotString(int size){
 	robot = PlotRectangle.getRobot();
-	drawT(size);
-	drawU(size);
-	drawH1(size);
-	drawH2(size);
+	double nextY;
+	
+	nextY = getSpacingFrameToString(size, start);
+	nextY = drawT(size, nextY);
+	nextY = getSpacingStringToString(size, nextY);
+	nextY = drawU(size, nextY);
+	nextY = getSpacingStringToString(size, nextY);
+	nextY = drawH(size, nextY);
+	nextY = getSpacingStringToString(size, nextY);
+	nextY = drawH(size, nextY);
+	nextY = getSpacingFrameToString(size, nextY);
+	
+	return nextY;
 	}
 	
-	private void drawT(int s){
-	try {
-		new PlotVerticalLine(robot, center*s, start-2*scale*s, -4*scale*s);
+	private double getSpacingFrameToString(int size, double startY){
+		return startY-2*scale*size;
+	}
+	
+	private double getSpacingStringToString(int size, double startY){
+		return startY-3*scale*size;
+	}
+	
+	private double drawT(int size, double startY){
+	double widthY = 4*scale*size;
+	double endY = startY-widthY;
+	
+		try {
+		new PlotVerticalLine(robot, center*size, startY, -widthY);
 	} catch (MotorException e) {
 		e.printStackTrace();
 	}
 	try {
-		new PlotHorizontalLine(robot, (int) (center*s), (int) (start-4*scale*s), -s);
+		new PlotHorizontalLine(robot, center*size, startY-widthY*center, -size);
 	} catch (MotorException e) {
 		e.printStackTrace();
 	}
+	
+	return endY;
 	}
 	
-	private void drawU(int s){
+	private double drawU(int size, double startY){
+		double widthY = 3*scale*size;
+		double endY = startY-widthY;
+		
 		try {
-			new PlotHorizontalLine(robot, (int) (center*s), (int) (start-9*scale*s), -s);
+			new PlotHorizontalLine(robot, center*size, startY, -size);
 		} catch (MotorException e) {
 			e.printStackTrace();
 		}
 		try {
-			new PlotVerticalLine(robot, (int) (-center*s), (int) (start-9*scale*s), (int) (-center*s));
+			new PlotVerticalLine(robot, -center*size, startY, -widthY);
 		} catch (MotorException e) {
 			e.printStackTrace();
 		}
 		try {
-			new PlotHorizontalLine(robot, (int) (-center*s), (int) (start-12*scale*s), s);
+			new PlotHorizontalLine(robot, -center*size, startY-widthY, size);
 		} catch (MotorException e) {
 			e.printStackTrace();
 		}
+		
+		return endY;
 		}
 	
-	private void drawH1(int s){
+	private double drawH(int size, double startY){
+		double widthY = 3*scale*size;
+		double endY = startY-widthY;
+		
 		try {
-			new PlotHorizontalLine(robot, (int) (center*s), (int) (start-15*scale*s), -s);
+			new PlotHorizontalLine(robot,  center*size, startY, -size);
 		} catch (MotorException e) {
 			e.printStackTrace();
 		}
 		try {
-			new PlotVerticalLine(robot, 0, (int) (start-15*scale*s), (int) (-3*scale*s));
+			new PlotVerticalLine(robot, 0, startY, widthY);
 		} catch (MotorException e) {
 			e.printStackTrace();
 		}
 		try {
-			new PlotHorizontalLine(robot, (int) (-center*s), (int) (start-18*scale*s), s);
+			new PlotHorizontalLine(robot, -center*size, startY-widthY, size);
 		} catch (MotorException e) {
 			e.printStackTrace();
 		}
+		
+		return endY;
 		}	
-	
-	private void drawH2(int s){
-		try {
-			new PlotHorizontalLine(robot, (int) (center*s), (int) (start-21*scale*s), -s);
-		} catch (MotorException e) {
-			e.printStackTrace();
-		}
-		try {
-			new PlotVerticalLine(robot, 0, (int) (start-21*scale*s), (int) (-3*scale*s));
-		} catch (MotorException e) {
-			e.printStackTrace();
-		}
-		try {
-			new PlotHorizontalLine(robot, (int) (-center*s), (int) (start-24*scale*s), s);
-		} catch (MotorException e) {
-			e.printStackTrace();
-		}
-		}
 	
 	
 }
