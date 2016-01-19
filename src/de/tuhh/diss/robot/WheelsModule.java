@@ -93,9 +93,10 @@ public class WheelsModule {
 	}
 	
 	public void calibrateMotorWheels() throws OutOfWorkspaceException{
-		LCD.drawString("Calibrating wheels ...", 0, 1);
-		LCD.drawString("Press ESC when Lightsensor", 0, 2);
-		LCD.drawString("is above black bar!", 0, 3);
+		LCD.clear();
+		LCD.drawString("Calibrating wheels ...", 0, 0);
+		LCD.drawString("Press ESC when Lightsensor", 0, 1);
+		LCD.drawString("is above black bar!", 0, 2);
 		Button.ESCAPE.waitForPressAndRelease();
 		LCD.clear();
 		
@@ -114,6 +115,6 @@ public class WheelsModule {
 		motorWheels.resetTachoCount();
 		
 		LCD.clear();;
-		LCD.drawString("Wheel calibration successful!", 0, 1);
+		LCD.drawString("Wheel calibration successful!", 0, 0);
 	}
 }

@@ -1,6 +1,7 @@
 package de.tuhh.diss.robot;
 
 import de.tuhh.diss.exceptions.OutOfWorkspaceException;
+import lejos.nxt.Button;
 import lejos.nxt.LCD;
 import lejos.nxt.Motor;
 import lejos.nxt.NXTRegulatedMotor;
@@ -15,10 +16,10 @@ public class ArmModule{
 	
 	private final int ARMGEARRATIO = 85;
 	private static final int ARMLENGTH = 80;
-	private final int BEARINGPLAY = 6;	//half of the total bearing play. 		nomma MESSEN!!!
-	private final int ARMMINANGLE = 50; //TODO: Messen
-	private final int REST = ARMMINANGLE - BEARINGPLAY;	//TODO: umbenennen
-	private final int ARMMAXANGLE = 180 - ARMMINANGLE; //TODO: bearingPlay
+	private int bearingPlay = 6;	//half of the total bearing play. 		nomma MESSEN!!!
+	private int armMinAngle; //TODO: Messen
+	private int rest = armMinAngle - bearingPlay;	//TODO: umbenennen
+	private int armMaxAngle; //TODO: bearingPlay
 	private final float ARMMAXSPEED;
 	private final float ARMMINSPEED = 0;
 	
@@ -42,17 +43,18 @@ public class ArmModule{
 	}
 	
 	public static int getArmLength(){return ARMLENGTH;}
-	public int getArmMaxAngle(){return ARMMAXANGLE;}
+	public int getArmMaxAngle(){return armMaxAngle;}
 	public int getRotationSpeed(){return motorArm.getRotationSpeed() / ARMGEARRATIO;}
 	
 	public double getAngle(){
 		
 		if(armBehindMotor == true){
-			return REST - BEARINGPLAY + (motorArm.getPosition() / ARMGEARRATIO) ;
+			return rest - bearingPlay + (motorArm.getPosition() / ARMGEARRATIO) ;
 		}
 		else{
-			return REST + BEARINGPLAY + (motorArm.getPosition() / ARMGEARRATIO) ;
+			return rest + bearingPlay + (motorArm.getPosition() / ARMGEARRATIO) ;
 		}
+
 	}
 	
 	public void setArmSpeed(int speed) throws IndexOutOfBoundsException{ //TODO: handle?
@@ -66,15 +68,15 @@ public class ArmModule{
 	}
 	
 	public void moveArmTo(double targetAngle) throws OutOfWorkspaceException{
-			
-		if (targetAngle != getAngle() && targetAngle >= ARMMINANGLE && targetAngle <= ARMMAXANGLE){
+		//TODO: If targetAngle==getAngle -> throw exception ?! 	
+		if (targetAngle != getAngle() && targetAngle >= armMinAngle && targetAngle <= armMaxAngle){
 				
 			if(getAngle() < targetAngle){
-				targetAngle = targetAngle + BEARINGPLAY;
+				targetAngle = targetAngle + bearingPlay;
 				armBehindMotor = true;
 			}
 			else{
-				targetAngle = targetAngle - BEARINGPLAY;
+				targetAngle = targetAngle - bearingPlay;
 				armBehindMotor = false;
 			}
 				
@@ -88,14 +90,14 @@ public class ArmModule{
 	
 	public void moveArmTo(double targetAngle, boolean immediateReturn) throws OutOfWorkspaceException{
 			
-		if (targetAngle != getAngle() && targetAngle >= ARMMINANGLE && targetAngle <= ARMMAXANGLE){
+		if (targetAngle != getAngle() && targetAngle >= armMinAngle && targetAngle <= armMaxAngle){
 			
 			if(getAngle() < targetAngle){
-				targetAngle = targetAngle + BEARINGPLAY;
+				targetAngle = targetAngle + bearingPlay;
 				armBehindMotor = true;
 			}
 			else{
-				targetAngle = targetAngle - BEARINGPLAY;
+				targetAngle = targetAngle - bearingPlay;
 				armBehindMotor = false;
 			}
 				
@@ -115,20 +117,45 @@ public class ArmModule{
 	}
 		
 	private void calibrateMotorArm() throws OutOfWorkspaceException{
-		LCD.drawString("Calibrating arm ...", 0, 1); //TODO: Lennart...
-		
+		boolean repeat = false;
+		do{
+		LCD.clear();
+		LCD.drawString("Calibrating arm ...", 0, 0); //TODO: Lennart...
 		motorArm.setSpeed((int)(ARMMAXSPEED*.75));
 		motorArm.backward();
 		
 		while (!sensorArm.isPressed()){
 		}
 		stopArm();
+		
 		motorArm.resetTachoCount();
 		armBehindMotor = false;
+		motorArm.rotateTo(100*ARMGEARRATIO,true);
+		LCD.drawString("Press Escape!", 0, 2);
+		Button.ESCAPE.waitForPressAndRelease();
+		stopArm();
 		
-		motorArm.setSpeed(ARMMAXSPEED);
-		moveArmTo(ARMMAXANGLE/2); 		//TODO: Das muss in calibrateMotorWheels
-
-		LCD.drawString("Arm calibrated successfully!", 0, 2); //TODO: Lennart...
+		double angleDifference = motorArm.getPosition()/ARMGEARRATIO;
+		LCD.drawString("angleToMin: "+String.valueOf(angleDifference), 0, 1);
+		
+		
+		LCD.drawString("Arm OK?: NO", 0, 2);
+		LCD.drawString("Press Enter", 0, 3);
+		while (Button.ENTER.isDown() == false){
+			if(Button.RIGHT.isDown() || Button.LEFT.isDown()){
+				LCD.drawString("Arm OK?: YES", 0, 2);
+				repeat = true;
+			}
+		}
+		
+		armMaxAngle = (int) (90 + angleDifference);
+		armMinAngle = (int) (90 - angleDifference);
+		
+		LCD.drawString("Min:"+String.valueOf(armMinAngle), 0, 4);
+		LCD.drawString("Max:"+String.valueOf(armMaxAngle), 0, 5);
+		
+		}while(repeat == false);
+		
+		LCD.drawString("Arm calibrated successfully!", 0, 1); //TODO: Lennart..
 	}
 }
