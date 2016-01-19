@@ -2,7 +2,6 @@ package de.tuhh.diss.robot;
 
 import de.tuhh.diss.exceptions.MotorException;
 import de.tuhh.diss.exceptions.OutOfWorkspaceException;
-import de.tuhh.diss.plotbot.CoordTrans;
 import lejos.nxt.LCD;
 
 
