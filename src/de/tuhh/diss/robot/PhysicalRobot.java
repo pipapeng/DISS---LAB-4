@@ -3,6 +3,7 @@ package de.tuhh.diss.robot;
 import de.tuhh.diss.exceptions.MotorException;
 import de.tuhh.diss.exceptions.OutOfWorkspaceException;
 import de.tuhh.diss.plotbot.CoordTrans;
+import lejos.nxt.LCD;
 
 
 
@@ -68,21 +69,22 @@ public class PhysicalRobot implements RobotInterface{
 	public double getArmRotationSpeed(){return arm.getRotationSpeed();}
 	
 	public void setArmSpeed(int speed) throws IndexOutOfBoundsException {arm.setArmSpeed(speed);}
+	
 	public void moveArmTo(double targetAngle) throws MotorException{
-		
 		try {
 			arm.moveArmTo(targetAngle);
 		} catch (OutOfWorkspaceException e) {
 			stopAllMotors();
+			LCD.drawString("OoW in moveAtmTo(d)", 0, 8);
 		}
 	}
 	
 	public void moveArmTo(double targetAngle, boolean immediateReturn) throws MotorException{
-		
 		try {
 			arm.moveArmTo(targetAngle, immediateReturn);
 		} catch (OutOfWorkspaceException e) {
 			stopAllMotors();
+			LCD.drawString("OoW in moveArmTo(d,b)", 0, 8);
 		}
 	}
 	
@@ -105,13 +107,14 @@ public class PhysicalRobot implements RobotInterface{
 	public int getMaxFeed(){return wheels.getMaxFeed();}
 	public double getFeed(){return wheels.getYCenter();}
 
-	public void setWheelSpeed(int speed) throws IndexOutOfBoundsException {wheels.setWheelSpeed(speed);}
+	public void setWheelSpeed(double speed) throws IndexOutOfBoundsException {wheels.setWheelSpeed(speed);}
 	
 	public void moveWheels(double distance) throws MotorException{
 		try {
 			wheels.moveWheels(distance);
 		} catch (OutOfWorkspaceException e) {
 			stopAllMotors();
+			LCD.drawString("OoW in moveWheels()", 0, 8);
 		}
 	}
 	public void moveWheelsForward() throws MotorException{
@@ -119,6 +122,7 @@ public class PhysicalRobot implements RobotInterface{
 			wheels.moveWheelsForward();
 		} catch (OutOfWorkspaceException e) {
 			stopAllMotors();
+			LCD.drawString("OoW in moveWheelsForward()", 0, 8);
 		}
 	}
 	
@@ -127,6 +131,7 @@ public class PhysicalRobot implements RobotInterface{
 			wheels.moveWheelsBackward();
 		} catch (OutOfWorkspaceException e) {
 			stopAllMotors();
+			LCD.drawString("OoW in moveWheelsBackward()", 0, 8);
 		}
 	}
 	

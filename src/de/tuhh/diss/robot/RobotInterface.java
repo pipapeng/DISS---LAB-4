@@ -25,7 +25,7 @@ public interface RobotInterface {
 	/////** Wheels **/////	
 	public int getMaxFeed();
 	public double getFeed();
-	public void setWheelSpeed(int speed) throws IndexOutOfBoundsException;
+	public void setWheelSpeed(double speed) throws IndexOutOfBoundsException;
 	public void moveWheels(double length) throws MotorException;
 	public void moveWheelsForward() throws MotorException;
 	public void moveWheelsBackward() throws MotorException;

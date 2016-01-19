@@ -48,10 +48,10 @@ public class WheelsModule {
 		return WHEELDIAMETER * Math.toRadians(motorWheels.getPosition()) / (2 * WHEELGEARRATIO) - ArmModule.getArmLength();
 	}
 	
-	public void setWheelSpeed(int speed) throws IndexOutOfBoundsException{
+	public void setWheelSpeed(double speed) throws IndexOutOfBoundsException{
 
 		if (speed/WHEELGEARRATIO >= WHEELMINSPEED && speed/WHEELGEARRATIO <= WHEELMAXSPEED){
-			motorWheels.setSpeed(speed/WHEELGEARRATIO);
+			motorWheels.setSpeed((float)speed/WHEELGEARRATIO);
 		}
 		else{
 			throw new IndexOutOfBoundsException();
