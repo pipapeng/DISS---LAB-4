@@ -22,25 +22,20 @@ public class PhysicalRobot implements RobotInterface{
 	//	METHODS
 	///////////////////////////////////////////////////////	
 	
-	public PhysicalRobot() throws MotorException{
-		
-		
+	public PhysicalRobot(){
 		try {
 			pen = new PenModule();
 			arm = new ArmModule();
 			wheels = new WheelsModule();
 		} catch (OutOfWorkspaceException e) {
 			stopAllMotors();
-			throw new MotorException();
 		}
-		
 	}
 	
-	public void stopAllMotors() throws MotorException{
+	public void stopAllMotors(){
 		stopArm();
 		stopPen();
 		stopWheels();
-		throw new MotorException();
 	}
 	
 	public void movePenTo(double xTarget, double yTarget){
