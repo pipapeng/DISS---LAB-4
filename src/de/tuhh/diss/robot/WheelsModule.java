@@ -1,5 +1,5 @@
 package de.tuhh.diss.robot;
-//blablablalbalb
+
 import de.tuhh.diss.exceptions.OutOfWorkspaceException;
 import lejos.nxt.Button;
 import lejos.nxt.LCD;
