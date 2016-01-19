@@ -8,12 +8,12 @@ import lejos.nxt.LCD;
 public class Plotbot {
 	
 	private static int curserPosition;
-	private static boolean quit;
+	private static int choice;
 	
 	
 	public static void main(String[] args){
 		
-		quit = false;
+		choice = 0;
 		curserPosition = 0;
 		
 		LCD.drawString("Welcome to", 0, 0);
@@ -22,7 +22,21 @@ public class Plotbot {
 		do{
 			
 			mainMenu();
-		}while(quit != true);
+			
+			
+			
+			
+			Button.ENTER.waitForPressAndRelease();
+			choice = curserPosition;
+			switch(choice){
+			
+			case 1:
+				
+			case 2:
+				
+			}
+			
+		}while(choice != 3);
 		
 		LCD.drawString("Plotbot!", 0, 1);
 		Button.ESCAPE.waitForPressAndRelease(); //wait a sec
