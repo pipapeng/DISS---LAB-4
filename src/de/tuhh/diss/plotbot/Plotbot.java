@@ -7,15 +7,16 @@ import lejos.nxt.ButtonListener;
 
 public class Plotbot implements ButtonListener{
 	
+	public static void main(String[] args){
+		new Plotbot();
+	}
+	
+	
 	private int choice;
 	
 	private PlotterInterface plotter;
 	private UserInterface userInterface;
 	
-	
-	public static void main(String[] args){
-		new Plotbot();
-	}
 	
 	public Plotbot(){
 		
@@ -57,8 +58,6 @@ public class Plotbot implements ButtonListener{
 		Button.ESCAPE.waitForPressAndRelease();
 	}
 
-
-	@Override
 	public void buttonPressed(Button b) {
 
 		plotter.stopImmediatly();
@@ -67,8 +66,6 @@ public class Plotbot implements ButtonListener{
 		//TODO: jump zu caseende
 	}
 
-
-	@Override
 	public void buttonReleased(Button b) {
 		
 	}	

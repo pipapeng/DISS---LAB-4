@@ -3,7 +3,7 @@ package de.tuhh.diss.plotter;
 public class Plotter implements PlotterInterface{
 
 	public Plotter(){
-		
+		// Wuerde vorschlagen Robot hier in Plotter zu erzeugen (Lennart)
 	}
 
 	@Override
@@ -49,7 +49,7 @@ public class Plotter implements PlotterInterface{
 	}
 
 	@Override
-	public void shutDown() {
+	public void shutDown() {					// brauch man das?
 		// TODO Auto-generated method stub
 		
 	}
