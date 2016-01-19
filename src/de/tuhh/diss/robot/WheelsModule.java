@@ -7,10 +7,7 @@ import lejos.nxt.Motor;
 import lejos.nxt.NXTRegulatedMotor;
 import lejos.nxt.SensorPort;
 import lejos.nxt.LightSensor;
-//bla
 
-// Lennart ist voll cool
-// Lennart ist zweimal cool
 public class WheelsModule {
 	
 	///////////////////////////////////////////////////////
@@ -51,10 +48,10 @@ public class WheelsModule {
 		return WHEELDIAMETER * Math.toRadians(motorWheels.getPosition()) / (2 * WHEELGEARRATIO) - ArmModule.getArmLength();
 	}
 	
-	public void setWheelSpeed(int speed) throws IndexOutOfBoundsException{
+	public void setWheelSpeed(double speed) throws IndexOutOfBoundsException{
 
-		if (speed>=WHEELMINSPEED && speed<=WHEELMAXSPEED){
-			motorWheels.setSpeed(speed / WHEELGEARRATIO);
+		if (speed/WHEELGEARRATIO >= WHEELMINSPEED && speed/WHEELGEARRATIO <= WHEELMAXSPEED){
+			motorWheels.setSpeed((float)speed/WHEELGEARRATIO);
 		}
 		else{
 			throw new IndexOutOfBoundsException();
@@ -117,6 +114,6 @@ public class WheelsModule {
 		motorWheels.resetTachoCount();
 		
 		LCD.clear();;
-		LCD.drawString("Calibration successful!", 0, 1);
+		LCD.drawString("Wheel calibration successful!", 0, 1);
 	}
 }
