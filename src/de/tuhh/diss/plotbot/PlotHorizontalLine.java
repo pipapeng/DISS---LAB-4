@@ -6,7 +6,7 @@ import de.tuhh.diss.robot.RobotInterface;
 
 public class PlotHorizontalLine extends PlotLine{
 
-	public PlotHorizontalLine(RobotInterface robot,int xStart, int yStart, int length) throws MotorException{
+	public PlotHorizontalLine(RobotInterface robot,double xStart, double yStart, double length) throws MotorException{
 		super(robot, xStart, yStart);
 		robot.setPen(true);
 		drawHorizontalLine(xStart,length);
