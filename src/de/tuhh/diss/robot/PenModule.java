@@ -54,17 +54,23 @@ public class PenModule {
 	}
 	
 	public void calibrateMotorPen(){
-		LCD.drawString("Calibrating pen ...", 0, 1); //TODO: Lennart findet drawString doof!
+		boolean moving = false;
+		LCD.drawString("Calibrating pen ...", 0, 0); //TODO: Lennart findet drawString doof!
 		motorPen.setSpeed(PENMAXSPEED/5);
-		motorPen.forward();
 		
 		while (!sensorPen.isPressed()){
+			if(moving == false){
+				motorPen.forward();
+				moving = true;
+			}
 		}
 		stopPen();
+		moving = false;
 		
 		motorPen.resetTachoCount();
 		penDown = false;
 		
 		motorPen.setSpeed(PENMAXSPEED/2);
+		LCD.drawString("Pen calibartion success", 0, 1);
 	}
 }
