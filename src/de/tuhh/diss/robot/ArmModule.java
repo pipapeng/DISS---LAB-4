@@ -16,7 +16,7 @@ public class ArmModule{
 	private final int ARMGEARRATIO = 85;
 	private static final int ARMLENGTH = 80;
 	private final int BEARINGPLAY = 6;	//half of the total bearing play. 		nomma MESSEN!!!
-	private final int ARMMINANGLE = 30; //TODO: Messen
+	private final int ARMMINANGLE = 50; //TODO: Messen
 	private final int REST = ARMMINANGLE - BEARINGPLAY;	//TODO: umbenennen
 	private final int ARMMAXANGLE = 180 - ARMMINANGLE; //TODO: bearingPlay
 	private final float ARMMAXSPEED;
