@@ -3,9 +3,13 @@ package de.tuhh.diss.plotbot;
 import lejos.nxt.Button;
 import lejos.nxt.ButtonListener;
 import lejos.nxt.LCD;
+import lejos.util.Delay;
 
 public class UserInterface implements ButtonListener{
 
+	private static final int REFRESHPERIOD = 250;
+	private static final int TIMEDELAY = 2000;
+	
 	private int curserPosition;
 	private int repeatsLeft;
 	private int repeatsRight;
@@ -16,12 +20,14 @@ public class UserInterface implements ButtonListener{
 	private boolean mainMenuActive;
 	private boolean sizeMenuActive;
 	
+	
 	public UserInterface(){
 		
 		LCD.drawString("Welcome to", 3, 1);
 		LCD.drawString("Plotbot!", 4, 2);
 		
 		LCD.drawString("Calibration...", 0, 4);
+		Delay.msDelay(TIMEDELAY);
 	}
 	
 	public int mainMenu() {
@@ -44,6 +50,8 @@ public class UserInterface implements ButtonListener{
 			Button.LEFT.addButtonListener(this);
 			Button.RIGHT.addButtonListener(this);
 			Button.ENTER.addButtonListener(this);
+			
+			Delay.msDelay(REFRESHPERIOD);
 		} while(mainMenuActive == true);
 	
 		return curserPosition;
@@ -82,6 +90,8 @@ public class UserInterface implements ButtonListener{
 			Button.RIGHT.addButtonListener(this);
 			Button.ESCAPE.addButtonListener(this);
 			//TODO: ESCAPE -> return to main menu
+			
+			Delay.msDelay(REFRESHPERIOD);
 		} while(sizeMenuActive == true);
 		
 		return size;
@@ -103,7 +113,8 @@ public class UserInterface implements ButtonListener{
 		
 		LCD.clear();
 		LCD.drawString("Plot complete!", 0, 3);
-		//TODO: time delay
+
+		Delay.msDelay(TIMEDELAY);
 	}
 	
 	public void stopedImmediatly(){
@@ -115,7 +126,7 @@ public class UserInterface implements ButtonListener{
 		LCD.drawString("Robot has", 0, 4);
 		LCD.drawString("been stopped!", 0, 5);
 		
-		//TODO: time delay
+		Delay.msDelay(TIMEDELAY);
 	}
 	
 	public void shutDown(){
@@ -123,7 +134,8 @@ public class UserInterface implements ButtonListener{
 		LCD.clear();
 		LCD.drawString("Shut down", 0, 2);
 		LCD.drawString("Bye Bye...", 0, 4);
-		Button.ESCAPE.waitForPressAndRelease();		//TODO: time delay
+		
+		Delay.msDelay(5 * TIMEDELAY);
 	}
 	
 	public void buttonPressed(Button b) {
