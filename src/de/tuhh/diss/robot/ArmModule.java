@@ -1,6 +1,7 @@
 package de.tuhh.diss.robot;
 
 import de.tuhh.diss.exceptions.OutOfWorkspaceException;
+import de.tuhh.diss.plotbot.UserInterface;
 import lejos.nxt.Button;
 import lejos.nxt.LCD;
 import lejos.nxt.Motor;
@@ -117,45 +118,45 @@ public class ArmModule{
 	}
 		
 	private void calibrateMotorArm() throws OutOfWorkspaceException{
-		boolean repeat = false;
+		boolean wantToRepeat = true;
+		double angleToMiddle;
+		
 		do{
-		LCD.clear();
-		LCD.drawString("Calibrating arm ...", 0, 0); //TODO: Lennart...
-		motorArm.setSpeed((int)(ARMMAXSPEED*.75));
-		motorArm.backward();
+			LCD.clear();
+			LCD.drawString("Calibrating arm ...", 0, 0); //TODO: Lennart...
 		
-		while (!sensorArm.isPressed()){
-		}
-		stopArm();
-		
-		motorArm.resetTachoCount();
-		armBehindMotor = false;
-		motorArm.rotateTo(100*ARMGEARRATIO,true);
-		LCD.drawString("Press Escape!", 0, 2);
-		Button.ESCAPE.waitForPressAndRelease();
-		stopArm();
-		
-		double angleDifference = motorArm.getPosition()/ARMGEARRATIO;
-		LCD.drawString("angleToMin: "+String.valueOf(angleDifference), 0, 1);
-		
-		
-		LCD.drawString("Arm OK?: NO", 0, 2);
-		LCD.drawString("Press Enter", 0, 3);
-		while (Button.ENTER.isDown() == false){
-			if(Button.RIGHT.isDown() || Button.LEFT.isDown()){
-				LCD.drawString("Arm OK?: YES", 0, 2);
-				repeat = true;
+			//move arm all the way to the right and reset motorAngle
+			motorArm.setSpeed((int)(ARMMAXSPEED*.75));
+			motorArm.backward();
+			while (!sensorArm.isPressed()){
 			}
-		}
+			stopArm();
+			motorArm.resetTachoCount();
+			armBehindMotor = false;
 		
-		armMaxAngle = (int) (90 + angleDifference);
-		armMinAngle = (int) (90 - angleDifference);
+			//move arm left needs to be stopped manually when in the middle
+			motorArm.rotateTo(100*ARMGEARRATIO,true);
+			LCD.drawString("Press Enter when ", 0, 2);
+			LCD.drawString("arm in middle!", 0, 3);
+			Button.ESCAPE.waitForPressAndRelease();
+			stopArm();
 		
+			//show the measured angle and ask if user wants to go again
+			angleToMiddle = motorArm.getPosition()/ARMGEARRATIO;
+			LCD.drawString("Angle: "+String.valueOf(angleToMiddle), 0, 1);
+			LCD.drawString("Try Again?", 0, 2);
+			LCD.drawString("Choice: ", 0, 3);
+			wantToRepeat = UserInterface.chooseYesNo(9, 3);
+		}while(wantToRepeat == true);
+		
+		armMaxAngle = (int) (90 + angleToMiddle);
+		armMinAngle = (int) (90 - angleToMiddle);
 		LCD.drawString("Min:"+String.valueOf(armMinAngle), 0, 4);
 		LCD.drawString("Max:"+String.valueOf(armMaxAngle), 0, 5);
-		
-		}while(repeat == false);
-		
 		LCD.drawString("Arm calibrated successfully!", 0, 1); //TODO: Lennart..
 	}
+	
+
+	
 }
+
