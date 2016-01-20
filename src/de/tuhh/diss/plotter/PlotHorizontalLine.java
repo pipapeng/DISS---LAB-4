@@ -2,7 +2,7 @@ package de.tuhh.diss.plotter;
 
 import de.tuhh.diss.exceptions.MotorException;
 import de.tuhh.diss.exceptions.OutOfWorkspaceException;
-import de.tuhh.diss.plotbot.CoordTrans;
+import de.tuhh.diss.robot.CoordTrans;
 import de.tuhh.diss.robot.RobotInterface;
 
 public class PlotHorizontalLine extends PlotLine{

@@ -1,20 +1,19 @@
 package de.tuhh.diss.plotbot;
 
-
-import de.tuhh.diss.exceptions.MotorException;
-import de.tuhh.diss.robot.*;
+import de.tuhh.diss.robot.PhysicalRobot;
 import lejos.nxt.Button;
 import lejos.nxt.LCD;
 
 public class Testbot {
-	public static void main(String[] args)
-	{
+	
+	Testbot(){		// hier ist n arsch voll platz fuer testkram (einfach in main "Testbot" statt "Plotbot" aufrufen)
+		
 		LCD.drawString("Hello", 0, 0);
 		
 
-		RobotInterface robot = new PhysicalRobot();
+		new PhysicalRobot();
 
 
-		//Button.ESCAPE.waitForPressAndRelease();
+		Button.ESCAPE.waitForPressAndRelease();
 	}
 }

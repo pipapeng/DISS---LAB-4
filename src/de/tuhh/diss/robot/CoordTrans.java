@@ -1,4 +1,4 @@
-package de.tuhh.diss.plotbot;
+package de.tuhh.diss.robot;
 
 import de.tuhh.diss.exceptions.OutOfWorkspaceException;
 
