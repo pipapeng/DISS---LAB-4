@@ -19,6 +19,7 @@ public class UserInterface implements ButtonListener{
 	
 	private boolean mainMenuActive;
 	private boolean sizeMenuActive;
+	private boolean sizeMenuInterruption;
 	
 	
 	public UserInterface(){
@@ -70,6 +71,7 @@ public class UserInterface implements ButtonListener{
 		}
 		
 		sizeMenuActive = true;
+		sizeMenuInterruption = false;
 		
 		LCD.clear();
 		LCD.drawString("** Size menu **", 0, 0);
@@ -85,16 +87,21 @@ public class UserInterface implements ButtonListener{
 			LCD.clear(5);
 			LCD.drawString(Integer.toString(size), 7, 5);
 			
-			// nochmal oder reicht das einmal?
+			//TODO: nochmal oder reicht das einmal?
 			Button.LEFT.addButtonListener(this);
 			Button.RIGHT.addButtonListener(this);
+			Button.ENTER.addButtonListener(this);
 			Button.ESCAPE.addButtonListener(this);
-			//TODO: ESCAPE -> return to main menu
 			
 			Delay.msDelay(REFRESHPERIOD);
 		} while(sizeMenuActive == true);
 		
-		return size;
+		if(sizeMenuInterruption == false){
+			return size;
+		}
+		else{
+			return -1;
+		}
 	}
 	
 	public void plotInProgress(){
@@ -184,8 +191,8 @@ public class UserInterface implements ButtonListener{
 			
 			if(sizeMenuActive == true){
 				
+				sizeMenuInterruption = true;
 				sizeMenuActive = false;
-				//TODO; raus aus size und mainMenu() aufrufen
 			}
 		}
 	}

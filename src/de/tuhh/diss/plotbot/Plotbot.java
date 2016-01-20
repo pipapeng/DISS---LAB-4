@@ -34,16 +34,22 @@ public class Plotbot implements ButtonListener{
 			case 1:
 				
 				size = userInterface.sizeMenu(plotter.getMinSizeRectangle(), plotter.getMaxSizeRectangle());
-				userInterface.plotInProgress();
-				plotter.plotRectangle(size);
-				userInterface.plotComplete();
+				
+				if(size != -1){
+					userInterface.plotInProgress();
+					plotter.plotRectangle(size);
+					userInterface.plotComplete();
+				}
 				
 			case 2:
 				
 				size = userInterface.sizeMenu(plotter.getMinSizeString(), plotter.getMaxSizeString());
-				userInterface.plotInProgress();
-				plotter.plotString(size);
-				userInterface.plotComplete();
+				
+				if(size != -1){
+					userInterface.plotInProgress();
+					plotter.plotString(size);
+					userInterface.plotComplete();
+				}
 				
 			default:
 				choice = 0;		//keine Ahnung was sonst
