@@ -52,10 +52,6 @@ public class Plotbot implements ButtonListener{
 		
 		plotter.shutDown();
 		userInterface.shutDown();
-		
-		//TODO: time delay
-
-		Button.ESCAPE.waitForPressAndRelease();
 	}
 
 	public void buttonPressed(Button b) {
