@@ -147,10 +147,6 @@ public class UserInterface implements ButtonListener{
 	
 	public void buttonPressed(Button b) {
 		
-	}
-
-	public void buttonReleased(Button b) {
-
 		if(b.getId() == Button.ID_RIGHT){
 			
 			if(mainMenuActive == true){
@@ -195,6 +191,11 @@ public class UserInterface implements ButtonListener{
 				sizeMenuActive = false;
 			}
 		}
+	}
+
+	public void buttonReleased(Button b) {
+
+		
 	}
 	
 	private void incrementCurserPosition(){
