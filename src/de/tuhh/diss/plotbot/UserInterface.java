@@ -254,4 +254,40 @@ public class UserInterface implements ButtonListener{
 			size = minSize;
 		}
 	}
+	
+	/**
+	 * Lets the user choose between "Yes" and "No" on a certain position of the screen
+	 * 
+	 * @param screenColumn 	Column on screen where Yes/No will be placed
+	 * @param screenRow		Row on screen where Yes/No will be placed
+	 * @return true when selection is "Yes" and false when selection is "No"
+	 */
+	public static boolean chooseYesNo(int screenColumn, int screenRow){
+		String selection = "No";
+		LCD.drawString(selection, screenColumn, screenRow);
+		
+		while (!Button.ENTER.isDown()){
+			if(Button.RIGHT.isDown() || Button.LEFT.isDown()){
+				if(Button.RIGHT.isUp() && Button.LEFT.isUp())
+				switch (selection){
+					case("No"):	
+						selection = "Yes";
+						LCD.drawString("Choice: Yes", screenColumn, screenRow);
+						break;
+				
+					case("Yes"):
+						selection = "No";
+						LCD.drawString("Choice: No", screenColumn, screenRow);
+						break;
+				}
+			}
+		}
+		
+		if(selection == "Yes"){
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
 }
