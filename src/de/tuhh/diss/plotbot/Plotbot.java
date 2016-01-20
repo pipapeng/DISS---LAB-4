@@ -26,36 +26,45 @@ public class Plotbot implements ButtonListener{
 		do{
 			Button.ESCAPE.addButtonListener(this);
 			choice = userInterface.mainMenu();
-			int size = 0;
+			int size = -1;
 			
 			switch(choice){
-			
 			
 			case 1:
 				
 				size = userInterface.sizeMenu(plotter.getMinSizeRectangle(), plotter.getMaxSizeRectangle());
-				userInterface.plotInProgress();
-				plotter.plotRectangle(size);
-				userInterface.plotComplete();
+				
+				if(size != -1){
+					userInterface.plotInProgress();
+					plotter.plotRectangle(size);
+					userInterface.plotComplete();
+				}
+				break;
 				
 			case 2:
 				
 				size = userInterface.sizeMenu(plotter.getMinSizeString(), plotter.getMaxSizeString());
-				userInterface.plotInProgress();
-				plotter.plotString(size);
-				userInterface.plotComplete();
+				
+				if(size != -1){
+					userInterface.plotInProgress();
+					plotter.plotString(size);
+					userInterface.plotComplete();
+				}
+				break;
+				
+			case 3:
+				
+				break;
 				
 			default:
-				choice = 0;		//keine Ahnung was sonst
+				
+				choice = 3;
+				break;
 			}
-		}while(choice != 0);
+		}while(choice != 3);
 		
 		plotter.shutDown();
 		userInterface.shutDown();
-		
-		//TODO: time delay
-
-		Button.ESCAPE.waitForPressAndRelease();
 	}
 
 	public void buttonPressed(Button b) {

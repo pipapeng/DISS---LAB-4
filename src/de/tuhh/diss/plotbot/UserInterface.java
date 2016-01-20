@@ -3,9 +3,13 @@ package de.tuhh.diss.plotbot;
 import lejos.nxt.Button;
 import lejos.nxt.ButtonListener;
 import lejos.nxt.LCD;
+import lejos.util.Delay;
 
 public class UserInterface implements ButtonListener{
 
+	private static final int REFRESHPERIOD = 250;
+	private static final int TIMEDELAY = 2000;
+	
 	private int curserPosition;
 	private int repeatsLeft;
 	private int repeatsRight;
@@ -13,72 +17,62 @@ public class UserInterface implements ButtonListener{
 	private int maxSize;
 	private int size;
 	
-	private boolean mainMenu;
-	private boolean sizeMenu;
+	private boolean mainMenuActive;
+	private boolean sizeMenuActive;
+	private boolean sizeMenuInterruption;
+	
 	
 	public UserInterface(){
-		
-		curserPosition = 1;
-		repeatsLeft = 0;
-		repeatsRight = 0;
 		
 		LCD.drawString("Welcome to", 3, 1);
 		LCD.drawString("Plotbot!", 4, 2);
 		
 		LCD.drawString("Calibration...", 0, 4);
+		Delay.msDelay(TIMEDELAY);
 	}
 	
 	public int mainMenu() {
 		
-		mainMenu = true;
+		mainMenuStart();
 		
-		LCD.clear();
-		LCD.drawString("** Main menu **", 0, 0);
-		LCD.drawString("Select shape!", 0, 2);
-		
-		LCD.drawString("Rectangle", 3, 4);
-		LCD.drawString("String", 3, 5);
-		LCD.drawString("Quit Program", 3, 6);
-		
-		LCD.drawString("X", 0, curserPosition + 3);
-		
-		Button.LEFT.addButtonListener(this);
-		Button.RIGHT.addButtonListener(this);
-		
-		
-		Button.ENTER.waitForPressAndRelease();
-		mainMenu = false;
+		do{
+			LCD.clear(0, curserPosition + 2, 1);
+			LCD.drawString("X", 0, curserPosition + 3);
+			
+			Button.LEFT.addButtonListener(this);
+			Button.RIGHT.addButtonListener(this);
+			Button.ENTER.addButtonListener(this);
+			
+			Delay.msDelay(REFRESHPERIOD);
+		} while(mainMenuActive == true);
+	
 		return curserPosition;
 	}
 	
 	public int sizeMenu(int minSize, int maxSize){
 		
-		this.minSize = minSize;
-		this.maxSize = maxSize;
+		sizeMenuStart(minSize, maxSize);
 		
-		if(sizeMenu == false){
-			size = (int) ((minSize + maxSize) / 20) * 10;
+		do{
+			LCD.clear(6, 5, 11);
+			LCD.drawString(Integer.toString(size), 6, 5);
+			
+			//TODO: nochmal oder reicht das einmal?
+			//TODO: evtl. aus dem Loop holen
+			Button.LEFT.addButtonListener(this);
+			Button.RIGHT.addButtonListener(this);
+			Button.ENTER.addButtonListener(this);
+			Button.ESCAPE.addButtonListener(this);
+			
+			Delay.msDelay(REFRESHPERIOD);
+		} while(sizeMenuActive == true);
+		
+		if(sizeMenuInterruption == false){
+			return size;
 		}
-		
-		sizeMenu = true;
-		
-		LCD.clear();
-		LCD.drawString("** Size menu **", 0, 0);
-		LCD.drawString("Max Size:", 0, 2);
-		LCD.drawString(Integer.toString(maxSize), 0, 3);
-		
-		LCD.drawString("Size:", 0, 5);
-		LCD.drawString(Integer.toString(size), 7, 5);
-		
-		// nochmal oder reicht das einmal?
-		Button.LEFT.addButtonListener(this);
-		Button.RIGHT.addButtonListener(this);
-		Button.ESCAPE.addButtonListener(this);
-		//TODO: ESCAPE -> return to main menu
-		
-		Button.ENTER.waitForPressAndRelease();
-		sizeMenu = false;
-		return size;
+		else{
+			return -1;
+		}
 	}
 	
 	public void plotInProgress(){
@@ -97,7 +91,8 @@ public class UserInterface implements ButtonListener{
 		
 		LCD.clear();
 		LCD.drawString("Plot complete!", 0, 3);
-		//TODO: time delay
+
+		Delay.msDelay(TIMEDELAY);
 	}
 	
 	public void stopedImmediatly(){
@@ -109,7 +104,7 @@ public class UserInterface implements ButtonListener{
 		LCD.drawString("Robot has", 0, 4);
 		LCD.drawString("been stopped!", 0, 5);
 		
-		//TODO: time delay
+		Delay.msDelay(TIMEDELAY);
 	}
 	
 	public void shutDown(){
@@ -117,49 +112,101 @@ public class UserInterface implements ButtonListener{
 		LCD.clear();
 		LCD.drawString("Shut down", 0, 2);
 		LCD.drawString("Bye Bye...", 0, 4);
-		Button.ESCAPE.waitForPressAndRelease();		//TODO: time delay
+		
+		Delay.msDelay(5 * TIMEDELAY);
 	}
 	
 	public void buttonPressed(Button b) {
 		
-	}
-
-	public void buttonReleased(Button b) {
-
 		if(b.getId() == Button.ID_RIGHT){
 			
-			if(mainMenu == true){
+			if(mainMenuActive == true){
 				
 				incrementCurserPosition();
 			}
-			if(sizeMenu == true){
+			if(sizeMenuActive == true){
 				
 				incrementSize();
-				sizeMenu(minSize, maxSize);
 			}
 		}
 		
 		if(b.getId() == Button.ID_LEFT){
 			
-			if(mainMenu == true){
+			if(mainMenuActive == true){
 				
 				decrementCurserPosition();
 			}
-			if(sizeMenu == true){
+			if(sizeMenuActive == true){
 				
 				decrementSize();
-				sizeMenu(minSize, maxSize);
+			}
+		}
+		
+		if(b.getId() == Button.ID_ENTER){
+		
+			if(mainMenuActive == true){
+				
+				mainMenuActive = false;
+			}
+			if(sizeMenuActive == true){
+				
+				sizeMenuActive = false;
 			}
 		}
 		
 		if(b.getId() == Button.ID_ESCAPE){
 			
-			if(sizeMenu == true){
+			if(sizeMenuActive == true){
 				
-				sizeMenu = false;
-				// raus aus size und mainMenu() aufrufen
+				sizeMenuInterruption = true;
+				sizeMenuActive = false;
 			}
 		}
+	}
+
+	public void buttonReleased(Button b) {
+
+		
+	}
+	
+	private void mainMenuStart(){
+		
+		mainMenuActive = true;
+		curserPosition = 1;
+		
+		LCD.clear();
+		LCD.drawString("** Main menu **", 0, 0);
+		LCD.drawString("Select shape!", 0, 2);
+		
+		LCD.drawString("Rectangle", 3, 4);
+		LCD.drawString("String", 3, 5);
+		LCD.drawString("Quit Program", 3, 6);
+	}
+	
+	private void sizeMenuStart(int minSize, int maxSize){
+		
+		repeatsLeft = 0;
+		repeatsRight = 0;
+		
+		this.minSize = minSize;
+		this.maxSize = maxSize;
+		
+		if(sizeMenuActive == false){
+			size = (int) ((minSize + maxSize) / 20) * 10;
+		}
+		
+		sizeMenuActive = true;
+		sizeMenuInterruption = false;
+		
+		LCD.clear();
+		LCD.drawString("** Size menu **", 0, 0);
+		
+		LCD.drawString("Min Size:", 0, 2);
+		LCD.drawString(Integer.toString(minSize), 10, 2);
+		LCD.drawString("Max Size:", 0, 3);
+		LCD.drawString(Integer.toString(maxSize), 10, 3);
+		
+		LCD.drawString("Size:", 0, 5);
 	}
 	
 	private void incrementCurserPosition(){
