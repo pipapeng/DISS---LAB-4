@@ -33,16 +33,7 @@ public class UserInterface implements ButtonListener{
 	
 	public int mainMenu() {
 		
-		mainMenuActive = true;
-		curserPosition = 1;
-		
-		LCD.clear();
-		LCD.drawString("** Main menu **", 0, 0);
-		LCD.drawString("Select shape!", 0, 2);
-		
-		LCD.drawString("Rectangle", 3, 4);
-		LCD.drawString("String", 3, 5);
-		LCD.drawString("Quit Program", 3, 6);
+		mainMenuStart();
 		
 		do{
 			LCD.clear(0, curserPosition + 2, 1);
@@ -60,34 +51,14 @@ public class UserInterface implements ButtonListener{
 	
 	public int sizeMenu(int minSize, int maxSize){
 		
-		repeatsLeft = 0;
-		repeatsRight = 0;
-		
-		this.minSize = minSize;
-		this.maxSize = maxSize;
-		
-		if(sizeMenuActive == false){
-			size = (int) ((minSize + maxSize) / 20) * 10;
-		}
-		
-		sizeMenuActive = true;
-		sizeMenuInterruption = false;
-		
-		LCD.clear();
-		LCD.drawString("** Size menu **", 0, 0);
-		
-		LCD.drawString("Min Size:", 0, 2);
-		LCD.drawString(Integer.toString(minSize), 10, 2);
-		LCD.drawString("Max Size:", 0, 3);
-		LCD.drawString(Integer.toString(maxSize), 10, 3);
-		
-		LCD.drawString("Size:", 0, 5);
+		sizeMenuStart(minSize, maxSize);
 		
 		do{
-			LCD.clear(5);
-			LCD.drawString(Integer.toString(size), 7, 5);
+			LCD.clear(6, 5, 11);
+			LCD.drawString(Integer.toString(size), 6, 5);
 			
 			//TODO: nochmal oder reicht das einmal?
+			//TODO: evtl. aus dem Loop holen
 			Button.LEFT.addButtonListener(this);
 			Button.RIGHT.addButtonListener(this);
 			Button.ENTER.addButtonListener(this);
@@ -196,6 +167,46 @@ public class UserInterface implements ButtonListener{
 	public void buttonReleased(Button b) {
 
 		
+	}
+	
+	private void mainMenuStart(){
+		
+		mainMenuActive = true;
+		curserPosition = 1;
+		
+		LCD.clear();
+		LCD.drawString("** Main menu **", 0, 0);
+		LCD.drawString("Select shape!", 0, 2);
+		
+		LCD.drawString("Rectangle", 3, 4);
+		LCD.drawString("String", 3, 5);
+		LCD.drawString("Quit Program", 3, 6);
+	}
+	
+	private void sizeMenuStart(int minSize, int maxSize){
+		
+		repeatsLeft = 0;
+		repeatsRight = 0;
+		
+		this.minSize = minSize;
+		this.maxSize = maxSize;
+		
+		if(sizeMenuActive == false){
+			size = (int) ((minSize + maxSize) / 20) * 10;
+		}
+		
+		sizeMenuActive = true;
+		sizeMenuInterruption = false;
+		
+		LCD.clear();
+		LCD.drawString("** Size menu **", 0, 0);
+		
+		LCD.drawString("Min Size:", 0, 2);
+		LCD.drawString(Integer.toString(minSize), 10, 2);
+		LCD.drawString("Max Size:", 0, 3);
+		LCD.drawString(Integer.toString(maxSize), 10, 3);
+		
+		LCD.drawString("Size:", 0, 5);
 	}
 	
 	private void incrementCurserPosition(){
