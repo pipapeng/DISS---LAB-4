@@ -150,14 +150,14 @@ public class UserInterface implements ButtonListener{
 		
 		if(b.getId() == Button.ID_ESCAPE){
 			
-			while(!Button.ESCAPE.isUp()){
-				
-			}
-			
 			if(sizeMenuActive == true){
 				
 				sizeMenuInterruption = true;
 				sizeMenuActive = false;
+			}
+			
+			while(!Button.ESCAPE.isUp()){
+				
 			}
 		}
 	}
