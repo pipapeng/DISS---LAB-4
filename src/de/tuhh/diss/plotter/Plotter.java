@@ -9,25 +9,25 @@ public class Plotter implements PlotterInterface{
 	@Override
 	public int getMinSizeRectangle() {
 		// TODO Auto-generated method stub
-		return 0;
+		return 10;
 	}
 
 	@Override
 	public int getMaxSizeRectangle() {
 		// TODO Auto-generated method stub
-		return 0;
+		return 200;
 	}
 
 	@Override
 	public int getMinSizeString() {
 		// TODO Auto-generated method stub
-		return 0;
+		return 20;
 	}
 
 	@Override
 	public int getMaxSizeString() {
 		// TODO Auto-generated method stub
-		return 0;
+		return 150;
 	}
 	
 	@Override

@@ -4,6 +4,7 @@ import de.tuhh.diss.plotter.Plotter;
 import de.tuhh.diss.plotter.PlotterInterface;
 import lejos.nxt.Button;
 import lejos.nxt.ButtonListener;
+import lejos.util.Delay;
 
 public class Plotbot implements ButtonListener{
 	
@@ -23,8 +24,9 @@ public class Plotbot implements ButtonListener{
 		userInterface = new UserInterface();
 		plotter = new Plotter();
 		
+		Button.ESCAPE.addButtonListener(this);
+		
 		do{
-			Button.ESCAPE.addButtonListener(this);
 			choice = userInterface.mainMenu();
 			int size = -1;
 			
@@ -36,6 +38,7 @@ public class Plotbot implements ButtonListener{
 				
 				if(size != -1){
 					userInterface.plotInProgress();
+					Delay.msDelay(3000);	//TODO: entfernen
 					plotter.plotRectangle(size);
 					userInterface.plotComplete();
 				}
@@ -69,10 +72,12 @@ public class Plotbot implements ButtonListener{
 
 	public void buttonPressed(Button b) {
 
-		plotter.stopImmediatly();
-		userInterface.stopedImmediatly();
-		
-		//TODO: jump zu caseende
+		if(userInterface.mainMenuActive == false && userInterface.sizeMenuActive == false){
+			plotter.stopImmediatly();
+			userInterface.stopedImmediatly();
+			//TODO: jump zu caseende
+		}
+
 	}
 
 	public void buttonReleased(Button b) {
