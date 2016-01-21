@@ -17,12 +17,17 @@ public class UserInterface implements ButtonListener{
 	private int maxSize;
 	private int size;
 	
-	private boolean mainMenuActive;
-	private boolean sizeMenuActive;
+	public boolean mainMenuActive;			//TODO: methode
+	public boolean sizeMenuActive;			//TODO: methode
 	private boolean sizeMenuInterruption;
 	
 	
 	public UserInterface(){
+		
+		Button.LEFT.addButtonListener(this);
+		Button.RIGHT.addButtonListener(this);
+		Button.ENTER.addButtonListener(this);
+		Button.ESCAPE.addButtonListener(this);
 		
 		LCD.drawString("Welcome to", 3, 1);
 		LCD.drawString("Plotbot!", 4, 2);
@@ -36,12 +41,10 @@ public class UserInterface implements ButtonListener{
 		mainMenuStart();
 		
 		do{
-			LCD.clear(0, curserPosition + 2, 1);
-			LCD.drawString("X", 0, curserPosition + 3);
-			
-			Button.LEFT.addButtonListener(this);
-			Button.RIGHT.addButtonListener(this);
-			Button.ENTER.addButtonListener(this);
+			for(int i = 4; i <= 6; i++){
+				LCD.clear(1, i, 1);
+			}
+			LCD.drawString("X", 1, curserPosition + 3);
 			
 			Delay.msDelay(REFRESHPERIOD);
 		} while(mainMenuActive == true);
@@ -51,19 +54,12 @@ public class UserInterface implements ButtonListener{
 	
 	public int sizeMenu(int minSize, int maxSize){
 		
-		sizeMenuStart(minSize, maxSize);
+		sizeMenuStart(minSize, maxSize);				
 		
 		do{
 			LCD.clear(6, 5, 11);
 			LCD.drawString(Integer.toString(size), 6, 5);
-			
-			//TODO: nochmal oder reicht das einmal?
-			//TODO: evtl. aus dem Loop holen
-			Button.LEFT.addButtonListener(this);
-			Button.RIGHT.addButtonListener(this);
-			Button.ENTER.addButtonListener(this);
-			Button.ESCAPE.addButtonListener(this);
-			
+		
 			Delay.msDelay(REFRESHPERIOD);
 		} while(sizeMenuActive == true);
 		
@@ -77,14 +73,12 @@ public class UserInterface implements ButtonListener{
 	
 	public void plotInProgress(){
 		
-		Button.ESCAPE.addButtonListener(this);
-		
 		LCD.clear();
 		LCD.drawString("Plot in progress", 0, 1);
 		LCD.drawString("...", 0, 2);
 		
-		LCD.drawString("Press Escape", 0, 4);
-		LCD.drawString("to stop", 0, 5);
+		LCD.drawString("Press Escape", 0, 5);
+		LCD.drawString("to stop", 0, 6);
 	}
 	
 	public void plotComplete(){
@@ -113,7 +107,7 @@ public class UserInterface implements ButtonListener{
 		LCD.drawString("Shut down", 0, 2);
 		LCD.drawString("Bye Bye...", 0, 4);
 		
-		Delay.msDelay(5 * TIMEDELAY);
+		Delay.msDelay(TIMEDELAY);
 	}
 	
 	public void buttonPressed(Button b) {
@@ -160,6 +154,10 @@ public class UserInterface implements ButtonListener{
 				
 				sizeMenuInterruption = true;
 				sizeMenuActive = false;
+			}
+			
+			while(!Button.ESCAPE.isUp()){
+				
 			}
 		}
 	}
@@ -227,9 +225,9 @@ public class UserInterface implements ButtonListener{
 	
 	private void incrementSize(){
 		
-		repeatsRight = 0;
-		repeatsLeft++;
-		if(repeatsLeft > 10){
+		repeatsLeft = 0;
+		repeatsRight++;
+		if(repeatsRight <= 10){
 			size++;
 		}
 		else{
@@ -242,13 +240,13 @@ public class UserInterface implements ButtonListener{
 	
 	private void decrementSize(){
 		
-		repeatsLeft = 0;
-		repeatsRight++;
-		if(repeatsRight > 10){
-			size++;
+		repeatsRight = 0;
+		repeatsLeft++;
+		if(repeatsLeft <= 10){
+			size--;
 		}
 		else{
-			size = size + 10;
+			size = size - 10;
 		}
 		if(size < minSize){
 			size = minSize;
@@ -263,27 +261,27 @@ public class UserInterface implements ButtonListener{
 	 * @return true when selection is "Yes" and false when selection is "No"
 	 */
 	public static boolean chooseYesNo(int screenColumn, int screenRow){
-		String selection = "No";
-		LCD.drawString(selection, screenColumn, screenRow);
+		int selection = 0;
+		LCD.drawString("No", screenColumn, screenRow);
 		
 		while (!Button.ENTER.isDown()){
 			if(Button.RIGHT.isDown() || Button.LEFT.isDown()){
 				if(Button.RIGHT.isUp() && Button.LEFT.isUp())
 				switch (selection){
-					case("No"):	
-						selection = "Yes";
+					case(0):	
+						selection = 1;
 						LCD.drawString("Choice: Yes", screenColumn, screenRow);
 						break;
 				
-					case("Yes"):
-						selection = "No";
+					case(1):
+						selection = 0;
 						LCD.drawString("Choice: No", screenColumn, screenRow);
 						break;
 				}
 			}
 		}
 		
-		if(selection == "Yes"){
+		if(selection == 1){
 			return true;
 		} else {
 			return false;
