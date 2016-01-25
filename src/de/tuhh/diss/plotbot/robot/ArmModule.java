@@ -63,7 +63,7 @@ public class ArmModule{
 	 * @return the actual arm angle, not the motor angle 
 	 */
 	public double getAngle(){
-			return motorArm.getPosition()/ARMGEARRATIO;
+			return motorArm.getPosition()/ARMGEARRATIO + armMinAngle;
 	}
 	
 	/** Sets the speed of the arm. Checks whether the desired speed is 
@@ -91,7 +91,7 @@ public class ArmModule{
 	 * @throws OutOfWorkspaceException thrown when the target is not inside workspace
 	 */
 	public void moveArmTo(double targetAngle) throws OutOfWorkspaceException{
-		double targetMotorAngle = targetAngle * ARMGEARRATIO;
+		double targetMotorAngle = (targetAngle-armMinAngle) * ARMGEARRATIO;
 		
 		if (targetAngle >= armMinAngle && targetAngle <= armMaxAngle){
 			motorArm.rotateTo((int) Math.round(targetMotorAngle));
@@ -109,7 +109,7 @@ public class ArmModule{
 	 * @throws OutOfWorkspaceException thrown when the target is not inside workspace
 	 */
 	public void moveArmTo(double targetAngle, boolean immediateReturn) throws OutOfWorkspaceException{
-		double targetMotorAngle = targetAngle * ARMGEARRATIO;
+		double targetMotorAngle = (targetAngle-armMinAngle) * ARMGEARRATIO;
 		
 		if (targetAngle >= armMinAngle && targetAngle <= armMaxAngle){
 			motorArm.rotateTo((int) Math.round(targetMotorAngle), immediateReturn);
@@ -158,7 +158,7 @@ public class ArmModule{
 			angleToMiddle = motorArm.getPosition()/ARMGEARRATIO;
 			LCD.drawString("Angle: " + String.valueOf(angleToMiddle), 0, 1);
 			LCD.drawString("Try Again?", 0, 2);
-			LCD.drawString("Choice: ", 0, 3);
+			LCD.drawString("Choice: ", 0, 3); //TODO: Fix ausgabe
 			wantToRepeat = UserInterface.chooseYesNo(9, 3);
 		}while(wantToRepeat == true);
 		LCD.clear();

@@ -92,23 +92,36 @@ public class PhysicalRobot implements RobotInterface{
 		int startAngle =(int) Math.round(CoordTrans.getAnglePen(getArmLength(), xStart));
 		int endAngle =(int) Math.round(CoordTrans.getAnglePen(getArmLength(), xTarget));
 		int angleDifference = endAngle - startAngle;
-		int angleStep = angleDifference / steps;		
-		int fromAngle = startAngle;
-		int toAngle = startAngle + angleStep;
-		double timePerStep = angleStep / getArmRotationSpeed();
+		double angleStep = angleDifference / steps;		
+		double fromAngle = startAngle;
+		double toAngle = startAngle + angleStep;
+		double timePerStep = Math.abs(angleStep / getArmRotationSpeed());
 		double yDevianceAngle;
 		double yDevianceStep = (yTarget - yStart) / steps; 
 		double yStep;
 		double necessaryWheelspeed;
+		double wheelAngle;
 		
-		for(int it = 0; it == steps; it++){
-			yDevianceAngle = CoordTrans.getYCenterToPen(getArmLength(), toAngle) - CoordTrans.getYCenterToPen(getArmLength(), fromAngle);
-			yStep = yDevianceAngle + yDevianceStep;
-			necessaryWheelspeed = yStep / timePerStep;
+		for(int it = 0; it < steps; it++){
+			//TODO: Fix this wenn winkel rechts von 90 dann falsches vorzeichen
+			yDevianceAngle = CoordTrans.getYCenterToPen(getArmLength(), fromAngle) - CoordTrans.getYCenterToPen(getArmLength(), toAngle);
 			
-			moveArmTo(toAngle);
-			setWheelSpeed((int) Math.round(necessaryWheelspeed));
-			moveWheels(Math.round(yStep));
+			
+			
+			
+			
+			yStep = yDevianceAngle + yDevianceStep;
+			
+			wheelAngle = Math.round((yStep*360/(56*Math.PI)));
+			//LCD.drawString("wheelA: " + String.valueOf(wheelAngle*84), 0, 4);
+			necessaryWheelspeed = wheelAngle / timePerStep;
+			LCD.drawString("motspd: " + String.valueOf(Math.round(necessaryWheelspeed)*84), 0, 4);
+			
+			moveArmTo(toAngle, true);
+			//setWheelSpeed((int) Math.round(necessaryWheelspeed));
+			LCD.drawString("yStep: " + String.valueOf(yStep), 0, 5);
+			
+			moveWheels(yStep);
 			waitForArm();
 			waitForWheels();
 			

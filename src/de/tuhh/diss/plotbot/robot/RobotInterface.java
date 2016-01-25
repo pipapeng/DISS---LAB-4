@@ -3,7 +3,7 @@ package de.tuhh.diss.plotbot.robot;
 import de.tuhh.diss.plotbot.exceptions.MotorException;
 import de.tuhh.diss.plotbot.exceptions.OutOfWorkspaceException;
 
-public interface RobotInterface { //TODO: Brauchen wir das Interface überhaupt ? 
+public interface RobotInterface { //TODO: Brauchen wir das Interface ueberhaupt ? 
 	
 	public boolean calibrateMotors();
 	public void stopAllMotors();

@@ -79,14 +79,10 @@ public class WheelsModule {
 	 * @param distance the distance to be driven
 	 * @throws OutOfWorkspaceException thrown if target is not inside workspace
 	 */
+	//TODO: nochmal anschaun
 	public void moveWheels(double distance) throws OutOfWorkspaceException{
-		double yCenterTarget = getYCenter() + distance;
-		double circumferenceWheel = Math.PI * WHEELDIAMETER; //circumference = 2 * pi * radius 
-		double revolutionsWheelsNeeded = distance/circumferenceWheel; 
-		double revolutionsMotorNeeded = revolutionsWheelsNeeded * WHEELGEARRATIO;
-		
-		if (yCenterTarget <= YCENTERMAX && yCenterTarget >= YCENTERMIN){
-			motorWheels.rotate((int)revolutionsMotorNeeded * 360);
+		if ((getYCenter() + distance) <= YCENTERMAX && (getYCenter() + distance) >= YCENTERMIN){
+			motorWheels.rotate((int) Math.round((distance*360*WHEELGEARRATIO/(WHEELDIAMETER*Math.PI))));
 		}
 		else
 			throw new OutOfWorkspaceException();
@@ -141,13 +137,14 @@ public class WheelsModule {
 		lightSensor.setLow(dark);
 		
 		//Move forward until sensor notices a change of FACTORLIGHT
-		motorWheels.resetTachoCount(); // avoids a possible our of bounds error
+		motorWheels.resetTachoCount(); // avoids a possible out of bounds error
 		motorWheels.setSpeed(WHEELMOTORMAXSPEED/5);
 		while (lightSensor.getNormalizedLightValue() <= (FACTORLIGHT * dark)){
 			motorWheels.forward();
 		}
 		motorWheels.stop();
 		lightSensor.setHigh(lightSensor.getNormalizedLightValue());
+		motorWheels.resetTachoCount(); 
 		
 		//Move forward so the pen is at y = 0
 		moveWheels(DISTANCETOLIGHTSENSOR - ArmModule.getArmLength());
