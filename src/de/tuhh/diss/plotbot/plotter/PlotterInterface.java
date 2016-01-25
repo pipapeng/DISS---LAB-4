@@ -1,4 +1,4 @@
-package de.tuhh.diss.plotter;
+package de.tuhh.diss.plotbot.plotter;
 
 public interface PlotterInterface {
 	

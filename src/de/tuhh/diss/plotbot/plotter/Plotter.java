@@ -1,9 +1,14 @@
-package de.tuhh.diss.plotter;
+package de.tuhh.diss.plotbot.plotter;
+
+import de.tuhh.diss.plotbot.robot.RobotInterface;
+
 
 public class Plotter implements PlotterInterface{
 
-	public Plotter(){
-		// Wuerde vorschlagen Robot hier in Plotter zu erzeugen (Lennart)
+	RobotInterface robot;
+	
+	public Plotter(RobotInterface robot){
+		this.robot = robot;
 	}
 
 	@Override

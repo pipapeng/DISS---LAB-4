@@ -1,9 +1,9 @@
-package de.tuhh.diss.plotter;
+package de.tuhh.diss.plotbot.plotter;
 
-import de.tuhh.diss.exceptions.MotorException;
-import de.tuhh.diss.exceptions.OutOfWorkspaceException;
-import de.tuhh.diss.robot.CoordTrans;
-import de.tuhh.diss.robot.RobotInterface;
+import de.tuhh.diss.plotbot.exceptions.MotorException;
+import de.tuhh.diss.plotbot.exceptions.OutOfWorkspaceException;
+import de.tuhh.diss.plotbot.robot.RobotInterface;
+import de.tuhh.diss.plotbot.utilities.CoordTrans;
 
 public class PlotHorizontalLine extends PlotLine{
 
@@ -55,34 +55,5 @@ public class PlotHorizontalLine extends PlotLine{
 //		robot.stopWheels();
 	}
 	
-	private void drawHorizontalLineAlternative(double xStart, double yStart, double length, int steps) throws OutOfWorkspaceException{
-		robot.setPen(false);
-		robot.movePenTo(xStart, yStart);
-		robot.waitForArm();
-		robot.setPen(true);
-		
-		double startAngle = CoordTrans.getAnglePen(robot.getArmLength(), xStart);
-		double endAngle = CoordTrans.getAnglePen(robot.getArmLength(), xStart + length);
-		double angleDifference = endAngle - startAngle;
-		double angleStep = angleDifference / steps;		
-		double fromAngle = startAngle;
-		double toAngle = fromAngle + angleStep;
-		double timePerStep = angleStep / robot.getArmRotationSpeed();
-		double yDeviance;
-		double necessaryWheelspeed;
-		
-		for(int it = 0; it == steps; it++){
-			yDeviance = CoordTrans.getYCenterToPen(robot.getArmLength(), toAngle) - CoordTrans.getYCenterToPen(robot.getArmLength(), fromAngle);
-			necessaryWheelspeed = yDeviance / timePerStep;
-			try{
-				robot.moveArmTo(toAngle);
-				robot.setWheelSpeed((int)necessaryWheelspeed);
-				robot.moveWheels(yDeviance);
-			} catch (MotorException e) {
-				e.printStackTrace();
-				System.out.print(e.getMessage());
-				break;
-			}	
-		}
-	}
+
 }

@@ -32,8 +32,20 @@ public class UserInterface implements ButtonListener{
 		LCD.drawString("Welcome to", 3, 1);
 		LCD.drawString("Plotbot!", 4, 2);
 		
-		LCD.drawString("Calibration...", 0, 4);
 		Delay.msDelay(TIMEDELAY);
+	}
+	
+	public void calibrationMenu(){
+		LCD.clear();
+		LCD.drawString("Robot needs to", 0, 0);
+		LCD.drawString("be calibrated.", 0, 1);
+		LCD.drawString("Press ENTER", 0, 3);
+		LCD.drawString("to start!", 0, 4);
+		
+		Button.ENTER.waitForPressAndRelease();
+		
+		LCD.clear();
+		LCD.drawString("Calibrating...", 1, 4);
 	}
 	
 	public int mainMenu() {
@@ -50,6 +62,20 @@ public class UserInterface implements ButtonListener{
 		} while(mainMenuActive == true);
 	
 		return curserPosition;
+	}
+	
+	private void mainMenuStart(){
+		
+		mainMenuActive = true;
+		curserPosition = 1;
+		
+		LCD.clear();
+		LCD.drawString("** Main menu **", 0, 0);
+		LCD.drawString("Select shape!", 0, 2);
+		
+		LCD.drawString("Rectangle", 3, 4);
+		LCD.drawString("String", 3, 5);
+		LCD.drawString("Quit Program", 3, 6);
 	}
 	
 	public int sizeMenu(int minSize, int maxSize){
@@ -104,7 +130,7 @@ public class UserInterface implements ButtonListener{
 	public void shutDown(){
 
 		LCD.clear();
-		LCD.drawString("Shut down", 0, 2);
+		LCD.drawString("Shutting down", 0, 2);
 		LCD.drawString("Bye Bye...", 0, 4);
 		
 		Delay.msDelay(TIMEDELAY);
@@ -165,20 +191,6 @@ public class UserInterface implements ButtonListener{
 	public void buttonReleased(Button b) {
 
 		
-	}
-	
-	private void mainMenuStart(){
-		
-		mainMenuActive = true;
-		curserPosition = 1;
-		
-		LCD.clear();
-		LCD.drawString("** Main menu **", 0, 0);
-		LCD.drawString("Select shape!", 0, 2);
-		
-		LCD.drawString("Rectangle", 3, 4);
-		LCD.drawString("String", 3, 5);
-		LCD.drawString("Quit Program", 3, 6);
 	}
 	
 	private void sizeMenuStart(int minSize, int maxSize){
