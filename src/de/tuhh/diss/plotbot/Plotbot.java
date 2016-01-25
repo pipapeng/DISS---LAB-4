@@ -18,7 +18,7 @@ public class Plotbot implements ButtonListener{
 	
 	
 	public static void main(String[] args){
-		new Plotbot();
+		new Testbot();
 	}
 	
 	public Plotbot(){

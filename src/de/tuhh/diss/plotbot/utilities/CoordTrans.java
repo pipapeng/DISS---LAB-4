@@ -4,7 +4,7 @@ import de.tuhh.diss.plotbot.exceptions.OutOfWorkspaceException;
 
 public class CoordTrans {
 
-	//TODO: aufräumen
+	//TODO: aufraeumen
 	
 //	static public double getXPositionPen(int armLength, double angle){
 //		return (armLength * Math.cos(Math.toRadians(angle)));

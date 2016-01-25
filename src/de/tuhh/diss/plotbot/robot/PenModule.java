@@ -13,7 +13,7 @@ public class PenModule {
 	///////////////////////////////////////////////////////
 	
 	private static final int PENANGLEUP = 0;
-	private static final int PENANGLEDOWN = -180;
+	private static final int PENANGLEDOWN = -380;
 	private final float PENMAXSPEED;
 	
 	private boolean penDown;

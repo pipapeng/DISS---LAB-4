@@ -11,7 +11,7 @@ public class PlotRectangle {
 	private static final double center = 1/2;
 	
 	public PlotRectangle(int size, boolean square) throws MotorException{
-	robot = new PhysicalRobot();	//TODO: Hier kann kein neuer robot erzeugt werden ! Muss übergeben werden
+	robot = new PhysicalRobot();	//TODO: Hier kann kein neuer robot erzeugt werden ! Muss uebergeben werden
 	int height, width;
 	if (square==true){
 	height = size;
