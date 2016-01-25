@@ -1,12 +1,14 @@
 package de.tuhh.diss.plotbot;
 
+import de.tuhh.diss.plotbot.exceptions.MotorException;
 import de.tuhh.diss.plotbot.plotter.Plotter;
 import de.tuhh.diss.plotbot.plotter.PlotterInterface;
 import de.tuhh.diss.plotbot.robot.PhysicalRobot;
 import de.tuhh.diss.plotbot.robot.RobotInterface;
 import lejos.nxt.Button;
 import lejos.nxt.ButtonListener;
-import lejos.util.Delay;
+import lejos.nxt.NXT;
+
 
 public class Plotbot implements ButtonListener{
 	private int choice;
@@ -18,19 +20,26 @@ public class Plotbot implements ButtonListener{
 	
 	
 	public static void main(String[] args){
-		new Testbot();
+		new Plotbot();
 	}
 	
 	public Plotbot(){
 		
-		robot = new PhysicalRobot();
-		userInterface = new UserInterface();
-		plotter = new Plotter(robot);
+		
+		try {
+			robot = new PhysicalRobot();
+			userInterface = new UserInterface();
+			plotter = new Plotter(robot);
+		} catch (MotorException e1) {
+
+			userInterface.motorException();
+			userInterface.shutDown();
+			NXT.shutDown();
+		}
 		
 		Button.ESCAPE.addButtonListener(this);
 		
-		userInterface.calibrationMenu();
-		calibrated = robot.calibrateMotors();
+		calibrate(false);
 		
 		if(calibrated == true){
 			do{
@@ -44,10 +53,17 @@ public class Plotbot implements ButtonListener{
 					size = userInterface.sizeMenu(plotter.getMinSizeRectangle(), plotter.getMaxSizeRectangle());
 					
 					if(size != -1){
-						userInterface.plotInProgress();
-						Delay.msDelay(3000);	//TODO: entfernen
-						plotter.plotRectangle(size);
-						userInterface.plotComplete();
+						
+						try {
+							userInterface.plotInProgress();
+							plotter.plotRectangle(size);
+							userInterface.plotComplete();
+						} catch (MotorException e) {
+							
+							userInterface.motorException();
+							calibrate(true);
+							break;
+						}
 					}
 					break;
 					
@@ -56,9 +72,17 @@ public class Plotbot implements ButtonListener{
 					size = userInterface.sizeMenu(plotter.getMinSizeString(), plotter.getMaxSizeString());
 					
 					if(size != -1){
-						userInterface.plotInProgress();
-						plotter.plotString(size);
-						userInterface.plotComplete();
+						
+						try {
+							userInterface.plotInProgress();
+							plotter.plotString(size);
+							userInterface.plotComplete();
+						} catch (MotorException e) {
+
+							userInterface.motorException();
+							calibrate(true);
+							break;
+						}
 					}
 					break;
 					
@@ -74,23 +98,27 @@ public class Plotbot implements ButtonListener{
 			}while(choice != 3);
 		}
 
-
-		plotter.shutDown();
 		userInterface.shutDown();
-		return;
+		NXT.shutDown();
 	}
 
 	public void buttonPressed(Button b) {
 
-		if(userInterface.mainMenuActive == false && userInterface.sizeMenuActive == false){
-			plotter.stopImmediatly();
+		if(userInterface.mainMenuActive == false && userInterface.sizeMenuActive == false){		//TODO: evtl. entfernen
+			plotter.stopImmediatly();															//TODO: evtl. entfernen
 			userInterface.stopedImmediatly();
-			//TODO: jump zu caseende
+			NXT.shutDown();
 		}
 
 	}
 
 	public void buttonReleased(Button b) {
 		
-	}	
+	}
+	
+	private void calibrate(boolean recalibration){
+		
+		userInterface.calibrationMenu(recalibration);
+		calibrated = robot.calibrateMotors();
+	}
 }
