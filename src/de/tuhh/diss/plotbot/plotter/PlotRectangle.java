@@ -5,48 +5,40 @@ import de.tuhh.diss.plotbot.robot.PhysicalRobot;
 import de.tuhh.diss.plotbot.robot.RobotInterface;
 
 public class PlotRectangle {
-	public static RobotInterface robot;
-	private static final double scale = 1/6;
-	private static final int start = 230;
-	private static final double center = 1/2;
+	private static final double SCALE = 1/6;
+	private static final int START = 230;
+	private static final double CENTER = 1/2;
+	private RobotInterface robot;
 	
-	public PlotRectangle(int size, boolean square) throws MotorException{
-	robot = new PhysicalRobot();	//TODO: Hier kann kein neuer robot erzeugt werden ! Muss uebergeben werden
-	int height, width;
-	if (square==true){
-	height = size;
-	width = size;
-	}else{
-	height = (int) ((10*scale)*size);
-	width = (int) ((26*scale)*size);
-	}	
-	draw(height, width);
+	
+	public PlotRectangle(RobotInterface robot) throws MotorException{
+		this.robot = robot;
 	}
 	
-	private void draw(int h, int w){
-	try {
-		new PlotVerticalLine(robot, (int) (-h*center), start, -w);
-	} catch (MotorException e) {
-		e.printStackTrace();
-	}
-	try {
-		new PlotHorizontalLine(robot, (int) (-h*center), start-w, h);
-	} catch (MotorException e) {
-		e.printStackTrace();
-	}
-	try {
-		new PlotVerticalLine(robot, (int) (h*center), start-w, w);
-	} catch (MotorException e) {
-		e.printStackTrace();
-	}
-	try {
-		new PlotHorizontalLine(robot, (int) (h*center), start, -h);
-	} catch (MotorException e) {
-		e.printStackTrace();
-	}
+	
+	public void drawRectangle(int size, boolean square){
+		int width, height;
+		
+		height = size;
+		
+		if (square){
+		width = size;
+		}else{
+		width = (int) (2.6*size);
+		}	
+		draw(width, height);
 	}
 	
-	public static RobotInterface getRobot(){
-		return robot;
+	
+	
+	private void draw(int height, int width){
+	try {
+		new PlotVerticalLine(robot, (int) (-height*CENTER), START, -width);
+		new PlotHorizontalLine(robot, (int) (-height*CENTER), START-width, height);
+		new PlotVerticalLine(robot, (int) (height*CENTER), START-width, width);
+		new PlotHorizontalLine(robot, (int) (height*CENTER), START, -height);
+	} catch (MotorException e) {
+		e.printStackTrace();
+	}
 	}
 }
