@@ -1,6 +1,6 @@
 package de.tuhh.diss.plotbot;
 
-import de.tuhh.diss.robot.PhysicalRobot;
+import de.tuhh.diss.plotbot.robot.PhysicalRobot;
 import lejos.nxt.Button;
 import lejos.nxt.LCD;
 

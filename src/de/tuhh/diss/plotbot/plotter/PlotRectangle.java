@@ -1,8 +1,8 @@
-package de.tuhh.diss.plotter;
+package de.tuhh.diss.plotbot.plotter;
 
-import de.tuhh.diss.exceptions.MotorException;
-import de.tuhh.diss.robot.PhysicalRobot;
-import de.tuhh.diss.robot.RobotInterface;
+import de.tuhh.diss.plotbot.exceptions.MotorException;
+import de.tuhh.diss.plotbot.robot.PhysicalRobot;
+import de.tuhh.diss.plotbot.robot.RobotInterface;
 
 public class PlotRectangle {
 	public static RobotInterface robot;
@@ -11,7 +11,7 @@ public class PlotRectangle {
 	private static final double center = 1/2;
 	
 	public PlotRectangle(int size, boolean square) throws MotorException{
-	robot = new PhysicalRobot();	
+	robot = new PhysicalRobot();	//TODO: Hier kann kein neuer robot erzeugt werden ! Muss übergeben werden
 	int height, width;
 	if (square==true){
 	height = size;

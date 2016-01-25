@@ -1,10 +1,9 @@
-package de.tuhh.diss.exceptions;
+package de.tuhh.diss.plotbot.exceptions;
 
 public class OutOfWorkspaceException extends Exception{
 
 	public String getMessage(){
-		
-		return ("Coordinates cannot be reached!");
+		return ("Out of Workspace!");
 	}
 	
 	public static long getSerialversionuid() {

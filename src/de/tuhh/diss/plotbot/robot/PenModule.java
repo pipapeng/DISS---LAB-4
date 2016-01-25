@@ -1,4 +1,4 @@
-package de.tuhh.diss.robot;
+package de.tuhh.diss.plotbot.robot;
 
 import lejos.nxt.LCD;
 import lejos.nxt.Motor;
@@ -29,9 +29,7 @@ public class PenModule {
 	public PenModule(){
 		motorPen = Motor.B;
 		PENMAXSPEED = motorPen.getMaxSpeed();
-		
 		sensorPen = new TouchSensor(SensorPort.S2);
-		calibrateMotorPen();
 	}
 	
 	public void setPen(boolean down){
@@ -54,23 +52,22 @@ public class PenModule {
 	}
 	
 	public void calibrateMotorPen(){
-		boolean moving = false;
-		LCD.drawString("Calibrating pen ...", 0, 0); //TODO: Lennart findet drawString doof!
+		LCD.clear();
+		LCD.drawString("Calibrating pen ...", 0, 0);
 		motorPen.setSpeed(PENMAXSPEED/5);
 		
 		while (!sensorPen.isPressed()){
-			if(moving == false){
+			if(motorPen.isMoving() == false){
 				motorPen.forward();
-				moving = true;
 			}
 		}
 		stopPen();
-		moving = false;
 		
 		motorPen.resetTachoCount();
 		penDown = false;
 		
 		motorPen.setSpeed(PENMAXSPEED/2);
-		LCD.drawString("Pen calibartion success", 0, 1);
+		LCD.drawString("Pen calibration", 0, 0);
+		LCD.drawString("successful!", 0, 1);
 	}
 }

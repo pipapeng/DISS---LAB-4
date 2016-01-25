@@ -1,7 +1,7 @@
-package de.tuhh.diss.plotter;
+package de.tuhh.diss.plotbot.plotter;
 
-import de.tuhh.diss.exceptions.MotorException;
-import de.tuhh.diss.robot.RobotInterface;
+import de.tuhh.diss.plotbot.exceptions.MotorException;
+import de.tuhh.diss.plotbot.robot.RobotInterface;
 
 public class PlotString {
 
