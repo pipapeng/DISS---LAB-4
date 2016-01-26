@@ -21,17 +21,24 @@ public class Testbot {
 		
 		try {
 			
-			robot.setPen(false);
 			robot.movePenTo(0, 50);
 			robot.setPen(true);
-			robot.movePenToInSteps(-50, 50, 5, 1);
-			robot.setPen(false);
-			robot.setPen(true);
-			robot.movePenTo(-50, 100);
-			robot.setPen(false);
-			robot.setPen(true);
-			robot.movePenToInSteps(0, 100, 5, 1);
-			robot.setPen(false);
+			robot.movePenTo( -50, 50, 5, 1);
+	
+			
+//			robot.movePenTo(0, 50);
+//			robot.setPen(true);
+//			robot.movePenToXInSteps(-50, 10);
+//			robot.setPen(false);
+//			robot.movePenTo(0, 50);
+//			robot.setPen(true);
+//			robot.movePenToXInSteps(50, 10);
+//			robot.setPen(false);
+//			robot.movePenTo(0, 100);
+//			robot.setPen(true);
+//			robot.movePenToInSteps(0, 100, 50, 100, 20);
+//			robot.setPen(false);
+//			robot.movePenTo(0, 50);
 			
 //			robot.waitForArm();
 //			robot.waitForWheels();

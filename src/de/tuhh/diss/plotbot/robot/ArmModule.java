@@ -24,8 +24,9 @@ public class ArmModule{
 	public static float ARMMOTORMAXSPEED;
 	public static float ARMMOTORMINSPEED = 0;
 	
-	private boolean anglesAreSet = false;
-	private int slackAngle = 750; //TODO: needs to be measured!!!
+	private boolean anglesAreSet = true;
+	private int slackAngle = 730; //TODO: needs to be measured!!!
+	private int motorAngleToMiddle = 4700;
 	private int angleToMiddle;
 	private int armMinAngle;
 	private int armMaxAngle; 
@@ -139,15 +140,16 @@ public class ArmModule{
 	/** Calibrates the arm motor and sets armMinAngle and armMaxAngle
 	 * 	arm needs to be stopped manually by the user when in the middle
 	 * 	which makes the calibration work for different robots
+	 * @throws OutOfWorkspaceException 
 	 */
 	//TODO: Calibrate slack and calibrate middle angle manually !
-	public void calibrateMotorArm(){
+	public void calibrateMotorArm() throws OutOfWorkspaceException{
 		
 		LCD.clear();
 		LCD.drawString("Calibrating arm ...", 0, 0);
 		
 		//move arm all the way to the right and reset motorAngle
-		setArmSpeed((ARMMOTORMAXSPEED*.5)/ARMGEARRATIO);
+		setArmSpeed((ARMMOTORMAXSPEED*.9)/ARMGEARRATIO);
 		motorArm.backward();
 		while (!sensorArm.isPressed()){
 		}
@@ -156,19 +158,29 @@ public class ArmModule{
 					
 		if(anglesAreSet == false){
 			calibrateMotorAngles();
+		} else {
+			angleToMiddle = motorAngleToMiddle/ARMGEARRATIO;
+			LCD.drawString("aToMid: " + angleToMiddle, 0, 7);
+			armMaxAngle = (90 + angleToMiddle);
+			armMinAngle = (90 - angleToMiddle);
+			motorArm.rotateTo(motorAngleToMiddle, false);
 		}
+		
+
 		
 		LCD.clear();
 		LCD.drawString("Min: " + String.valueOf(armMinAngle), 0, 4);
 		LCD.drawString("Max: " + String.valueOf(armMaxAngle), 0, 5);
 		LCD.drawString("Arm calibration", 0, 0);
 		LCD.drawString("successful!", 0, 1);
+		
+		setArmSpeed((ARMMOTORMAXSPEED*.9)/ARMGEARRATIO);
 		Delay.msDelay(2000);	
 	}	
 	
 	public void calibrateMotorAngles(){
 		
-		setArmSpeed((ARMMOTORMAXSPEED*.5)/ARMGEARRATIO);
+		setArmSpeed((ARMMOTORMAXSPEED*.6)/ARMGEARRATIO);
 		//move to mid
 		for(int i = 1 ; i < 8; i++){
 			LCD.clear(i);
@@ -197,6 +209,7 @@ public class ArmModule{
 		}
 		
 		Delay.msDelay(1000);
+		setArmSpeed((ARMMOTORMAXSPEED*.3)/ARMGEARRATIO);
 		
 		LCD.drawString("Move arm motor", 0, 2);
 		LCD.drawString("to the right", 0, 3);
@@ -219,12 +232,6 @@ public class ArmModule{
 		int slack = midAngleWithSlack - midAngleWithoutSlack;
 		motorArm.setSlackAngle(slack);
 
-		// was damit?
-		angleToMiddle = motorArm.getTachoCount()/ARMGEARRATIO;
-		LCD.drawString("aToMid: " + angleToMiddle, 0, 7);
-		Delay.msDelay(1000);
-		armMaxAngle = (90 + angleToMiddle);
-		armMinAngle = (90 - angleToMiddle);
 	}
 
 	

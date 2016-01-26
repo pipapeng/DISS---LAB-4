@@ -3,6 +3,7 @@ package de.tuhh.diss.plotbot.robot;
 import de.tuhh.diss.plotbot.exceptions.OutOfWorkspaceException;
 import de.tuhh.diss.plotbot.utilities.Calc;
 import lejos.nxt.LCD;
+import lejos.util.Delay;
 
 
 
@@ -72,6 +73,8 @@ public class PhysicalRobot implements RobotInterface{
 		moveArmTo((int)Calc.getAnglePen(getArmLength(), xTarget), true);
 		moveWheels(distanceToTravel);
 	}
+	
+	
 	/** Moves the pen to a certain target in steps
 	 *  by using small steps the pen will move in a straight line (in theory :P)
 	 *  
@@ -80,137 +83,42 @@ public class PhysicalRobot implements RobotInterface{
 	 * @param steps the amount of steps the movement shall be divided in
 	 * @throws OutOfWorkspaceException
 	 */
-	public void movePenToInSteps(int xTarget, int yTarget, int steps, int style) throws OutOfWorkspaceException{
-		double startAngle = ARM.getAngle();
-		double endAngle = Calc.getAnglePen(ArmModule.ARMLENGTH, xTarget);
-		double angleToTarget = endAngle - startAngle;
-		double angleStep = angleToTarget / steps;		
+	public void movePenToInSteps(int xStart, int yStart, int xTarget, int yTarget, int steps) throws OutOfWorkspaceException{
+		int startAngle =(int) Math.round(Calc.getAnglePen(getArmLength(), xStart));
+		int endAngle =(int) Math.round(Calc.getAnglePen(getArmLength(), xTarget));
+		int angleDifference = endAngle - startAngle;
+		double angleStep = angleDifference / steps;		
 		double fromAngle = startAngle;
 		double toAngle = startAngle + angleStep;
 		double timePerStep = Math.abs(angleStep / getArmRotationSpeed());
-		double yNow = WHEELS.getYCenter() + Calc.getYCenterToPen(ArmModule.ARMLENGTH, startAngle);
-		double yDevianceStep = (yTarget - yNow) / steps; 
 		double yDevianceAngle;
+		double yDevianceStep = (yTarget - yStart) / steps; 
 		double yStep;
 		double necessaryWheelspeed;
 		double wheelAngle;
 		
-		//int style     // 1: Aktualisiere alles jeden Schritt ueber den Motor,
-						//	  teile jeden Schritt die noch uebrigen Distanzen erneut auf 
-						//    (Wahrscheinlich werden die Schritte hier immer groesser)
-						//
-						// 2: Ermittelt am Ende die Abweichung vom Ziel und schlaegt Error oben drauf
-						//	  hoert erst auf wenn er am Ziel ist
-		switch (style){
-		case 1:
-			for(int it = 0; it < steps; it++){
-				//set up next distance in Y
-				yNow = WHEELS.getYCenter() + Calc.getYCenterToPen(ArmModule.ARMLENGTH, fromAngle);
-				LCD.drawString("yNow: " + String.valueOf(yNow), 0, 4);
-				//yDevianceStep = (yTarget - yNow) / (steps - it);
-				yDevianceAngle = Calc.getYCenterToPen(ArmModule.ARMLENGTH, fromAngle) - Calc.getYCenterToPen(getArmLength(), toAngle);
-				yStep = yDevianceAngle + yDevianceStep;
-				
-				//set up next wheel speed needed
-				wheelAngle = yStep * 360/(WheelsModule.WHEELDIAMETER * Math.PI);
-				necessaryWheelspeed = wheelAngle / timePerStep;
-				//setWheelSpeed(necessaryWheelspeed);
-				
-				//move arm and wheels
-				waitForArm();
-				waitForWheels();
-				moveArmTo(toAngle, true);
-				moveWheels(yStep, true);
-
-				//set up next angle
-				fromAngle = ARM.getAngle();
-				angleToTarget = endAngle - fromAngle;
-				angleStep = angleToTarget / (steps - it);
-				toAngle = fromAngle + angleStep;
-			} 
-			break;
-				
-		case 2:
-			//TODO: needs finishing
-			int currentX = (int) Math.round(Calc.getXPositionPen(ArmModule.ARMLENGTH, ARM.getAngle()));
-			int currentY = (int) Math.round(yNow);
-			double distanceToCoverX;
-			double distanceToCoverY;
-			double maxDistance;
-			double stepsNeeded;
-			while(Calc.targetReachedSufficently(currentX, currentY, xTarget, yTarget, 3) != true){
-				distanceToCoverX = xTarget - currentX;
-				distanceToCoverY = yTarget - currentY;
-				maxDistance = Math.max(distanceToCoverX, distanceToCoverY);
-				stepsNeeded = maxDistance / steps;
-				
-				//set up next distance in Y
-				
-				yDevianceAngle = Calc.getYCenterToPen(ArmModule.ARMLENGTH, fromAngle) - Calc.getYCenterToPen(getArmLength(), toAngle);
-				yStep = yDevianceAngle + yDevianceStep;
-				
-				//need to use default wheelspeed here
-				
-				//move arm and wheels
-				waitForArm();
-				waitForWheels();
-				moveArmTo(toAngle, true);
-				moveWheels(yStep, true);
-				
-				//set up next angle
-				fromAngle = ARM.getAngle();
-				angleToTarget = endAngle - fromAngle;
-				angleStep = angleToTarget / steps;
-				toAngle = fromAngle + angleStep;
-				
-				//calculate current coordinates
-				currentY = (int) Math.round((WHEELS.getYCenter() + Calc.getYCenterToPen(ArmModule.ARMLENGTH, fromAngle)));
-				currentX = (int) Math.round(Calc.getXPositionPen(ArmModule.ARMLENGTH, ARM.getAngle()));
-			} 
-			break;
+		for(int it = 0; it < steps; it++){
+			//TODO: Fix this wenn winkel rechts von 90 dann falsches vorzeichen
+			yDevianceAngle = Calc.getYCenterToPen(getArmLength(), fromAngle) - Calc.getYCenterToPen(getArmLength(), toAngle);
+			yStep = yDevianceAngle + yDevianceStep;
+			
+			wheelAngle = Math.round((yStep*360/(56*Math.PI)));
+			//LCD.drawString("wheelA: " + String.valueOf(wheelAngle*84), 0, 4);
+			necessaryWheelspeed = wheelAngle / timePerStep;
+			LCD.drawString("motspd: " + String.valueOf(Math.round(necessaryWheelspeed)*84), 0, 4);
+			
+			moveArmTo(toAngle, true);
+			//setWheelSpeed((int) Math.round(necessaryWheelspeed));
+			LCD.drawString("yStep: " + String.valueOf(yStep), 0, 5);
+			
+			moveWheels(yStep);
+			waitForArm();
+			waitForWheels();
+			
+			fromAngle = toAngle;
+			toAngle = toAngle + angleStep;
 		}
 	}
-	
-	
-	
-	public void movePenInXInSteps(int xTarget, int steps) throws OutOfWorkspaceException{
-		double startAngle;
-		double endAngle;
-		double angleToTarget;
-		double angleStep;
-		double toAngle;
-		double timePerStep;
-		double yDevianceAngle;
-		double necessaryWheelspeed;
-		double wheelAngle;
-	
-
-			for(int it = 1; it == steps; it++){
-				
-				startAngle = ARM.getAngle();
-				endAngle = Calc.getAnglePen(ArmModule.ARMLENGTH, xTarget);
-				angleToTarget = endAngle - startAngle;
-				angleStep = angleToTarget * (it/steps);		
-				toAngle = startAngle + angleStep;
-				timePerStep = Math.abs(angleStep / getArmRotationSpeed());
-				
-				
-				yDevianceAngle = Calc.getYCenterToPen(ArmModule.ARMLENGTH, startAngle) - Calc.getYCenterToPen(getArmLength(), toAngle);
-				
-				//set up next wheel speed needed
-				wheelAngle = yDevianceAngle * 360/(WheelsModule.WHEELDIAMETER * Math.PI);
-				necessaryWheelspeed = wheelAngle / timePerStep;
-				setWheelSpeed(necessaryWheelspeed);
-				
-				//move arm and wheels
-				waitForArm();
-				waitForWheels();
-				moveArmTo(toAngle, true);
-				moveWheels(yDevianceAngle, true);
-	
-		}
-	}
-
 	
 	
 	/////////////////
