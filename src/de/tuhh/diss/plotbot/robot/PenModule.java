@@ -12,9 +12,9 @@ public class PenModule {
 	//	VARIABLES
 	///////////////////////////////////////////////////////
 	
-	private static final int PENANGLEUP = 0;
-	private static final int PENANGLEDOWN = -380;
-	private final float PENMAXSPEED;
+	public static final int PENANGLEUP = 0;
+	public static final int PENANGLEDOWN = -380;
+	public final float PENMAXSPEED;
 	
 	private boolean penDown;
 

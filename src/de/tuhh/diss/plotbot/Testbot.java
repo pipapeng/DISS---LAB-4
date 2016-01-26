@@ -7,13 +7,15 @@ import lejos.nxt.Button;
 import lejos.nxt.LCD;
 
 public class Testbot {
+	RobotInterface robot;
+	
 	
 	Testbot(){		// hier ist n arsch voll platz fuer testkram (einfach in main "Testbot" statt "Plotbot" aufrufen)
 		
 		LCD.drawString("Hello", 0, 0);
 		
 
-		RobotInterface robot = new PhysicalRobot();
+		robot = robot.getPhysicalRobot();
 		robot.calibrateMotors();
 		
 		
@@ -22,14 +24,14 @@ public class Testbot {
 			
 			robot.movePenTo(0, 50);
 			robot.setPen(true);
-			robot.movePenToInSteps(0, 50, -50, 50, 5);
+			robot.movePenToInSteps(-50, 50, 5, 1);
 			robot.setPen(false);
 			robot.setPen(true);
 			robot.movePenTo(-50, 150);
 			
 			robot.setPen(false);
 			robot.setPen(true);
-			robot.movePenToInSteps(-50, 50, -50, 100, 20);
+			robot.movePenToInSteps(-50, 100, 20, 2);
 			robot.setPen(false);
 			
 //			robot.waitForArm();

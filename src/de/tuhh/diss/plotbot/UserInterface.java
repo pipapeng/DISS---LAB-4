@@ -297,12 +297,12 @@ public class UserInterface implements ButtonListener{
 				switch (selection){
 					case(0):	
 						selection = 1;
-						LCD.drawString("Choice: Yes", screenColumn, screenRow);
+						LCD.drawString("Yes", screenColumn, screenRow);
 						break;
 				
 					case(1):
 						selection = 0;
-						LCD.drawString("Choice: No", screenColumn, screenRow);
+						LCD.drawString("No", screenColumn, screenRow);
 						break;
 				}
 			}

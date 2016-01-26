@@ -3,7 +3,6 @@ package de.tuhh.diss.plotbot;
 import de.tuhh.diss.plotbot.exceptions.MotorException;
 import de.tuhh.diss.plotbot.plotter.Plotter;
 import de.tuhh.diss.plotbot.plotter.PlotterInterface;
-import de.tuhh.diss.plotbot.robot.PhysicalRobot;
 import de.tuhh.diss.plotbot.robot.RobotInterface;
 import lejos.nxt.Button;
 import lejos.nxt.ButtonListener;
@@ -24,10 +23,10 @@ public class Plotbot implements ButtonListener{
 	}
 	
 	public Plotbot(){
-		
+	
 		
 		try {
-			robot = new PhysicalRobot();
+			robot = robot.getPhysicalRobot();
 			userInterface = new UserInterface();
 			plotter = new Plotter(robot);
 		} catch (MotorException e1) {
@@ -36,6 +35,7 @@ public class Plotbot implements ButtonListener{
 			userInterface.shutDown();
 			NXT.shutDown();
 		}
+
 		
 		Button.ESCAPE.addButtonListener(this);
 		

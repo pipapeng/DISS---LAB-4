@@ -1,10 +1,8 @@
 package de.tuhh.diss.plotbot.robot;
 
-import de.tuhh.diss.plotbot.exceptions.MotorException;
 import de.tuhh.diss.plotbot.exceptions.OutOfWorkspaceException;
-import de.tuhh.diss.plotbot.utilities.CoordTrans;
+import de.tuhh.diss.plotbot.utilities.Calc;
 import lejos.nxt.LCD;
-import lejos.util.Delay;
 
 
 
@@ -13,38 +11,40 @@ public class PhysicalRobot implements RobotInterface{
 	///////////////////////////////////////////////////////
 	//	VARIABLES
 	///////////////////////////////////////////////////////
+	private static final PhysicalRobot ROBOT = new PhysicalRobot();
 	
-	private ArmModule arm;
-	private PenModule pen;
-	private WheelsModule wheels;
+	private final ArmModule ARM;
+	private final PenModule PEN;
+	private final WheelsModule WHEELS;
 	
 	
 	///////////////////////////////////////////////////////
 	//	METHODS
 	///////////////////////////////////////////////////////	
 	
-	public PhysicalRobot(){
-			pen = new PenModule();
-			arm = new ArmModule();
-			wheels = new WheelsModule();
+	private PhysicalRobot(){
+			PEN = new PenModule();
+			ARM = new ArmModule();
+			WHEELS = new WheelsModule();
+	}
+	
+	public RobotInterface getPhysicalRobot(){
+		return ROBOT;
 	}
 	
 	/** Calls the calibration methods of every module
 	 *  
-	 *  @return true if calibration succeded, false if calibration failed
+	 *  @return true if calibration succeeded, false if calibration failed
 	 */
 	public boolean calibrateMotors(){
 		try{
-			pen.calibrateMotorPen();
-			arm.calibrateMotorArm();
-			wheels.calibrateMotorWheels();
+			PEN.calibrateMotorPen();
+			ARM.calibrateMotorArm();
+			WHEELS.calibrateMotorWheels();
 			return true;
 			
 		} catch (OutOfWorkspaceException e) {
 			stopAllMotors();
-			LCD.drawString(e.getMessage(), 0, 5);
-			LCD.drawString("Calibration failed!", 0, 6);
-			Delay.msDelay(2000);
 			return false;
 		}
 	}
@@ -64,69 +64,101 @@ public class PhysicalRobot implements RobotInterface{
 	 * @param xTarget x coordinate of the target
 	 * @param yTarget y coordinate of the target
 	 */
-	public void movePenTo(double xTarget, double yTarget){
-		double yCenterToPen = CoordTrans.getYCenterToPen(getArmLength(), getArmAngle());
+	public void movePenTo(int xTarget, int yTarget) throws OutOfWorkspaceException{
+		double yCenterToPen = Calc.getYCenterToPen(getArmLength(), getArmAngle());
 		double yCenterOfRobot = getYCenter();
 		double distanceToTravel = yTarget - yCenterOfRobot - yCenterToPen;
 		
-		try{
-			moveArmTo((int)CoordTrans.getAnglePen(getArmLength(), xTarget), true);
-			moveWheels(distanceToTravel);
-		} catch (OutOfWorkspaceException oowException) {
-			
-		}
+		moveArmTo((int)Calc.getAnglePen(getArmLength(), xTarget), true);
+		moveWheels(distanceToTravel);
 	}
 	
 	/** Moves the pen to a certain target in steps
 	 *  by using small steps the pen will move in a straight line (in theory :P)
 	 *  
-	 *  
-	 * @param xStart current x-position of pen
-	 * @param yStart current y-position of pen
 	 * @param xTarget target x-position of pen
 	 * @param yTarget target y-position of pen
 	 * @param steps the amount of steps the movement shall be divided in
 	 * @throws OutOfWorkspaceException
 	 */
-	public void movePenToInSteps(double xStart, double yStart, double xTarget, double yTarget, int steps) throws OutOfWorkspaceException{
-		int startAngle =(int) Math.round(CoordTrans.getAnglePen(getArmLength(), xStart));
-		int endAngle =(int) Math.round(CoordTrans.getAnglePen(getArmLength(), xTarget));
-		int angleDifference = endAngle - startAngle;
-		double angleStep = angleDifference / steps;		
+	public void movePenToInSteps(int xTarget, int yTarget, int steps, int style) throws OutOfWorkspaceException{
+		double startAngle = ARM.getAngle();
+		double endAngle = Calc.getAnglePen(ArmModule.ARMLENGTH, xTarget);
+		double angleToTarget = endAngle - startAngle;
+		double angleStep = angleToTarget / steps;		
 		double fromAngle = startAngle;
 		double toAngle = startAngle + angleStep;
 		double timePerStep = Math.abs(angleStep / getArmRotationSpeed());
+		double yNow = WHEELS.getYCenter() + Calc.getYCenterToPen(ArmModule.ARMLENGTH, startAngle);
+		double yDevianceStep = (yTarget - yNow) / steps; 
 		double yDevianceAngle;
-		double yDevianceStep = (yTarget - yStart) / steps; 
 		double yStep;
 		double necessaryWheelspeed;
 		double wheelAngle;
 		
-		for(int it = 0; it < steps; it++){
-			//TODO: Fix this wenn winkel rechts von 90 dann falsches vorzeichen
-			yDevianceAngle = CoordTrans.getYCenterToPen(getArmLength(), fromAngle) - CoordTrans.getYCenterToPen(getArmLength(), toAngle);
+		//int style     // 1: Aktualisiere alles jeden Schritt ueber den Motor,
+						//	  teile jeden Schritt die noch uebrigen Distanzen erneut auf 
+						//    (Wahrscheinlich werden die Schritte hier immer groesser)
+						//
+						// 2: Ermittelt am Ende die Abweichung vom Ziel und schlaegt Error oben drauf
+						//	  hört erst auf wenn er am Ziel ist
+		switch (style){
+		case 1:
+			for(int it = 0; it < steps; it++){
+				//set up next distance in Y
+				yNow = WHEELS.getYCenter() + Calc.getYCenterToPen(ArmModule.ARMLENGTH, fromAngle);
+				yDevianceStep = (yTarget - yNow) / (steps - it);
+				yDevianceAngle = Calc.getYCenterToPen(ArmModule.ARMLENGTH, fromAngle) - Calc.getYCenterToPen(getArmLength(), toAngle);
+				yStep = yDevianceAngle + yDevianceStep;
+				
+				//set up next wheel speed needed
+				wheelAngle = yStep * 360/(WheelsModule.WHEELDIAMETER * Math.PI);
+				necessaryWheelspeed = wheelAngle / timePerStep;
+				setWheelSpeed(necessaryWheelspeed);
+				
+				//move arm and wheels
+				waitForArm();
+				waitForWheels();
+				moveArmTo(toAngle, true);
+				moveWheels(yStep, true);
+
+				//set up next angle
+				fromAngle = ARM.getAngle();
+				angleToTarget = endAngle - fromAngle;
+				angleStep = angleToTarget / (steps - it);
+				toAngle = fromAngle + angleStep;
+			} 
+			break;
+				
+		case 2:
+			//TODO: needs finishing
+			int currentX = (int) Math.round(Calc.getXPositionPen(ArmModule.ARMLENGTH, ARM.getAngle()));
+			int currentY = (int) Math.round(yNow);
 			
-			
-			
-			
-			
-			yStep = yDevianceAngle + yDevianceStep;
-			
-			wheelAngle = Math.round((yStep*360/(56*Math.PI)));
-			//LCD.drawString("wheelA: " + String.valueOf(wheelAngle*84), 0, 4);
-			necessaryWheelspeed = wheelAngle / timePerStep;
-			LCD.drawString("motspd: " + String.valueOf(Math.round(necessaryWheelspeed)*84), 0, 4);
-			
-			moveArmTo(toAngle, true);
-			//setWheelSpeed((int) Math.round(necessaryWheelspeed));
-			LCD.drawString("yStep: " + String.valueOf(yStep), 0, 5);
-			
-			moveWheels(yStep);
-			waitForArm();
-			waitForWheels();
-			
-			fromAngle = toAngle;
-			toAngle = toAngle + angleStep;
+			while(Calc.targetReachedSufficently(currentX, currentY, xTarget, yTarget, 3) != true){
+				//set up next distance in Y
+				yDevianceAngle = Calc.getYCenterToPen(ArmModule.ARMLENGTH, fromAngle) - Calc.getYCenterToPen(getArmLength(), toAngle);
+				yStep = yDevianceAngle + yDevianceStep;
+				
+				//need to use default wheelspeed here
+				
+				//move arm and wheels
+				waitForArm();
+				waitForWheels();
+				moveArmTo(toAngle, true);
+				moveWheels(yStep, true);
+				
+				//set up next angle
+				fromAngle = ARM.getAngle();
+				angleToTarget = endAngle - fromAngle;
+				angleStep = angleToTarget / steps;
+				toAngle = fromAngle + angleStep;
+				
+				//calculate current coordinates
+				currentY = (int) Math.round((WHEELS.getYCenter() + Calc.getYCenterToPen(ArmModule.ARMLENGTH, fromAngle)));
+				currentX = (int) Math.round(Calc.getXPositionPen(ArmModule.ARMLENGTH, ARM.getAngle()));
+			} 
+			break;
 		}
 	}
 	
@@ -136,43 +168,43 @@ public class PhysicalRobot implements RobotInterface{
 	/////////////////
 	
 	public int getArmLength(){
-		return ArmModule.getArmLength();
+		return ArmModule.ARMLENGTH;
 	}
 	
 	public int getArmMinAngle(){
-		return arm.getArmMinAngle();
+		return ARM.getArmMinAngle();
 	}
 	
 	public int getArmMaxAngle(){
-		return arm.getArmMaxAngle();
+		return ARM.getArmMaxAngle();
 	}
 	
 	public double getArmAngle(){
-		return arm.getAngle();
+		return ARM.getAngle();
 	}
 	
 	public double getArmRotationSpeed(){
-		return arm.getRotationSpeed();
+		return ARM.getRotationSpeed();
 	}
 	
 	public void setArmSpeed(int speed) throws IndexOutOfBoundsException{
-		arm.setArmSpeed(speed);
+		ARM.setArmSpeed(speed);
 	}
 	
 	public void moveArmTo(double targetAngle) throws OutOfWorkspaceException{
-			arm.moveArmTo(targetAngle);
+		ARM.moveArmTo(targetAngle);
 	}
 	
 	public void moveArmTo(double targetAngle, boolean immediateReturn) throws OutOfWorkspaceException{
-			arm.moveArmTo(targetAngle, immediateReturn);
+		ARM.moveArmTo(targetAngle, immediateReturn);
 	}
 	
 	public void waitForArm(){
-		arm.waitForArm();
+		ARM.waitForArm();
 	}
 	
 	public void stopArm(){
-		arm.stopArm();
+		ARM.stopArm();
 	}
 	
 	
@@ -181,11 +213,11 @@ public class PhysicalRobot implements RobotInterface{
 	/////////////////
 	
 	public void setPen(boolean down){
-		pen.setPen(down);
+		PEN.setPen(down);
 	}
 	
 	public void stopPen(){
-		pen.stopPen();
+		PEN.stopPen();
 	}
 	
 	
@@ -194,20 +226,29 @@ public class PhysicalRobot implements RobotInterface{
 	/////////////////
 	
 	public int getMaxFeed(){
-		return wheels.getYCenterMax();
+		return WHEELS.getYCenterMax();
 	}
 	
 	public double getYCenter(){
-		return wheels.getYCenter();
+		return WHEELS.getYCenter();
 	}
 
 	public void setWheelSpeed(double speed) throws IndexOutOfBoundsException{
-		wheels.setWheelSpeed(speed);
+		WHEELS.setWheelSpeed(speed);
 	}
 	
 	public void moveWheels(double distance){
 		try {
-			wheels.moveWheels(distance);
+			WHEELS.moveWheels(distance);
+		} catch (OutOfWorkspaceException e) {
+			stopAllMotors();
+			LCD.drawString("OoW in moveWheels()", 0, 8);
+		}
+	}
+	
+	public void moveWheels(double distance, boolean immediateReturn) throws OutOfWorkspaceException{
+		try {
+			WHEELS.moveWheels(distance, immediateReturn);
 		} catch (OutOfWorkspaceException e) {
 			stopAllMotors();
 			LCD.drawString("OoW in moveWheels()", 0, 8);
@@ -216,7 +257,7 @@ public class PhysicalRobot implements RobotInterface{
 	
 	public void moveWheelsForward(){
 		try {
-			wheels.moveWheelsForward();
+			WHEELS.moveWheelsForward();
 		} catch (OutOfWorkspaceException e) {
 			stopAllMotors();
 			LCD.drawString("OoW in moveWheelsForward()", 0, 8);
@@ -225,7 +266,7 @@ public class PhysicalRobot implements RobotInterface{
 	
 	public void moveWheelsBackward(){
 		try {
-			wheels.moveWheelsBackward();
+			WHEELS.moveWheelsBackward();
 		} catch (OutOfWorkspaceException e) {
 			stopAllMotors();
 			LCD.drawString("OoW in moveWheelsBackward()", 0, 8);
@@ -233,10 +274,10 @@ public class PhysicalRobot implements RobotInterface{
 	}
 	
 	public void waitForWheels(){
-		wheels.waitForWheels();
+		WHEELS.waitForWheels();
 	}
 	
 	public void stopWheels(){
-		wheels.stopWheels();
+		WHEELS.stopWheels();
 	}
 }
