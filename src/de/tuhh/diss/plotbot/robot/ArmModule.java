@@ -3,7 +3,6 @@ package de.tuhh.diss.plotbot.robot;
 import de.tuhh.diss.plotbot.UserInterface;
 import de.tuhh.diss.plotbot.exceptions.OutOfWorkspaceException;
 import de.tuhh.diss.plotbot.robot.ShittyMotor;
-import de.tuhh.diss.plotbot.robot.SlackMotor;
 import lejos.nxt.Button;
 import lejos.nxt.LCD;
 import lejos.nxt.Motor;
@@ -28,7 +27,7 @@ public class ArmModule{
 	private int slackAngle = 450; //TODO: needs to be measured!!!
 	private int armMinAngle;
 	private int armMaxAngle; 
-	private SlackMotor motorArm;
+	private ShittyMotor motorArm;
 	private TouchSensor sensorArm;
 	private TachoMotorPort port = MotorPort.A;
 	
@@ -38,7 +37,7 @@ public class ArmModule{
 	///////////////////////////////////////////////////////	
 
 	public ArmModule(){
-		motorArm = new SlackMotor(port, slackAngle);
+		motorArm = new ShittyMotor(port, slackAngle);
 		ARMMOTORMAXSPEED = motorArm.getMaxSpeed();
 		sensorArm = new TouchSensor(SensorPort.S1);
 	}
