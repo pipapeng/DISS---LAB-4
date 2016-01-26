@@ -43,41 +43,46 @@ public class ShittyMotor extends NXTRegulatedMotor{
 	
 	public void rotate(int angle, boolean immediateReturn){
 		//Determine desired direction
-		if(angle == 0){
+				
+		if(angle == 0){ //TODO: ?
 			return; //nothing to do, leave method
-			
+					
 		} else if (angle > 0) {
 			desiredDirection = Direction.FORWARD;
-			
+					
 		} else if (angle < 0) {
 			desiredDirection = Direction.BACKWARD;
 		}
-		
+				
 		//Check where the motor came from and react to it
 		switch (lastDirection){
 			case FORWARD: 
 				if(desiredDirection == Direction.FORWARD){
 					super.rotate(angle + currentMotorError, immediateReturn);
+					currentMotorError = slackAngle;
+					lastDirection = Direction.FORWARD;
 					return;
-					
+							
 				} else if (desiredDirection == Direction.BACKWARD){
-					super.rotate( - slackAngle, false);
+					super.rotate(super.getTachoCount() - slackAngle, false);
 					super.rotate(angle, immediateReturn);
 					currentMotorError = 0;
 					lastDirection = Direction.BACKWARD;
 					return;
 				}
-		
+				
 			case BACKWARD:
 				if(desiredDirection == Direction.FORWARD){
-					super.rotate(slackAngle, false);
-					super.rotate(angle, immediateReturn);
+					super.rotate(super.getTachoCount() + slackAngle, false);
 					currentMotorError = slackAngle;
+					super.rotate(angle + currentMotorError, immediateReturn);
 					lastDirection = Direction.FORWARD;
 					return;
-					
+							
 				} else if (desiredDirection == Direction.BACKWARD){
 					super.rotate(angle, immediateReturn);
+					currentMotorError = 0;
+					lastDirection = Direction.BACKWARD;
 					return;
 				}
 		}
@@ -91,7 +96,7 @@ public class ShittyMotor extends NXTRegulatedMotor{
 		//Determine desired direction
 		int angleToTarget = limitAngle - getTachoCount();
 		
-		if(angleToTarget == 0){
+		if(angleToTarget == 0){ 
 			return; //nothing to do, leave method
 			
 		} else if (angleToTarget > 0) {
@@ -106,6 +111,8 @@ public class ShittyMotor extends NXTRegulatedMotor{
 			case FORWARD: 
 				if(desiredDirection == Direction.FORWARD){
 					super.rotateTo(limitAngle + currentMotorError, immediateReturn);
+					currentMotorError = slackAngle;
+					lastDirection = Direction.FORWARD;
 					return;
 					
 				} else if (desiredDirection == Direction.BACKWARD){
@@ -119,13 +126,15 @@ public class ShittyMotor extends NXTRegulatedMotor{
 			case BACKWARD:
 				if(desiredDirection == Direction.FORWARD){
 					super.rotateTo(super.getTachoCount() + slackAngle, false);
-					super.rotateTo(limitAngle, immediateReturn);
 					currentMotorError = slackAngle;
+					super.rotateTo(limitAngle + currentMotorError, immediateReturn);
 					lastDirection = Direction.FORWARD;
 					return;
 					
 				} else if (desiredDirection == Direction.BACKWARD){
 					super.rotateTo(limitAngle, immediateReturn);
+					currentMotorError = 0;
+					lastDirection = Direction.BACKWARD;
 					return;
 				}
 		}
