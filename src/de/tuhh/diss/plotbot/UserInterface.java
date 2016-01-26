@@ -35,10 +35,17 @@ public class UserInterface implements ButtonListener{
 		Delay.msDelay(TIMEDELAY);
 	}
 	
-	public void calibrationMenu(){
+	public void calibrationMenu(boolean recalibration){
 		LCD.clear();
 		LCD.drawString("Robot needs to", 0, 0);
-		LCD.drawString("be calibrated.", 0, 1);
+		
+		if(!recalibration){
+			LCD.drawString("be calibrated.", 0, 1);
+		}
+		else{
+			LCD.drawString("be recalibrated.", 0, 1);
+		}
+		
 		LCD.drawString("Press ENTER", 0, 3);
 		LCD.drawString("to start!", 0, 4);
 		
@@ -115,14 +122,22 @@ public class UserInterface implements ButtonListener{
 		Delay.msDelay(TIMEDELAY);
 	}
 	
+	public void motorException(){
+		
+		LCD.clear();
+		LCD.drawString("Something went", 0, 1);
+		LCD.drawString("wrong...", 0, 2);
+		Delay.msDelay(TIMEDELAY);
+	}
+	
 	public void stopedImmediatly(){
 		
 		LCD.clear();
 		LCD.drawString("You have", 0, 1);
 		LCD.drawString("pressed ESC", 0, 2);
 		
-		LCD.drawString("Robot has", 0, 4);
-		LCD.drawString("been stopped!", 0, 5);
+		LCD.drawString("Robot is", 0, 4);
+		LCD.drawString("shutting down!", 0, 5);
 		
 		Delay.msDelay(TIMEDELAY);
 	}
