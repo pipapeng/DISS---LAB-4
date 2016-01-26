@@ -72,7 +72,6 @@ public class PhysicalRobot implements RobotInterface{
 		moveArmTo((int)Calc.getAnglePen(getArmLength(), xTarget), true);
 		moveWheels(distanceToTravel);
 	}
-	
 	/** Moves the pen to a certain target in steps
 	 *  by using small steps the pen will move in a straight line (in theory :P)
 	 *  
@@ -82,17 +81,106 @@ public class PhysicalRobot implements RobotInterface{
 	 * @throws OutOfWorkspaceException
 	 */
 	public void movePenToInSteps(int xTarget, int yTarget, int steps, int style) throws OutOfWorkspaceException{
-		double startAngle; // = ARM.getAngle();
-		double endAngle;// = Calc.getAnglePen(ArmModule.ARMLENGTH, xTarget);
-		double angleToTarget;// = endAngle - startAngle;
-		double angleStep;// = angleToTarget / steps;		
-		//double fromAngle;// = startAngle;
-		double toAngle;// = startAngle + angleStep;
-		double timePerStep;// = Math.abs(angleStep / getArmRotationSpeed());
-		double yNow;// = WHEELS.getYCenter() + Calc.getYCenterToPen(ArmModule.ARMLENGTH, startAngle);
-		double yDevianceStep;// = (yTarget - yNow) / steps; 
+		double startAngle = ARM.getAngle();
+		double endAngle = Calc.getAnglePen(ArmModule.ARMLENGTH, xTarget);
+		double angleToTarget = endAngle - startAngle;
+		double angleStep = angleToTarget / steps;		
+		double fromAngle = startAngle;
+		double toAngle = startAngle + angleStep;
+		double timePerStep = Math.abs(angleStep / getArmRotationSpeed());
+		double yNow = WHEELS.getYCenter() + Calc.getYCenterToPen(ArmModule.ARMLENGTH, startAngle);
+		double yDevianceStep = (yTarget - yNow) / steps; 
 		double yDevianceAngle;
 		double yStep;
+		double necessaryWheelspeed;
+		double wheelAngle;
+		
+		//int style     // 1: Aktualisiere alles jeden Schritt ueber den Motor,
+						//	  teile jeden Schritt die noch uebrigen Distanzen erneut auf 
+						//    (Wahrscheinlich werden die Schritte hier immer groesser)
+						//
+						// 2: Ermittelt am Ende die Abweichung vom Ziel und schlaegt Error oben drauf
+						//	  hoert erst auf wenn er am Ziel ist
+		switch (style){
+		case 1:
+			for(int it = 0; it < steps; it++){
+				//set up next distance in Y
+				yNow = WHEELS.getYCenter() + Calc.getYCenterToPen(ArmModule.ARMLENGTH, fromAngle);
+				LCD.drawString("yNow: " + String.valueOf(yNow), 0, 4);
+				//yDevianceStep = (yTarget - yNow) / (steps - it);
+				yDevianceAngle = Calc.getYCenterToPen(ArmModule.ARMLENGTH, fromAngle) - Calc.getYCenterToPen(getArmLength(), toAngle);
+				yStep = yDevianceAngle + yDevianceStep;
+				
+				//set up next wheel speed needed
+				wheelAngle = yStep * 360/(WheelsModule.WHEELDIAMETER * Math.PI);
+				necessaryWheelspeed = wheelAngle / timePerStep;
+				//setWheelSpeed(necessaryWheelspeed);
+				
+				//move arm and wheels
+				waitForArm();
+				waitForWheels();
+				moveArmTo(toAngle, true);
+				moveWheels(yStep, true);
+
+				//set up next angle
+				fromAngle = ARM.getAngle();
+				angleToTarget = endAngle - fromAngle;
+				angleStep = angleToTarget / (steps - it);
+				toAngle = fromAngle + angleStep;
+			} 
+			break;
+				
+		case 2:
+			//TODO: needs finishing
+			int currentX = (int) Math.round(Calc.getXPositionPen(ArmModule.ARMLENGTH, ARM.getAngle()));
+			int currentY = (int) Math.round(yNow);
+			double distanceToCoverX;
+			double distanceToCoverY;
+			double maxDistance;
+			double stepsNeeded;
+			while(Calc.targetReachedSufficently(currentX, currentY, xTarget, yTarget, 3) != true){
+				distanceToCoverX = xTarget - currentX;
+				distanceToCoverY = yTarget - currentY;
+				maxDistance = Math.max(distanceToCoverX, distanceToCoverY);
+				stepsNeeded = maxDistance / steps;
+				
+				//set up next distance in Y
+				
+				yDevianceAngle = Calc.getYCenterToPen(ArmModule.ARMLENGTH, fromAngle) - Calc.getYCenterToPen(getArmLength(), toAngle);
+				yStep = yDevianceAngle + yDevianceStep;
+				
+				//need to use default wheelspeed here
+				
+				//move arm and wheels
+				waitForArm();
+				waitForWheels();
+				moveArmTo(toAngle, true);
+				moveWheels(yStep, true);
+				
+				//set up next angle
+				fromAngle = ARM.getAngle();
+				angleToTarget = endAngle - fromAngle;
+				angleStep = angleToTarget / steps;
+				toAngle = fromAngle + angleStep;
+				
+				//calculate current coordinates
+				currentY = (int) Math.round((WHEELS.getYCenter() + Calc.getYCenterToPen(ArmModule.ARMLENGTH, fromAngle)));
+				currentX = (int) Math.round(Calc.getXPositionPen(ArmModule.ARMLENGTH, ARM.getAngle()));
+			} 
+			break;
+		}
+	}
+	
+	
+	
+	public void movePenInXInSteps(int xTarget, int steps) throws OutOfWorkspaceException{
+		double startAngle;
+		double endAngle;
+		double angleToTarget;
+		double angleStep;
+		double toAngle;
+		double timePerStep;
+		double yDevianceAngle;
 		double necessaryWheelspeed;
 		double wheelAngle;
 	
@@ -107,28 +195,22 @@ public class PhysicalRobot implements RobotInterface{
 				timePerStep = Math.abs(angleStep / getArmRotationSpeed());
 				
 				
-				//set up next distance in Y
-				yNow = WHEELS.getYCenter() + Calc.getYCenterToPen(ArmModule.ARMLENGTH, startAngle);
-				LCD.drawString("yNow: " + String.valueOf(yNow), 0, 4);
-				
-				//yDevianceStep = (yTarget - yNow) / (steps - it);
-				yDevianceStep = (yTarget - yNow) * (it/10);
 				yDevianceAngle = Calc.getYCenterToPen(ArmModule.ARMLENGTH, startAngle) - Calc.getYCenterToPen(getArmLength(), toAngle);
-				yStep = yDevianceAngle + yDevianceStep;
 				
 				//set up next wheel speed needed
-				wheelAngle = yStep * 360/(WheelsModule.WHEELDIAMETER * Math.PI);
+				wheelAngle = yDevianceAngle * 360/(WheelsModule.WHEELDIAMETER * Math.PI);
 				necessaryWheelspeed = wheelAngle / timePerStep;
-				//setWheelSpeed(necessaryWheelspeed);
+				setWheelSpeed(necessaryWheelspeed);
 				
 				//move arm and wheels
 				waitForArm();
 				waitForWheels();
 				moveArmTo(toAngle, true);
-				moveWheels(yStep, true);
+				moveWheels(yDevianceAngle, true);
 	
 		}
 	}
+	
 	
 	
 	/////////////////
