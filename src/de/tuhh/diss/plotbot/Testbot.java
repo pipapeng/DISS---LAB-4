@@ -21,12 +21,10 @@ public class Testbot {
 		
 		try {
 			
-			robot.moveArmTo(110,false);
-			robot.moveArmTo(135,false);
-			robot.moveArmTo(90,false);
-			robot.moveArmTo(45,false);
-			robot.moveArmTo(60,false);
-			robot.moveArmTo(90,false);
+			robot.movePenTo(0, 50);
+			robot.setPen(true);
+			robot.movePenTo( -50, 50, 5, 1);
+	
 			
 //			robot.movePenTo(0, 50);
 //			robot.setPen(true);

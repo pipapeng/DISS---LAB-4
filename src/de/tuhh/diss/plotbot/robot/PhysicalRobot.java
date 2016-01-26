@@ -3,6 +3,7 @@ package de.tuhh.diss.plotbot.robot;
 import de.tuhh.diss.plotbot.exceptions.OutOfWorkspaceException;
 import de.tuhh.diss.plotbot.utilities.Calc;
 import lejos.nxt.LCD;
+import lejos.util.Delay;
 
 
 
@@ -72,6 +73,8 @@ public class PhysicalRobot implements RobotInterface{
 		moveArmTo((int)Calc.getAnglePen(getArmLength(), xTarget), true);
 		moveWheels(distanceToTravel);
 	}
+	
+	
 	/** Moves the pen to a certain target in steps
 	 *  by using small steps the pen will move in a straight line (in theory :P)
 	 *  
@@ -97,11 +100,6 @@ public class PhysicalRobot implements RobotInterface{
 		for(int it = 0; it < steps; it++){
 			//TODO: Fix this wenn winkel rechts von 90 dann falsches vorzeichen
 			yDevianceAngle = Calc.getYCenterToPen(getArmLength(), fromAngle) - Calc.getYCenterToPen(getArmLength(), toAngle);
-			
-			
-			
-			
-			
 			yStep = yDevianceAngle + yDevianceStep;
 			
 			wheelAngle = Math.round((yStep*360/(56*Math.PI)));
@@ -121,46 +119,6 @@ public class PhysicalRobot implements RobotInterface{
 			toAngle = toAngle + angleStep;
 		}
 	}
-	
-	
-	
-	public void movePenToXInSteps(int xTarget, int steps) throws OutOfWorkspaceException{
-		double startAngle;
-		double endAngle;
-		double angleToTarget;
-		double angleStep;
-		double toAngle;
-		double timePerStep;
-		double yDevianceAngle;
-		double necessaryWheelspeed;
-		double wheelAngle;
-	
-
-			for(int it = 1; it == steps; it++){
-				
-				startAngle = ARM.getAngle();
-				endAngle = Calc.getAnglePen(ArmModule.ARMLENGTH, xTarget);
-				angleToTarget = endAngle - startAngle;
-				angleStep = angleToTarget * (it/steps);		
-				toAngle = startAngle + angleStep;
-				timePerStep = Math.abs(angleStep / getArmRotationSpeed()); //TODO: ArmRotationSpeed != 0 ?
-				
-				
-				yDevianceAngle = Calc.getYCenterToPen(ArmModule.ARMLENGTH, startAngle) - Calc.getYCenterToPen(getArmLength(), toAngle);
-				
-				//set up next wheel speed needed
-				wheelAngle = yDevianceAngle * 360/(WheelsModule.WHEELDIAMETER * Math.PI);
-				necessaryWheelspeed = wheelAngle / timePerStep;
-				//setWheelSpeed(necessaryWheelspeed);
-				
-				//move arm and wheels
-				moveArmTo(toAngle, true);
-				moveWheels(yDevianceAngle, false);
-				waitForArm();
-				waitForWheels();
-		}
-	}
-
 	
 	
 	/////////////////
