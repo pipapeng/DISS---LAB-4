@@ -86,7 +86,7 @@ public class PhysicalRobot implements RobotInterface{
 		double endAngle;// = Calc.getAnglePen(ArmModule.ARMLENGTH, xTarget);
 		double angleToTarget;// = endAngle - startAngle;
 		double angleStep;// = angleToTarget / steps;		
-		double fromAngle;// = startAngle;
+		//double fromAngle;// = startAngle;
 		double toAngle;// = startAngle + angleStep;
 		double timePerStep;// = Math.abs(angleStep / getArmRotationSpeed());
 		double yNow;// = WHEELS.getYCenter() + Calc.getYCenterToPen(ArmModule.ARMLENGTH, startAngle);
@@ -103,18 +103,17 @@ public class PhysicalRobot implements RobotInterface{
 				endAngle = Calc.getAnglePen(ArmModule.ARMLENGTH, xTarget);
 				angleToTarget = endAngle - startAngle;
 				angleStep = angleToTarget * (it/10);		
-				fromAngle = startAngle;
 				toAngle = startAngle + angleStep;
 				timePerStep = Math.abs(angleStep / getArmRotationSpeed());
 				
 				
 				//set up next distance in Y
-				yNow = WHEELS.getYCenter() + Calc.getYCenterToPen(ArmModule.ARMLENGTH, fromAngle);
+				yNow = WHEELS.getYCenter() + Calc.getYCenterToPen(ArmModule.ARMLENGTH, startAngle);
 				LCD.drawString("yNow: " + String.valueOf(yNow), 0, 4);
 				
 				//yDevianceStep = (yTarget - yNow) / (steps - it);
 				yDevianceStep = (yTarget - yNow) * (it/10);
-				yDevianceAngle = Calc.getYCenterToPen(ArmModule.ARMLENGTH, fromAngle) - Calc.getYCenterToPen(getArmLength(), toAngle);
+				yDevianceAngle = Calc.getYCenterToPen(ArmModule.ARMLENGTH, startAngle) - Calc.getYCenterToPen(getArmLength(), toAngle);
 				yStep = yDevianceAngle + yDevianceStep;
 				
 				//set up next wheel speed needed
