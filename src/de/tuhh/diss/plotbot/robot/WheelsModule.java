@@ -157,8 +157,9 @@ public class WheelsModule {
 		motorWheels.stop();
 	}
 	
-	//TODO: Zurückfahren bis Linie gefunden, dann kalibrieren
+	//TODO: Zurueckfahren bis Linie gefunden, dann kalibrieren
 	public void calibrateMotorWheels() throws OutOfWorkspaceException{
+	
 		LCD.clear();
 		LCD.drawString("Calibrating wheels ...", 0, 0);
 		LCD.drawString("Press ENTER when sensor", 0, 1);
@@ -167,19 +168,46 @@ public class WheelsModule {
 		LCD.clear(1);
 		LCD.clear(2);
 		
-		//Save the current sensor value as dark
-		int dark = lightSensor.getNormalizedLightValue();
-		lightSensor.setLow(dark);
-		
-		//Move forward until sensor notices a change of FACTORLIGHT
-		motorWheels.resetTachoCount(); // avoids a possible out of bounds error
-		motorWheels.setSpeed(WHEELMOTORMAXSPEED/5);
-		while (lightSensor.getNormalizedLightValue() <= (FACTORLIGHT * dark)){
-			motorWheels.forward();
+		int choice = 2;
+	
+		switch(choice){
+			
+		case 1:
+			
+			//Save the current sensor value as dark
+			int dark = lightSensor.getNormalizedLightValue();
+			lightSensor.setLow(dark);
+			
+			//Move forward until sensor notices a change of FACTORLIGHT
+			motorWheels.resetTachoCount(); // avoids a possible out of bounds error
+			motorWheels.setSpeed(WHEELMOTORMAXSPEED/5);
+			while (lightSensor.getNormalizedLightValue() <= (FACTORLIGHT * dark)){
+				motorWheels.forward();
+			}
+			motorWheels.stop();
+			lightSensor.setHigh(lightSensor.getNormalizedLightValue());
+			motorWheels.resetTachoCount(); 
+			
+			break;
+			
+		case 2:
+			
+			int light = lightSensor.getNormalizedLightValue();
+			lightSensor.setHigh(light);
+			
+			//Move backward until sensor notices a change of FACTORLIGHT
+			motorWheels.setSpeed(WHEELMOTORMAXSPEED/5);
+			
+			motorWheels.backward();
+			while (lightSensor.getNormalizedLightValue() <= (light / FACTORLIGHT)){
+			}
+			motorWheels.stop();
+			
+			lightSensor.setLow(lightSensor.getNormalizedLightValue());
+			motorWheels.resetTachoCount();
+			
+			break;
 		}
-		motorWheels.stop();
-		lightSensor.setHigh(lightSensor.getNormalizedLightValue());
-		motorWheels.resetTachoCount(); 
 		
 		//Move forward so the pen is at y = 0
 		moveWheels(DISTANCETOLIGHTSENSOR - ArmModule.getArmLength());
