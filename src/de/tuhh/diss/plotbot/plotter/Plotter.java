@@ -4,7 +4,7 @@ import de.tuhh.diss.plotbot.exceptions.MotorException;
 import de.tuhh.diss.plotbot.robot.RobotInterface;
 
 public class Plotter implements PlotterInterface{
-
+	// test
 	RobotInterface robot;
 	PlotTUHH tuhh;
 	PlotRectangle rectangle; 
