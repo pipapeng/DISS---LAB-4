@@ -1,6 +1,7 @@
 package de.tuhh.diss.plotbot.utilities;
 
 import de.tuhh.diss.plotbot.exceptions.OutOfWorkspaceException;
+import de.tuhh.diss.plotbot.robot.*;
 
 public class Calc {
 

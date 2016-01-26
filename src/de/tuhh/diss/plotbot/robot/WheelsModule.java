@@ -194,16 +194,18 @@ public class WheelsModule {
 			
 			int light = lightSensor.getNormalizedLightValue();
 			lightSensor.setHigh(light);
+			LCD.drawString("light: " + String.valueOf(light), 0, 4);
 			
 			//Move backward until sensor notices a change of FACTORLIGHT
 			motorWheels.setSpeed(WHEELMOTORMAXSPEED/5);
 			
 			motorWheels.backward();
-			while (lightSensor.getNormalizedLightValue() <= (light / FACTORLIGHT)){
+			while (lightSensor.getNormalizedLightValue() >= (light / FACTORLIGHT)){
 			}
 			motorWheels.stop();
 			
 			lightSensor.setLow(lightSensor.getNormalizedLightValue());
+			LCD.drawString("light: " + String.valueOf(lightSensor.getNormalizedLightValue()), 0, 5);
 			motorWheels.resetTachoCount();
 			
 			break;
