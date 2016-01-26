@@ -157,7 +157,7 @@ public class WheelsModule {
 		motorWheels.stop();
 	}
 	
-	//TODO: Zurückfahren bis Linie gefunden, dann kalibrieren
+	//TODO: Zurueckfahren bis Linie gefunden, dann kalibrieren
 	public void calibrateMotorWheels() throws OutOfWorkspaceException{
 		LCD.clear();
 		LCD.drawString("Calibrating wheels ...", 0, 0);

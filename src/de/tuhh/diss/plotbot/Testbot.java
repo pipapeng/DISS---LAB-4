@@ -15,7 +15,7 @@ public class Testbot {
 		LCD.drawString("Hello", 0, 0);
 		
 
-		robot = robot.getPhysicalRobot();
+		robot = PhysicalRobot.ROBOT;
 		robot.calibrateMotors();
 		
 		
