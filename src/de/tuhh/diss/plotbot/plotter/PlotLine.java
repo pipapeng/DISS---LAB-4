@@ -1,5 +1,6 @@
 package de.tuhh.diss.plotbot.plotter;
 
+import de.tuhh.diss.plotbot.exceptions.OutOfWorkspaceException;
 import de.tuhh.diss.plotbot.robot.RobotInterface;
 
 public abstract class PlotLine {
@@ -9,6 +10,11 @@ public abstract class PlotLine {
 	public PlotLine(RobotInterface robot, double xStart, double yStart){
 		
 		this.robot = robot; 
-		robot.movePenTo(xStart, yStart);
+		try {
+			robot.movePenTo((int) (xStart),(int) (yStart)); //TODO int anpassen
+		} catch (OutOfWorkspaceException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 }

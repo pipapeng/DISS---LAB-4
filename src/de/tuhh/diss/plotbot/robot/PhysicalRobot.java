@@ -11,7 +11,7 @@ public class PhysicalRobot implements RobotInterface{
 	///////////////////////////////////////////////////////
 	//	VARIABLES
 	///////////////////////////////////////////////////////
-	private static final PhysicalRobot ROBOT = new PhysicalRobot();
+	public static final PhysicalRobot ROBOT = new PhysicalRobot();
 	
 	private final ArmModule ARM;
 	private final PenModule PEN;
@@ -101,7 +101,7 @@ public class PhysicalRobot implements RobotInterface{
 						//    (Wahrscheinlich werden die Schritte hier immer groesser)
 						//
 						// 2: Ermittelt am Ende die Abweichung vom Ziel und schlaegt Error oben drauf
-						//	  hört erst auf wenn er am Ziel ist
+						//	  hoert erst auf wenn er am Ziel ist
 		switch (style){
 		case 1:
 			for(int it = 0; it < steps; it++){
@@ -134,9 +134,14 @@ public class PhysicalRobot implements RobotInterface{
 			//TODO: needs finishing
 			int currentX = (int) Math.round(Calc.getXPositionPen(ArmModule.ARMLENGTH, ARM.getAngle()));
 			int currentY = (int) Math.round(yNow);
-			
+			double distanceToCoverX;
+			double distanceToCoverY;
 			while(Calc.targetReachedSufficently(currentX, currentY, xTarget, yTarget, 3) != true){
+				distanceToCoverX = xTarget - currentX;
+				distanceToCoverY = yTarget - currentY;
+				
 				//set up next distance in Y
+				
 				yDevianceAngle = Calc.getYCenterToPen(ArmModule.ARMLENGTH, fromAngle) - Calc.getYCenterToPen(getArmLength(), toAngle);
 				yStep = yDevianceAngle + yDevianceStep;
 				
