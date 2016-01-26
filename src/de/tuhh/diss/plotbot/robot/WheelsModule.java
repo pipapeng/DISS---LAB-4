@@ -14,18 +14,18 @@ public class WheelsModule {
 	//	VARIABLES
 	///////////////////////////////////////////////////////
 		
-	private static final int WHEELGEARRATIO = 5;
-	private static final int WHEELDIAMETER = 56;
-	private static final int YCENTERMIN = -ArmModule.getArmLength();
-	private static final int YCENTERMAX = 2300 -ArmModule.getArmLength();
-	private static final int DISTANCETOLIGHTSENSOR = 105;
-	private static final double FACTORLIGHT = 1.05;
+	public static final int WHEELGEARRATIO = 5;
+	public static final int WHEELDIAMETER = 56;
+	public static final int YCENTERMIN = -ArmModule.getArmLength();
+	public static final int YCENTERMAX = 2300 -ArmModule.getArmLength();
+	public static final int DISTANCETOLIGHTSENSOR = 105;
+	public static final double FACTORLIGHT = 1.05;
 	
-	private final float WHEELMOTORMAXSPEED;
-	private final float WHEELMOTORMINSPEED = 0;
+	public final float WHEELMOTORMAXSPEED;
+	public final float WHEELMOTORMINSPEED = 0;
 	
-	NXTRegulatedMotor motorWheels;
-	LightSensor lightSensor;
+	private NXTRegulatedMotor motorWheels;
+	private LightSensor lightSensor;
 	
 	
 	///////////////////////////////////////////////////////
@@ -49,7 +49,7 @@ public class WheelsModule {
 	 */
 	public double getYCenter(){
 		double circumferenceWheel = Math.PI * WHEELDIAMETER;
-		double revolutionsMotor = motorWheels.getPosition()/360;
+		double revolutionsMotor = motorWheels.getTachoCount()/360;
 		double revolutionsWheel = revolutionsMotor/WHEELGEARRATIO;  
 		
 		return revolutionsWheel * circumferenceWheel - ArmModule.getArmLength();
@@ -79,13 +79,47 @@ public class WheelsModule {
 	 * @param distance the distance to be driven
 	 * @throws OutOfWorkspaceException thrown if target is not inside workspace
 	 */
-	//TODO: nochmal anschaun
 	public void moveWheels(double distance) throws OutOfWorkspaceException{
+
+		
 		if ((getYCenter() + distance) <= YCENTERMAX && (getYCenter() + distance) >= YCENTERMIN){
+			
+			/* Formula in detail:
+			 *  circumferenceWheel = WHEELDIAMETER * Math.PI;
+			 *  revolutionsWheelNeeded = distance / circumferenceWheel;
+			 *  revolutionsMotorNeeded = revolutionsWheelNeeded * WHEELGEARRATIO;
+			 *  motorAngleNeeded = revolutionsMotorNeeded * 360; -> to function
+			 */ 
 			motorWheels.rotate((int) Math.round((distance*360*WHEELGEARRATIO/(WHEELDIAMETER*Math.PI))));
-		}
-		else
+			
+		} else {
 			throw new OutOfWorkspaceException();
+		}
+	}
+	
+	/** Moves the robot by a given distance in y-direction
+	 *  distance may also be negative
+	 * 
+	 * @param distance the distance to be driven
+	 * @param immediateReturn if set true method will return even if rotate is not finished yet
+	 * @throws OutOfWorkspaceException thrown if target is not inside workspace
+	 */
+	public void moveWheels(double distance, boolean immediateReturn) throws OutOfWorkspaceException{
+
+		
+		if ((getYCenter() + distance) <= YCENTERMAX && (getYCenter() + distance) >= YCENTERMIN){
+			
+			/* Formula in detail:
+			 *  circumferenceWheel = WHEELDIAMETER * Math.PI;
+			 *  revolutionsWheelNeeded = distance / circumferenceWheel;
+			 *  revolutionsMotorNeeded = revolutionsWheelNeeded * WHEELGEARRATIO;
+			 *  motorAngleNeeded = revolutionsMotorNeeded * 360; -> to function
+			 */ 
+			motorWheels.rotate((int) Math.round((distance*360*WHEELGEARRATIO/(WHEELDIAMETER*Math.PI))), immediateReturn);
+			
+		} else {
+			throw new OutOfWorkspaceException();
+		}
 	}
 	
 	/** Moves forward unless the robot is already outside of the workspace
@@ -123,12 +157,13 @@ public class WheelsModule {
 		motorWheels.stop();
 	}
 	
+	//TODO: Zurückfahren bis Linie gefunden, dann kalibrieren
 	public void calibrateMotorWheels() throws OutOfWorkspaceException{
 		LCD.clear();
 		LCD.drawString("Calibrating wheels ...", 0, 0);
-		LCD.drawString("Press ESC when lightsensor", 0, 1);
+		LCD.drawString("Press ENTER when sensor", 0, 1);
 		LCD.drawString("is above black bar!", 0, 2);
-		Button.ESCAPE.waitForPressAndRelease();
+		Button.ENTER.waitForPressAndRelease();
 		LCD.clear(1);
 		LCD.clear(2);
 		
@@ -150,7 +185,7 @@ public class WheelsModule {
 		moveWheels(DISTANCETOLIGHTSENSOR - ArmModule.getArmLength());
 		motorWheels.resetTachoCount();
 		
-		LCD.clear();;
+		LCD.clear();
 		LCD.drawString("Wheel calibration", 0, 0);
 		LCD.drawString("successful!", 0, 1);
 	}

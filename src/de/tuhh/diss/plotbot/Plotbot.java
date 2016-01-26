@@ -23,7 +23,7 @@ public class Plotbot implements ButtonListener{
 	
 	public Plotbot(){
 		
-		robot = new PhysicalRobot();
+		robot = robot.getPhysicalRobot();
 		userInterface = new UserInterface();
 		plotter = new Plotter(robot);
 		

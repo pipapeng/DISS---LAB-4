@@ -2,9 +2,13 @@ package de.tuhh.diss.plotbot.robot;
 
 import de.tuhh.diss.plotbot.UserInterface;
 import de.tuhh.diss.plotbot.exceptions.OutOfWorkspaceException;
+import de.tuhh.diss.plotbot.robot.ShittyMotor;
+import de.tuhh.diss.plotbot.robot.SlackMotor;
 import lejos.nxt.Button;
 import lejos.nxt.LCD;
 import lejos.nxt.Motor;
+import lejos.nxt.MotorPort;
+import lejos.nxt.TachoMotorPort;
 import lejos.nxt.NXTRegulatedMotor;
 import lejos.nxt.SensorPort;
 import lejos.nxt.TouchSensor;
@@ -16,18 +20,17 @@ public class ArmModule{
 	//	VARIABLES
 	///////////////////////////////////////////////////////
 	
-	private final int ARMGEARRATIO = 85;
-	private static final int ARMLENGTH = 80;
-	private final float ARMMOTORMAXSPEED;
-	private final float ARMMOTORMINSPEED = 0;
+	public static final int ARMGEARRATIO = 85;
+	public static final int ARMLENGTH = 80;
+	public static float ARMMOTORMAXSPEED;
+	public static float ARMMOTORMINSPEED = 0;
+	
+	private int slackAngle = 450; //TODO: needs to be measured!!!
 	private int armMinAngle;
 	private int armMaxAngle; 
-
-	
-
-	
-	private NXTRegulatedMotor motorArm;
+	private SlackMotor motorArm;
 	private TouchSensor sensorArm;
+	private TachoMotorPort port = MotorPort.A;
 	
 
 	///////////////////////////////////////////////////////
@@ -35,7 +38,7 @@ public class ArmModule{
 	///////////////////////////////////////////////////////	
 
 	public ArmModule(){
-		motorArm = Motor.A;
+		motorArm = new SlackMotor(port, slackAngle);
 		ARMMOTORMAXSPEED = motorArm.getMaxSpeed();
 		sensorArm = new TouchSensor(SensorPort.S1);
 	}
@@ -59,11 +62,14 @@ public class ArmModule{
 		return motorArm.getRotationSpeed()/ARMGEARRATIO;
 	}
 	
-	/**
+	/** Returns the current angle of the arm
+	 *  since the motor angle is zero where the arm hits the touch sensor
+	 *  armMinAngle needs to be added to motorArm.getTachoCount()/ARMGEARRATIO
+	 * 
 	 * @return the actual arm angle, not the motor angle 
 	 */
 	public double getAngle(){
-			return motorArm.getPosition()/ARMGEARRATIO + armMinAngle;
+			return motorArm.getTachoCount()/ARMGEARRATIO + armMinAngle;
 	}
 	
 	/** Sets the speed of the arm. Checks whether the desired speed is 
@@ -131,6 +137,7 @@ public class ArmModule{
 	 * 	arm needs to be stopped manually by the user when in the middle
 	 * 	which makes the calibration work for different robots
 	 */
+	//TODO: Calibrate slack and calibrate middle angle manually !
 	public void calibrateMotorArm(){
 		boolean wantToRepeat = true;
 		double angleToMiddle;
@@ -158,7 +165,7 @@ public class ArmModule{
 			angleToMiddle = motorArm.getPosition()/ARMGEARRATIO;
 			LCD.drawString("Angle: " + String.valueOf(angleToMiddle), 0, 1);
 			LCD.drawString("Try Again?", 0, 2);
-			LCD.drawString("Choice: ", 0, 3); //TODO: Fix ausgabe
+			LCD.drawString("Choice: ", 0, 3);
 			wantToRepeat = UserInterface.chooseYesNo(9, 3);
 		}while(wantToRepeat == true);
 		LCD.clear();

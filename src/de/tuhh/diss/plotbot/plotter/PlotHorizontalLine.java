@@ -3,7 +3,7 @@ package de.tuhh.diss.plotbot.plotter;
 import de.tuhh.diss.plotbot.exceptions.MotorException;
 import de.tuhh.diss.plotbot.exceptions.OutOfWorkspaceException;
 import de.tuhh.diss.plotbot.robot.RobotInterface;
-import de.tuhh.diss.plotbot.utilities.CoordTrans;
+import de.tuhh.diss.plotbot.utilities.Calc;
 
 public class PlotHorizontalLine extends PlotLine{
 
@@ -23,7 +23,7 @@ public class PlotHorizontalLine extends PlotLine{
 		
 		try {
 			//TODO: adjust speed 
-			robot.moveArmTo((int)CoordTrans.getAnglePen(robot.getArmLength(), xStart+length), true);
+			robot.moveArmTo((int)Calc.getAnglePen(robot.getArmLength(), xStart+length), true);
 		} catch (OutOfWorkspaceException e) {
 			robot.stopAllMotors();
 			throw new MotorException();
