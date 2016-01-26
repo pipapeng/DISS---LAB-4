@@ -1,63 +1,54 @@
 package de.tuhh.diss.plotbot.plotter;
 
+import de.tuhh.diss.plotbot.exceptions.MotorException;
 import de.tuhh.diss.plotbot.robot.RobotInterface;
-
 
 public class Plotter implements PlotterInterface{
 
 	RobotInterface robot;
+	PlotTUHH tuhh;
+	PlotRectangle rectangle; 
 	
-	public Plotter(RobotInterface robot){
+	public Plotter(RobotInterface robot) throws MotorException{
+		
 		this.robot = robot;
+		tuhh = new PlotTUHH(robot);
+		rectangle = new PlotRectangle(robot);	
 	}
 
-	@Override
 	public int getMinSizeRectangle() {
-		// TODO Auto-generated method stub
-		return 10;
+	
+		return rectangle.getMinSize();
 	}
 
-	@Override
 	public int getMaxSizeRectangle() {
-		// TODO Auto-generated method stub
-		return 200;
+		
+		return rectangle.getMaxSize();
 	}
 
-	@Override
 	public int getMinSizeString() {
-		// TODO Auto-generated method stub
-		return 20;
+		
+		return tuhh.getMinSize();
 	}
 
-	@Override
 	public int getMaxSizeString() {
-		// TODO Auto-generated method stub
-		return 150;
+		
+		return tuhh.getMaxSize();
 	}
 	
-	@Override
-	public void plotRectangle(double size) {
-		// TODO Auto-generated method stub
+	public void plotRectangle(double size) throws MotorException{
 		
+		rectangle.plot(size, true);;
 	}
 
-	@Override
-	public void plotString(double size) {
-		// TODO Auto-generated method stub
+	public void plotString(double size) throws MotorException{
 		
+		double recSize = tuhh.plot(size);
+		rectangle.plot(recSize, false);
 	}
 
-	@Override
 	public void stopImmediatly() {
-		// TODO Auto-generated method stub
+		// TODO bauen oder entfernen
 		
 	}
-
-	@Override
-	public void shutDown() {					// brauch man das?
-		// TODO Auto-generated method stub
-		
-	}
-
-	
 }
