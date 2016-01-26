@@ -107,14 +107,15 @@ public class PhysicalRobot implements RobotInterface{
 			for(int it = 0; it < steps; it++){
 				//set up next distance in Y
 				yNow = WHEELS.getYCenter() + Calc.getYCenterToPen(ArmModule.ARMLENGTH, fromAngle);
-				yDevianceStep = (yTarget - yNow) / (steps - it);
+				LCD.drawString("yNow: " + String.valueOf(yNow), 0, 4);
+				//yDevianceStep = (yTarget - yNow) / (steps - it);
 				yDevianceAngle = Calc.getYCenterToPen(ArmModule.ARMLENGTH, fromAngle) - Calc.getYCenterToPen(getArmLength(), toAngle);
 				yStep = yDevianceAngle + yDevianceStep;
 				
 				//set up next wheel speed needed
 				wheelAngle = yStep * 360/(WheelsModule.WHEELDIAMETER * Math.PI);
 				necessaryWheelspeed = wheelAngle / timePerStep;
-				setWheelSpeed(necessaryWheelspeed);
+				//setWheelSpeed(necessaryWheelspeed);
 				
 				//move arm and wheels
 				waitForArm();
@@ -136,9 +137,13 @@ public class PhysicalRobot implements RobotInterface{
 			int currentY = (int) Math.round(yNow);
 			double distanceToCoverX;
 			double distanceToCoverY;
+			double maxDistance;
+			double stepsNeeded;
 			while(Calc.targetReachedSufficently(currentX, currentY, xTarget, yTarget, 3) != true){
 				distanceToCoverX = xTarget - currentX;
 				distanceToCoverY = yTarget - currentY;
+				maxDistance = Math.max(distanceToCoverX, distanceToCoverY);
+				stepsNeeded = maxDistance / steps;
 				
 				//set up next distance in Y
 				

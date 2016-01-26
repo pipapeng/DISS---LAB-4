@@ -63,7 +63,7 @@ public class SlackMotor extends NXTRegulatedMotor {
 			} else if (!lastFwd && delta > 0) {
 				lastFwd = true;
 				super.rotateTo(getTachoCount() + slackOffset, false);
-				super.rotateTo(limitAngle + slackOffset, immediateReturn);
+				super.rotateTo(limitAngle, immediateReturn);
 				currOffset = slackOffset;
 			} else {
 				super.rotateTo(limitAngle + currOffset, immediateReturn);
