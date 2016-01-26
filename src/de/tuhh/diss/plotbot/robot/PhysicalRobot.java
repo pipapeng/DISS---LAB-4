@@ -190,7 +190,7 @@ public class PhysicalRobot implements RobotInterface{
 				startAngle = ARM.getAngle();
 				endAngle = Calc.getAnglePen(ArmModule.ARMLENGTH, xTarget);
 				angleToTarget = endAngle - startAngle;
-				angleStep = angleToTarget * (it/10);		
+				angleStep = angleToTarget * (it/steps);		
 				toAngle = startAngle + angleStep;
 				timePerStep = Math.abs(angleStep / getArmRotationSpeed());
 				
@@ -210,7 +210,7 @@ public class PhysicalRobot implements RobotInterface{
 	
 		}
 	}
-	
+
 	
 	
 	/////////////////
