@@ -24,9 +24,12 @@ public class ArmModule{
 	public static float ARMMOTORMAXSPEED;
 	public static float ARMMOTORMINSPEED = 0;
 	
-	private int slackAngle = 450; //TODO: needs to be measured!!!
+	private boolean anglesAreSet = false;
+	private int slackAngle = 750; //TODO: needs to be measured!!!
+	private int angleToMiddle;
 	private int armMinAngle;
 	private int armMaxAngle; 
+	
 	private ShittyMotor motorArm;
 	private TouchSensor sensorArm;
 	private TachoMotorPort port = MotorPort.A;
@@ -76,6 +79,7 @@ public class ArmModule{
 	 * 
 	 * @param armSpeed desired speed that should be set
 	 */
+	//TODO: Make settable for motor or arm !
 	public void setArmSpeed(double armSpeed){
 		double armMotorSpeed = armSpeed * ARMGEARRATIO;
 		
@@ -138,46 +142,90 @@ public class ArmModule{
 	 */
 	//TODO: Calibrate slack and calibrate middle angle manually !
 	public void calibrateMotorArm(){
-		boolean wantToRepeat = true;
-		double angleToMiddle;
 		
-		do{
-			LCD.clear();
-			LCD.drawString("Calibrating arm ...", 0, 0);
-		
-			//move arm all the way to the right and reset motorAngle
-			motorArm.setSpeed((int)(ARMMOTORMAXSPEED*.75));
-			motorArm.backward();
-			while (!sensorArm.isPressed()){
-			}
-			stopArm();
-			motorArm.resetTachoCount();
-		
-			//move arm left needs to be stopped manually when in the middle
-			motorArm.rotateTo(100*ARMGEARRATIO,true);
-			LCD.drawString("Press Enter when ", 0, 2);
-			LCD.drawString("arm in middle!", 0, 3);
-			Button.ENTER.waitForPressAndRelease();
-			stopArm();
-		
-			//show the measured angle and ask if user wants to go again
-			angleToMiddle = motorArm.getPosition()/ARMGEARRATIO;
-			LCD.drawString("Angle: " + String.valueOf(angleToMiddle), 0, 1);
-			LCD.drawString("Try Again?", 0, 2);
-			LCD.drawString("Choice: ", 0, 3);
-			wantToRepeat = UserInterface.chooseYesNo(9, 3);
-		}while(wantToRepeat == true);
 		LCD.clear();
+		LCD.drawString("Calibrating arm ...", 0, 0);
 		
-		armMaxAngle = (int) (90 + angleToMiddle);
-		armMinAngle = (int) (90 - angleToMiddle);
+		//move arm all the way to the right and reset motorAngle
+		setArmSpeed((ARMMOTORMAXSPEED*.5)/ARMGEARRATIO);
+		motorArm.backward();
+		while (!sensorArm.isPressed()){
+		}
+		stopArm();
+		motorArm.resetTachoCount();
+					
+		if(anglesAreSet == false){
+			calibrateMotorAngles();
+		}
+		
+		LCD.clear();
 		LCD.drawString("Min: " + String.valueOf(armMinAngle), 0, 4);
 		LCD.drawString("Max: " + String.valueOf(armMaxAngle), 0, 5);
 		LCD.drawString("Arm calibration", 0, 0);
 		LCD.drawString("successful!", 0, 1);
-		Delay.msDelay(2000);
-	}
+		Delay.msDelay(2000);	
+	}	
 	
+	public void calibrateMotorAngles(){
+		
+		setArmSpeed((ARMMOTORMAXSPEED*.5)/ARMGEARRATIO);
+		//move to mid
+		for(int i = 1 ; i < 8; i++){
+			LCD.clear(i);
+		}
+		
+		// Set where the middle is
+		LCD.drawString("Move Robot from", 0, 2);
+		LCD.drawString("the right into", 0, 3);
+		LCD.drawString("mid position", 0, 4);
+		LCD.drawString("Then press ENTER", 0, 6);
+			
+		do{
+			while(Button.LEFT.isDown()){
+				motorArm.forward();
+			}
+			while(Button.RIGHT.isDown()){
+				motorArm.backward();
+			}
+			motorArm.stop();
+			LCD.drawString("aToMidwSl: " + motorArm.getTachoCount(), 0, 7);
+		} while(!Button.ENTER.isDown());
+		int midAngleWithSlack = motorArm.getTachoCount();
+		
+		for(int i = 1 ; i < 8; i++){
+			LCD.clear(i);
+		}
+		
+		Delay.msDelay(1000);
+		
+		LCD.drawString("Move arm motor", 0, 2);
+		LCD.drawString("to the right", 0, 3);
+		LCD.drawString("until arm moves", 0, 4);
+		LCD.drawString("Then press ENTER", 0, 6);
+			
+		do{
+			while(Button.LEFT.isDown()){
+				motorArm.forward();
+			}
+			while(Button.RIGHT.isDown()){
+				motorArm.backward();
+			}
+			motorArm.stop();
+			LCD.drawString("slack: " + (midAngleWithSlack - motorArm.getTachoCount()), 0, 7);
+		} while(!Button.ENTER.isDown());
+		int midAngleWithoutSlack = motorArm.getTachoCount();
+		
+		// Letzte gemessene Mitte minus "neue" Mitte (anderer anschlag)  
+		int slack = midAngleWithSlack - midAngleWithoutSlack;
+		motorArm.setSlackAngle(slack);
+
+		// was damit?
+		angleToMiddle = motorArm.getTachoCount()/ARMGEARRATIO;
+		LCD.drawString("aToMid: " + angleToMiddle, 0, 7);
+		Delay.msDelay(1000);
+		armMaxAngle = (90 + angleToMiddle);
+		armMinAngle = (90 - angleToMiddle);
+	}
 
 	
 }
