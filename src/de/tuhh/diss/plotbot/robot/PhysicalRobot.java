@@ -120,6 +120,142 @@ public class PhysicalRobot implements RobotInterface{
 		}
 	}
 	
+	// Julius Versuch
+	
+	/** Keine Steps. Durch Funktion direkte Geschwindigkeitsanpassung
+	 */
+	public void movePenJulius1(int xTarget, int yTarget) throws OutOfWorkspaceException{
+		double startAngle = ARM.getAngle();
+		double endAngle = Calc.getAnglePen(ArmModule.ARMLENGTH, xTarget);
+		double yNow = WHEELS.getYCenter() + Calc.getYCenterToPen(ArmModule.ARMLENGTH, startAngle);
+		double yDeviance;
+		double yDevianceAngle;
+		double ySum;
+		double necessaryWheelspeed;
+				
+				yNow = WHEELS.getYCenter() + Calc.getYCenterToPen(ArmModule.ARMLENGTH, startAngle);
+				yDeviance = yTarget - yNow;
+				yDevianceAngle = Calc.getYCenterToPen(ArmModule.ARMLENGTH, startAngle) - Calc.getYCenterToPen(getArmLength(), endAngle);
+				ySum = yDevianceAngle + yDeviance;
+				
+				moveArmTo(endAngle, true);
+				moveWheels(ySum, true);
+				
+				do{
+					necessaryWheelspeed = ARM.getRotationSpeed()*ArmModule.ARMLENGTH*Math.sin(Math.toRadians(ARM.getAngle())); // -90 ersetzen
+					WHEELS.setWheelSpeed(necessaryWheelspeed);
+				}while(ARM.isMoving); // isMoving ins Interface
+				
+//				isMoving
+//
+//				public boolean isMoving()
+//				This method returns true if the motor is attempting to rotate. The return value may not correspond to the actual motor movement.
+//				For example, If the motor is stalled, isMoving() will return true. 
+//				After flt() is called, this method will return false even though the motor axle may continue to rotate by inertia. If the motor is stalled, isMoving() will return true. . A stall can be detected by calling isStalled();
+//				Specified by:
+//				isMoving in interface BaseMotor
+//				Returns:
+//				true iff the motor is attempting to rotate.
+				waitForArm();
+				waitForWheels();
+	}
+	
+	/** Mit Steps. Fuer jeden Step Geschwindigkeitsanpassung durch Funktion
+	 * 
+	 * Der Arm wird mit konstanter geschwindigkeit gestartet,
+	 * 
+	 * durch die Forschleife wird bei jedem durchlauf eine distanz in einer berechneten geschwindigkeit durchlaufen
+	 * summe der distanzen ergibt die gesamt distanz
+	 */
+	public void movePenJulius2(int xTarget, int yTarget, int steps) throws OutOfWorkspaceException{
+		double startAngle = ARM.getAngle();
+		double endAngle = Calc.getAnglePen(ArmModule.ARMLENGTH, xTarget);
+		double yNow = WHEELS.getYCenter() + Calc.getYCenterToPen(ArmModule.ARMLENGTH, startAngle);
+		double yDeviance;
+		double yDevianceAngle;
+		double ySum;
+		double yStep;
+		double necessaryWheelspeed;
+				
+				yNow = WHEELS.getYCenter() + Calc.getYCenterToPen(ArmModule.ARMLENGTH, startAngle);
+				yDeviance = yTarget - yNow;
+				yDevianceAngle = Calc.getYCenterToPen(ArmModule.ARMLENGTH, startAngle) - Calc.getYCenterToPen(getArmLength(), endAngle);
+				ySum = yDevianceAngle + yDeviance;
+				yStep = ySum/steps;
+				
+				moveArmTo(endAngle, true);
+				
+				for(int i1 = 1; i1 == steps; i1++){
+					necessaryWheelspeed = ARM.getRotationSpeed()*ArmModule.ARMLENGTH*Math.sin(Math.toRadians(ARM.getAngle())); // -90 ersetzen
+					WHEELS.setWheelSpeed(necessaryWheelspeed);
+					moveWheels(yStep, true);
+					WHEELS.setWheelSpeed(necessaryWheelspeed);
+					waitForWheels();
+				}
+				waitForArm();
+	}
+	
+
+	/** Mit Steps. 
+	 * Die Bewegung wird in Abschnitte unterteilt.
+	 * Fuer jedes Bewegungsdreieck wird die y distanz und der winnkel berechnet
+	 * berechneter winkel und y distanz werden nacheinander gefahren
+	 * Geschwindigkeiten bleiben konstant
+	 */
+	public void movePenJulius3(int xTarget, int steps) throws OutOfWorkspaceException{
+		double startAngle = ARM.getAngle();
+		double endAngle = Calc.getAnglePen(ArmModule.ARMLENGTH, xTarget);
+		double angleDifference = endAngle - startAngle;
+		double stepAngle = angleDifference/steps;
+		double sector = Math.sqrt(2)*ArmModule.ARMLENGTH*Math.sqrt(1-Math.cos(Math.toRadians(stepAngle))); // stepAngle = Degree? --   c^2 = 2a^2(1-cos(gamma)) 
+		double gamma;
+		double yDevianceAngle;
+		double toAngle;
+		
+		for(int i1=1; i1 == steps; i1++){
+			gamma = i1*stepAngle;
+			yDevianceAngle = Math.sin(Math.toRadians(gamma))*sector;
+			toAngle = (i1*stepAngle)+startAngle;
+			moveArmTo(toAngle, false);
+			moveWheels(yDevianceAngle, false);
+		}
+	}
+	
+	
+	/** Mit Steps. Die Bewegung wird in Abschnitte unterteilt. Fuer jedes Bewegungsdreieck wird die y distanz und der winnkel berechnet
+	 * berechneter winkel und y distanz wird gleichzeitig gefahren
+	 * die benoetigte Geschwindigkeit wird fuer jeden durchlauf der for schleife neu berechnet
+	 */
+	public void movePenJulius4(int xTarget, int steps) throws OutOfWorkspaceException{
+		double startAngle = ARM.getAngle();
+		double endAngle = Calc.getAnglePen(ArmModule.ARMLENGTH, xTarget);
+		double angleDifference = endAngle - startAngle;
+		double stepAngle = angleDifference/steps;
+		double sector = Math.sqrt(2)*ArmModule.ARMLENGTH*Math.sqrt(1-Math.cos(Math.toRadians(stepAngle))); // stepAngle = Degree? --   c^2 = 2a^2(1-cos(gamma)) 
+		double gamma;
+		double necessaryWheelspeed;
+		double toAngle;
+		double yDevianceAngle;
+		
+		for(int i1=1; i1 == steps; i1++){
+			
+			toAngle = (i1*stepAngle)+startAngle;
+			gamma = i1*stepAngle;
+			yDevianceAngle = Math.sin(Math.toRadians(gamma))*sector;
+			necessaryWheelspeed = ARM.getRotationSpeed()*ArmModule.ARMLENGTH*Math.sin(Math.toRadians((i1-0.5)*stepAngle)); // -90 ersetzen
+			WHEELS.setWheelSpeed(necessaryWheelspeed);
+			moveArmTo(toAngle, true);
+			moveWheels(yDevianceAngle, true);
+			WHEELS.setWheelSpeed(necessaryWheelspeed);
+			waitForWheels();
+		}
+			waitForArm();
+	}
+	
+	
+	
+	
+	// Julius Versuch Ende
 	
 	/////////////////
 	/////  ARM
