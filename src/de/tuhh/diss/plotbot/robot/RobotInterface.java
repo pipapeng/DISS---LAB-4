@@ -8,8 +8,8 @@ public interface RobotInterface { //TODO: Brauchen wir das Interface ueberhaupt 
 	public RobotInterface getPhysicalRobot();
 	public boolean calibrateMotors();
 	public void stopAllMotors();
-	//public void movePenTo(int xTarget, int yTarget) throws OutOfWorkspaceException;
-	//public void movePenToInSteps(int xstart, int ystart, int xTarget, int yTarget, int steps) throws OutOfWorkspaceException;
+	public void movePenTo(int xTarget, int yTarget) throws OutOfWorkspaceException;
+	public void movePenToInSteps(int xstart, int ystart, int xTarget, int yTarget, int steps) throws OutOfWorkspaceException;
 	
 	/////** ARM **/////
 	public int getArmLength();
