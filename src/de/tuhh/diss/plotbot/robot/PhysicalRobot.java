@@ -121,60 +121,73 @@ public class PhysicalRobot implements RobotInterface{
 		}
 	}
 	
-	private void movePenToLennart(double xTarget, double yTarget) throws OutOfWorkspaceException{
+	public void movePenToLennart(double xTarget, double yTarget) throws MotorException{
 		
-		double targetAngle = Calc.getAnglePen(ArmModule.getArmLength(), xTarget);
-		double yOfTargetAngle = Calc.getYCenterToPen(ArmModule.getArmLength(), targetAngle);
-		double currentYPos = this.getYCenter();
-		double distance = yTarget - yOfTargetAngle - currentYPos;
-		
-		this.moveArmTo(targetAngle, true);
-		this.moveWheels(distance, true);
-		
-		this.waitForArm();
-		this.waitForWheels();
+		try{
+			double targetAngle = Calc.getAnglePen(ArmModule.getArmLength(), xTarget);
+			double yOfTargetAngle = Calc.getYCenterToPen(ArmModule.getArmLength(), targetAngle);
+			double currentYPos = this.getYCenter();
+			double distance = yTarget - yOfTargetAngle - currentYPos;
+			
+			this.moveArmTo(targetAngle, true);
+			this.moveWheels(distance, true);
+			
+			this.waitForArm();
+			this.waitForWheels();
+		} catch(OutOfWorkspaceException e){
+			
+			this.stopAllMotors();
+			throw new MotorException();
+		}
 	}
 	
-	public void moveVerticalLennart(double startX, double startY, double length) throws OutOfWorkspaceException{
-		this.movePenToLennart(startX, startY);
+	public void movePenVerticalLennart(double xStart, double yStart, double length) throws MotorException{
+		
+		this.movePenToLennart(xStart, yStart);
 		moveWheels(length);
 	}
 	
-	public void moveHorizontalLennart(double xStart, double yStart, double length, int amountOfSteps) throws OutOfWorkspaceException{
+	public void movePenHorizontalLennart(double xStart, double yStart, double length, int amountOfSteps) throws MotorException{
 		
-		int armLength = ArmModule.getArmLength();
-		int tolerance = 5;			//TODO Konstante machen
-		double angleStepTarget;
-		boolean targetReached = false;
-		
-		movePenToLennart(xStart, yStart);
-		
-		do{
-			double xCurrent = Calc.getXPositionPen(armLength, this.getArmAngle());	
-			double yCurrent = this.getYCenter() + Calc.getYCenterToPen(armLength, this.getArmAngle()); 
+		try{
+			int armLength = ArmModule.getArmLength();
+			int tolerance = 5;			//TODO Konstante machen
+			double angleStepTarget;
+			boolean targetReached = false;
 			
-			double startAngle = Calc.getAnglePen(armLength, xCurrent);
-			double angleTarget = Calc.getAnglePen(armLength, yStart + length);
+			movePenToLennart(xStart, yStart);
 			
-			double yDelta = Calc.getYCenterToPen(armLength, angleTarget) - Calc.getYCenterToPen(armLength, startAngle);	
-			double yStep = yDelta / amountOfSteps;
-			
-			for(int i = 1; i == amountOfSteps; i++){
+			do{
+				double xCurrent = Calc.getXPositionPen(armLength, this.getArmAngle());	
+				double yCurrent = this.getYCenter() + Calc.getYCenterToPen(armLength, this.getArmAngle()); 
 				
-				angleStepTarget = Calc.getAnglePenOfY(armLength, yCurrent + i * yStep); 
-				this.moveArmTo(angleStepTarget, true);
-				this.moveWheels(yStep, true);
+				double startAngle = Calc.getAnglePen(armLength, xCurrent);
+				double angleTarget = Calc.getAnglePen(armLength, yStart + length);
 				
-				this.waitForWheels();
-				this.waitForArm();
-			}
-
-			//TODO Methode zu double aendern argumente ueberarbeiten!!!!!!
-			double armAngle = this.getArmAngle();
-			targetReached = Calc.targetReachedSufficently((int) Calc.getXPositionPen(armLength, armAngle),(int) (this.getYCenter() + Calc.getYCenterToPen(armLength, armAngle)), (int) xStart, (int) (yStart + length), tolerance);
+				double yDelta = Calc.getYCenterToPen(armLength, angleTarget) - Calc.getYCenterToPen(armLength, startAngle);	
+				double yStep = yDelta / amountOfSteps;
+				
+				for(int i = 1; i == amountOfSteps; i++){
+					
+					angleStepTarget = Calc.getAnglePenOfY(armLength, yCurrent + i * yStep); 
+					this.moveArmTo(angleStepTarget, true);
+					this.moveWheels(yStep, true);
+					
+					this.waitForWheels();
+					this.waitForArm();
+				}
+	
+				//TODO Methode zu double aendern argumente ueberarbeiten!!!!!!
+				double armAngle = this.getArmAngle();
+				targetReached = Calc.targetReachedSufficently((int) Calc.getXPositionPen(armLength, armAngle),(int) (this.getYCenter() + Calc.getYCenterToPen(armLength, armAngle)), (int) xStart, (int) (yStart + length), tolerance);
+				
+				amountOfSteps = 1;		// TODO evtl aendern
+			} while(!targetReached);
+		} catch(OutOfWorkspaceException e){
 			
-			amountOfSteps = 1;		// TODO evtl aendern
-		} while(!targetReached);
+			this.stopAllMotors();
+			throw new MotorException();
+		}
 	}
 	
 	/////////////////

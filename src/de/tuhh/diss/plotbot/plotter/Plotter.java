@@ -9,6 +9,7 @@ public class Plotter implements PlotterInterface{
 	PlotTUHH tuhh;
 	PlotRectangle rectangle; 
 	
+	
 	public Plotter(RobotInterface robot) throws MotorException{
 		
 		this.robot = robot;
@@ -43,8 +44,8 @@ public class Plotter implements PlotterInterface{
 
 	public void plotString(double size) throws MotorException{
 		
-		double recSize = tuhh.plot(size);
-		rectangle.plot(recSize, false);
+		double rectangleSize = tuhh.plot(size);
+		rectangle.plot(rectangleSize, false);
 	}
 
 	public void stopImmediatly() {
