@@ -44,7 +44,7 @@ public class ShittyMotor extends NXTRegulatedMotor{
 	public void rotate(int angle, boolean immediateReturn){
 		//Determine desired direction
 				
-		if(angle == 0){ //TODO: ?
+		if(angle == 0){ 
 			return; //nothing to do, leave method
 					
 		} else if (angle > 0) {

@@ -8,14 +8,15 @@ public interface RobotInterface { //TODO: Brauchen wir das Interface ueberhaupt 
 	public RobotInterface getPhysicalRobot();
 	public boolean calibrateMotors();
 	public void stopAllMotors();
-	public void movePenTo(int xTarget, int yTarget) throws OutOfWorkspaceException;
-	public void movePenToInSteps(int xstart, int ystart, int xTarget, int yTarget, int steps) throws OutOfWorkspaceException;
+	//public void movePenTo(int xTarget, int yTarget) throws OutOfWorkspaceException;
+	//public void movePenToInSteps(int xstart, int ystart, int xTarget, int yTarget, int steps) throws OutOfWorkspaceException;
 	
 	/////** ARM **/////
 	public int getArmLength();
 	public int getArmMinAngle();
 	public int getArmMaxAngle();
 	public double getArmAngle();
+	public int getArmMotorSpeed();
 	public double getArmRotationSpeed();
 	public void setArmSpeed(int speed) throws IndexOutOfBoundsException;
 	public void moveArmTo(double angle) throws OutOfWorkspaceException;
@@ -33,8 +34,8 @@ public interface RobotInterface { //TODO: Brauchen wir das Interface ueberhaupt 
 	public void setWheelSpeed(double speed) throws IndexOutOfBoundsException;
 	public void moveWheels(double distance) throws OutOfWorkspaceException;
 	public void moveWheels(double distance, boolean immediateReturn) throws OutOfWorkspaceException;
-	public void moveWheelsForward();
-	public void moveWheelsBackward();
+	public void moveWheelsForward() throws OutOfWorkspaceException;
+	public void moveWheelsBackward() throws OutOfWorkspaceException;
 	public void waitForWheels();
 	public void stopWheels();	
 }

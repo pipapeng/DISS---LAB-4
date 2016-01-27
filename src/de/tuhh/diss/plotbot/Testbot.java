@@ -23,8 +23,6 @@ public class Testbot {
 			
 			robot.movePenTo(0, 50);
 			robot.setPen(true);
-			robot.movePenTo( -50, 50, 5, 1);
-	
 			
 //			robot.movePenTo(0, 50);
 //			robot.setPen(true);

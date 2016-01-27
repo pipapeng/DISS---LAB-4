@@ -59,6 +59,16 @@ public class ArmModule{
 	}
 	
 	/**
+	 * Returns the speed the motor is set to
+	 * @return motor speed
+	 */
+	public int getMotorSpeed(){
+		return motorArm.getSpeed();
+	}
+	
+	/**
+	 * This only works while the arm is actually moving and
+	 * returns the current speed
 	 * @return the speed of the actual arm, not the motor angle  in degrees/s
 	 */
 	public int getRotationSpeed(){
@@ -231,7 +241,11 @@ public class ArmModule{
 		// Letzte gemessene Mitte minus "neue" Mitte (anderer anschlag)  
 		int slack = midAngleWithSlack - midAngleWithoutSlack;
 		motorArm.setSlackAngle(slack);
-
+		
+		angleToMiddle = motorAngleToMiddle/ARMGEARRATIO;
+		LCD.drawString("aToMid: " + angleToMiddle, 0, 7);
+		armMaxAngle = (90 + angleToMiddle);
+		armMinAngle = (90 - angleToMiddle);
 	}
 
 	

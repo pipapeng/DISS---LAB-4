@@ -32,7 +32,12 @@ public class PlotHorizontalLine extends PlotLine{
 		while(robot.getArmRotationSpeed() != 0){
 			
 			robot.setWheelSpeed(calcWheelSpeed((int)robot.getArmAngle()));
-			robot.moveWheelsForward();
+			try {
+				robot.moveWheelsForward();
+			} catch (OutOfWorkspaceException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 		robot.stopWheels();
 		

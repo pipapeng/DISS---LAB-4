@@ -32,6 +32,10 @@ public class PenModule {
 		sensorPen = new TouchSensor(SensorPort.S2);
 	}
 	
+	public boolean penIsDown(){
+		return penDown;
+	}
+	
 	public void setPen(boolean down){
 		
 		if(down == true){
