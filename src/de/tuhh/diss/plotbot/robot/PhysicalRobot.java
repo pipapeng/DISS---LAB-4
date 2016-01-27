@@ -158,13 +158,11 @@ public class PhysicalRobot implements RobotInterface{
 			movePenToLennart(xStart, yStart);
 			
 			do{
-				double xCurrent = Calc.getXPositionPen(armLength, this.getArmAngle());	
-				double yCurrent = this.getYCenter() + Calc.getYCenterToPen(armLength, this.getArmAngle()); 
-				
-				double startAngle = Calc.getAnglePen(armLength, xCurrent);
+				double yCurrent = this.getYCenter() + Calc.getYCenterToPen(armLength, this.getArmAngle());
+				double angleStart = this.getArmAngle();
 				double angleTarget = Calc.getAnglePen(armLength, yStart + length);
 				
-				double yDelta = Calc.getYCenterToPen(armLength, angleTarget) - Calc.getYCenterToPen(armLength, startAngle);	
+				double yDelta = Calc.getYCenterToPen(armLength, angleTarget) - Calc.getYCenterToPen(armLength, angleStart);	
 				double yStep = yDelta / amountOfSteps;
 				
 				for(int i = 1; i == amountOfSteps; i++){
@@ -177,9 +175,9 @@ public class PhysicalRobot implements RobotInterface{
 					this.waitForArm();
 				}
 	
-				//TODO Methode zu double aendern argumente ueberarbeiten!!!!!!
+				//TODO Methode zu double aendern
 				double armAngle = this.getArmAngle();
-				targetReached = Calc.targetReachedSufficently((int) Calc.getXPositionPen(armLength, armAngle),(int) (this.getYCenter() + Calc.getYCenterToPen(armLength, armAngle)), (int) xStart, (int) (yStart + length), tolerance);
+				targetReached = Calc.targetReachedSufficently((int) Calc.getXPositionPen(armLength, armAngle),(int) (this.getYCenter() + Calc.getYCenterToPen(armLength, armAngle)), (int) (xStart  + length), (int) yStart, tolerance);
 				
 				amountOfSteps = 1;		// TODO evtl aendern
 			} while(!targetReached);
