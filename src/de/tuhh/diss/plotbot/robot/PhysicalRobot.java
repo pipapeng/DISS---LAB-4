@@ -1,5 +1,6 @@
 package de.tuhh.diss.plotbot.robot;
 
+import de.tuhh.diss.plotbot.exceptions.MotorException;
 import de.tuhh.diss.plotbot.exceptions.OutOfWorkspaceException;
 import de.tuhh.diss.plotbot.utilities.Calc;
 import lejos.nxt.LCD;
@@ -120,6 +121,61 @@ public class PhysicalRobot implements RobotInterface{
 		}
 	}
 	
+	private void movePenToLennart(double xTarget, double yTarget) throws OutOfWorkspaceException{
+		
+		double targetAngle = Calc.getAnglePen(ArmModule.getArmLength(), xTarget);
+		double yOfTargetAngle = Calc.getYCenterToPen(ArmModule.getArmLength(), targetAngle);
+		double currentYPos = this.getYCenter();
+		double distance = yTarget - yOfTargetAngle - currentYPos;
+		
+		this.moveArmTo(targetAngle, true);
+		this.moveWheels(distance, true);
+		
+		this.waitForArm();
+		this.waitForWheels();
+	}
+	
+	public void moveVerticalLennart(double startX, double startY, double length) throws OutOfWorkspaceException{
+		this.movePenToLennart(startX, startY);
+		moveWheels(length);
+	}
+	
+	public void moveHorizontalLennart(double xStart, double yStart, double length, int amountOfSteps) throws OutOfWorkspaceException{
+		
+		int armLength = ArmModule.getArmLength();
+		int tolerance = 5;			//TODO Konstante machen
+		double angleStepTarget;
+		boolean targetReached = false;
+		
+		movePenToLennart(xStart, yStart);
+		
+		do{
+			double xCurrent = Calc.getXPositionPen(armLength, this.getArmAngle());	
+			double yCurrent = this.getYCenter() + Calc.getYCenterToPen(armLength, this.getArmAngle()); 
+			
+			double startAngle = Calc.getAnglePen(armLength, xCurrent);
+			double angleTarget = Calc.getAnglePen(armLength, yStart + length);
+			
+			double yDelta = Calc.getYCenterToPen(armLength, angleTarget) - Calc.getYCenterToPen(armLength, startAngle);	
+			double yStep = yDelta / amountOfSteps;
+			
+			for(int i = 1; i == amountOfSteps; i++){
+				
+				angleStepTarget = Calc.getAnglePenOfY(armLength, yCurrent + i * yStep); 
+				this.moveArmTo(angleStepTarget, true);
+				this.moveWheels(yStep, true);
+				
+				this.waitForWheels();
+				this.waitForArm();
+			}
+
+			//TODO Methode zu double aendern argumente ueberarbeiten!!!!!!
+			double armAngle = this.getArmAngle();
+			targetReached = Calc.targetReachedSufficently((int) Calc.getXPositionPen(armLength, armAngle),(int) (this.getYCenter() + Calc.getYCenterToPen(armLength, armAngle)), (int) xStart, (int) (yStart + length), tolerance);
+			
+			amountOfSteps = 1;		// TODO evtl aendern
+		} while(!targetReached);
+	}
 	
 	/////////////////
 	/////  ARM
