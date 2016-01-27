@@ -1,13 +1,15 @@
 package de.tuhh.diss.plotbot.plotter;
 
 import de.tuhh.diss.plotbot.exceptions.MotorException;
+import de.tuhh.diss.plotbot.exceptions.OutOfWorkspaceException;
 import de.tuhh.diss.plotbot.robot.RobotInterface;
 
 public class Plotter implements PlotterInterface{
-
+	
 	RobotInterface robot;
 	PlotTUHH tuhh;
 	PlotRectangle rectangle; 
+	
 	
 	public Plotter(RobotInterface robot) throws MotorException{
 		
@@ -36,15 +38,15 @@ public class Plotter implements PlotterInterface{
 		return tuhh.getMaxSize();
 	}
 	
-	public void plotRectangle(double size) throws MotorException{
+	public void plotRectangle(double size) throws MotorException, OutOfWorkspaceException{
 		
 		rectangle.plot(size, true);;
 	}
 
-	public void plotString(double size) throws MotorException{
+	public void plotString(double size) throws MotorException, OutOfWorkspaceException{
 		
-		double recSize = tuhh.plot(size);
-		rectangle.plot(recSize, false);
+		double rectangleSize = tuhh.plot(size);
+		rectangle.plot(rectangleSize, false);
 	}
 
 	public void stopImmediatly() {

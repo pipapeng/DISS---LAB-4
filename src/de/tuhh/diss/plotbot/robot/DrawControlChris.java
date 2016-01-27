@@ -19,7 +19,7 @@ public class DrawControlChris {
 	/**
 	 * Instance of the robot
 	 */
-	RobotInterface robot = PhysicalRobot.ROBOT;
+	PhysicalRobot robot = PhysicalRobot.ROBOT;
 	
 	/**
 	 *  Current x position of the pen

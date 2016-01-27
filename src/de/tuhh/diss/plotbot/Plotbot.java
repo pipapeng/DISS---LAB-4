@@ -1,6 +1,7 @@
 package de.tuhh.diss.plotbot;
 
 import de.tuhh.diss.plotbot.exceptions.MotorException;
+import de.tuhh.diss.plotbot.exceptions.OutOfWorkspaceException;
 import de.tuhh.diss.plotbot.plotter.Plotter;
 import de.tuhh.diss.plotbot.plotter.PlotterInterface;
 import de.tuhh.diss.plotbot.robot.PhysicalRobot;
@@ -64,6 +65,8 @@ public class Plotbot implements ButtonListener{
 							userInterface.motorException();
 							calibrate(true);
 							break;
+						} catch (OutOfWorkspaceException e) {
+							//TODO: FILL THIS
 						}
 					}
 					break;
@@ -83,6 +86,8 @@ public class Plotbot implements ButtonListener{
 							userInterface.motorException();
 							calibrate(true);
 							break;
+						} catch (OutOfWorkspaceException e) {
+							//TODO: FILL THIS
 						}
 					}
 					break;
