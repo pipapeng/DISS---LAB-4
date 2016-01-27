@@ -155,6 +155,8 @@ public class PhysicalRobot implements RobotInterface{
 			double angleStepTarget;
 			boolean targetReached = false;
 			
+			amountOfSteps = Math.abs(amountOfSteps);
+			
 			movePenToLennart(xStart, yStart);
 			
 			do{
@@ -199,7 +201,13 @@ public class PhysicalRobot implements RobotInterface{
 			double angleTarget = Calc.getAnglePen(armLength, xStart + length);
 			
 			double yDelta = Calc.getYCenterToPen(armLength, angleTarget) - Calc.getYCenterToPen(armLength, angleStart);
-			int amountOfSteps = (int) (yDelta / yStep);
+			
+			int amountOfSteps = Math.abs((int) (yDelta / yStep));
+			
+			yStep = Math.abs(yStep);
+			if(yDelta < 0){
+				yStep = -yStep;
+			}
 			
 			double angleStepTarget;
 			
