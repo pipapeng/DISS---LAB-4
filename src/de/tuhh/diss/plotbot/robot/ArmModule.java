@@ -58,6 +58,10 @@ public class ArmModule{
 		return armMaxAngle;
 	}
 	
+	public static boolean isMoving(){   //TODO: REMOVE !
+		return Motor.A.isMoving();
+	}
+	
 	/**
 	 * Returns the speed the motor is set to
 	 * @return motor speed
