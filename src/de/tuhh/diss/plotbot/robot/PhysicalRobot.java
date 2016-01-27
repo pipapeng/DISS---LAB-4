@@ -9,7 +9,7 @@ public class PhysicalRobot implements RobotInterface{
 	///////////////////////////////////////////////////////
 	//	VARIABLES
 	///////////////////////////////////////////////////////
-	public static final PhysicalRobot ROBOT = new PhysicalRobot();
+	public static final PhysicalRobot ROBOT = new PhysicalRobot(); //TODO: unstatic
 	
 	private final ArmModule ARM;
 	private final PenModule PEN;
