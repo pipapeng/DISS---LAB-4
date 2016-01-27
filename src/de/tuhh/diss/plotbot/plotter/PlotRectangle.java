@@ -1,44 +1,39 @@
 package de.tuhh.diss.plotbot.plotter;
 
 import de.tuhh.diss.plotbot.exceptions.MotorException;
+import de.tuhh.diss.plotbot.exceptions.OutOfWorkspaceException;
 import de.tuhh.diss.plotbot.robot.RobotInterface;
 
-public class PlotRectangle {
+public class PlotRectangle extends PlotLines{
 	
-	
-	private static final int START = 230;
 	private static final int MINSIZE = 10;
-	private static final int MAXSIZE = 170;
-	
-	private static final double CENTER = 1/2;
-	
-	private RobotInterface robot;
-	
+	private static final int MAXSIZE = 120;			// bei workspace von 45° bis 135°
 	
 	
 	public PlotRectangle(RobotInterface robot) throws MotorException{
-		this.robot = robot;
+		
+		super(robot);
 	}
 	
-	public int getMinSize() {
-	
+	public int getMinSize(){
+		
 		return MINSIZE;
 	}
-
-	public int getMaxSize() {
-
+	
+	public int getMaxSize(){
+		
 		return MAXSIZE;
 	}
 	
-	public void plot(double size, boolean square) throws MotorException{
+	public void plot(double size, boolean square) throws MotorException, OutOfWorkspaceException{
 		
 		double height = size;
 		double width = calcWidth(height, square);
 		
-		new PlotVerticalLine(robot, -height*CENTER, START, -width);
-		new PlotHorizontalLine(robot, -height*CENTER, START-width, height);
-		new PlotVerticalLine(robot, height*CENTER, START-width, width);
-		new PlotHorizontalLine(robot, height*CENTER, START, -height);
+		super.plotVerticalLine(-height*CENTER, START, -width);
+		super.plotHorizontalLine(-height*CENTER, START-width, height);
+		super.plotVerticalLine(height*CENTER, START-width, width);
+		super.plotHorizontalLine(height*CENTER, START, -height);
 	}
 	
 	private double calcWidth(double height, boolean square){

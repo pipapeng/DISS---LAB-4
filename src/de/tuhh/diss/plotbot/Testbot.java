@@ -1,5 +1,6 @@
 package de.tuhh.diss.plotbot;
 
+import de.tuhh.diss.plotbot.exceptions.MotorException;
 import de.tuhh.diss.plotbot.exceptions.OutOfWorkspaceException;
 import de.tuhh.diss.plotbot.robot.PhysicalRobot;
 import de.tuhh.diss.plotbot.robot.RobotInterface;
@@ -55,22 +56,25 @@ public class Testbot {
 			robot.setPen(false);
 			
 			//LENNART
-//			robot.waitForArm();
-//			robot.waitForWheels();
-//			robot.setPen(true);
-//			robot.movePenTo(50, 50);
-//			robot.waitForArm();
-//			robot.waitForWheels();
-//			robot.movePenTo(50, 100);
-//			robot.waitForArm();
-//			robot.waitForWheels();
-//			robot.movePenTo(0, 100);
-//			robot.waitForArm();
-//			robot.waitForWheels();
-//			robot.movePenTo(0, 50);
-//			robot.waitForArm();
-//			robot.waitForWheels();
-//			robot.setPen(false);
+			try {
+				robot.movePenToLennart(0, 50);
+				robot.setPen(true);
+				robot.movePenHorizontalLennart(0, 50, -50, 10);
+				robot.setPen(false);
+				robot.setPen(true);
+				robot.movePenVerticalLennart(-50, 50, 50);
+				robot.setPen(false);
+				robot.setPen(true);
+				robot.movePenHorizontalLennart(-50, 100, 50, 10);
+				robot.setPen(false);
+				robot.setPen(true);
+				robot.movePenVerticalLennart(0, 100, -50);
+				robot.setPen(false);
+			} catch (MotorException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
 		} catch (OutOfWorkspaceException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

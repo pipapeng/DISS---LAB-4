@@ -1,5 +1,6 @@
 package de.tuhh.diss.plotbot.robot;
 
+import de.tuhh.diss.plotbot.exceptions.MotorException;
 import de.tuhh.diss.plotbot.exceptions.OutOfWorkspaceException;
 import de.tuhh.diss.plotbot.utilities.Calc;
 import lejos.nxt.LCD;
@@ -117,6 +118,7 @@ public class PhysicalRobot implements RobotInterface{
 		}
 	}
 	
+
 	// Julius Versuch
 	
 	/** Keine Steps. Durch Funktion direkte Geschwindigkeitsanpassung
@@ -141,7 +143,7 @@ public class PhysicalRobot implements RobotInterface{
 				do{
 					necessaryWheelspeed = ARM.getRotationSpeed()*ArmModule.ARMLENGTH*Math.sin(Math.toRadians(ARM.getAngle())); // -90 ersetzen
 					WHEELS.setWheelSpeed(necessaryWheelspeed);
-				}while(ARM.isMoving()); // isMoving ins Interface //TODO: ERROR !!!!
+				}while(ArmModule.isMoving()); // isMoving ins Interface //TODO: ERROR !!!!
 				
 //				isMoving
 //
@@ -254,6 +256,121 @@ public class PhysicalRobot implements RobotInterface{
 	
 	// Julius Versuch Ende
 	
+
+	public void movePenToLennart(double xTarget, double yTarget) throws MotorException{
+		
+		try{
+			double targetAngle = Calc.getAnglePen(ArmModule.getArmLength(), xTarget);
+			double yOfTargetAngle = Calc.getYCenterToPen(ArmModule.getArmLength(), targetAngle);
+			double currentYPos = this.getYCenter();
+			double distance = yTarget - yOfTargetAngle - currentYPos;
+			
+			this.moveArmTo(targetAngle, true);
+			this.moveWheels(distance, true);
+			
+			this.waitForArm();
+			this.waitForWheels();
+		} catch(OutOfWorkspaceException e){
+			
+			this.stopAllMotors();
+			throw new MotorException();
+		}
+	}
+	
+	public void movePenVerticalLennart(double xStart, double yStart, double length) throws MotorException, OutOfWorkspaceException{
+		
+		this.movePenToLennart(xStart, yStart);
+		moveWheels(length);
+	}
+	
+	public void movePenHorizontalLennart(double xStart, double yStart, double length, int amountOfSteps) throws MotorException{
+		
+		try{
+			int armLength = ArmModule.getArmLength();
+			int tolerance = 5;			//TODO Konstante machen
+			double angleStepTarget;
+			boolean targetReached = false;
+			
+			amountOfSteps = Math.abs(amountOfSteps);
+			
+			movePenToLennart(xStart, yStart);
+			
+			do{
+				double angleCurrent = this.getArmAngle();
+				double yCurrent = this.getYCenter() + Calc.getYCenterToPen(armLength, angleCurrent);
+				double angleTarget = Calc.getAnglePen(armLength, xStart + length);
+				
+				double yDelta = Calc.getYCenterToPen(armLength, angleTarget) - Calc.getYCenterToPen(armLength, angleCurrent);	
+				double yStep = yDelta / amountOfSteps;
+				
+				for(int i = 1; i == amountOfSteps; i++){
+					
+					angleStepTarget = Calc.getAnglePenOfY(armLength, yCurrent + i * yStep); 
+					this.moveArmTo(angleStepTarget, true);
+					this.moveWheels(yStep, true);
+					
+					this.waitForWheels();
+					this.waitForArm();
+				}
+	
+				//TODO Methode zu double aendern
+				double armAngle = this.getArmAngle();
+				targetReached = Calc.targetReachedSufficently((int) Calc.getXPositionPen(armLength, armAngle),(int) (this.getYCenter() + Calc.getYCenterToPen(armLength, armAngle)), (int) (xStart  + length), (int) yStart, tolerance);
+				
+				amountOfSteps = 1;		// TODO evtl aendern
+			} while(!targetReached);
+		} catch(OutOfWorkspaceException e){
+			
+			this.stopAllMotors();
+			throw new MotorException();
+		}
+	}
+	
+	public void movePenHorizontalLennart2(double xStart, double yStart, double length, int yStep) throws MotorException{
+		
+		try{
+			movePenToLennart(xStart, yStart);
+			
+			int armLength = ArmModule.getArmLength();
+			
+			double angleStart = Calc.getAnglePen(armLength, xStart);
+			double angleTarget = Calc.getAnglePen(armLength, xStart + length);
+			
+			double yDelta = Calc.getYCenterToPen(armLength, angleTarget) - Calc.getYCenterToPen(armLength, angleStart);
+			
+			int amountOfSteps = Math.abs((int) (yDelta / yStep));
+			
+			yStep = Math.abs(yStep);
+			if(yDelta < 0){
+				yStep = -yStep;
+			}
+			
+			double angleStepTarget;
+			
+			for(int i = 1; i == amountOfSteps; i++){
+					
+				angleStepTarget = Calc.getAnglePenOfY(armLength, yStart + i * yStep); 
+				this.moveArmTo(angleStepTarget, true);
+				this.moveWheels(yStep, true);
+					
+				this.waitForWheels();
+				this.waitForArm();
+			}
+			
+			double yRest = Calc.getYCenterToPen(armLength, angleTarget) - Calc.getYCenterToPen(armLength, this.getArmAngle());
+			this.moveArmTo(angleTarget, true);
+			this.moveWheels(yRest, true);
+			
+			this.waitForWheels();
+			this.waitForArm();
+			
+		} catch(OutOfWorkspaceException e){
+			
+			this.stopAllMotors();
+			throw new MotorException();
+		}
+	}
+
 	
 	/////////////////
 	/////  ARM

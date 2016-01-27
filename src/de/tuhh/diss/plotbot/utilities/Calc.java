@@ -23,6 +23,10 @@ public class Calc {
 		return Math.toDegrees(Math.acos(x/armLength));
 	}
 	
+	static public double getAnglePenOfY(int armLength, double y) throws OutOfWorkspaceException{
+		return Math.toDegrees(Math.asin(y/armLength));
+	}
+	
 //	static public double getFeed(int armLength, int maxFeed, double x, double y) throws OutOfWorkspaceException{	
 //		
 //		double feed = (y-armLength*Math.sin(Math.toRadians(getAnglePen(armLength, x))));

@@ -21,6 +21,11 @@ public interface RobotInterface { //TODO: Brauchen wir das Interface ueberhaupt 
 	public void setArmSpeed(int speed) throws IndexOutOfBoundsException;
 	public void moveArmTo(double angle) throws OutOfWorkspaceException;
 	public void moveArmTo(double armAngle, boolean immediateReturn) throws OutOfWorkspaceException;
+	
+	public void movePenToLennart(double xTarget, double yTarget) throws MotorException;
+	public void movePenHorizontalLennart(double xStart, double yStart, double length, int amountOfSteps) throws MotorException;
+	public void movePenVerticalLennart(double xStart, double yStart, double length) throws MotorException, OutOfWorkspaceException;
+	
 	public void waitForArm();
 	public void stopArm();
 	
