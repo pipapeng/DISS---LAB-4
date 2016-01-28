@@ -2,15 +2,12 @@ package de.tuhh.diss.plotbot;
 
 import de.tuhh.diss.plotbot.exceptions.MotorException;
 import de.tuhh.diss.plotbot.exceptions.OutOfWorkspaceException;
-import de.tuhh.diss.plotbot.robot.PhysicalRobot;
-import de.tuhh.diss.plotbot.robot.RobotInterface;
 import de.tuhh.diss.plotbot.robot.*;
 import lejos.nxt.Button;
 import lejos.nxt.LCD;
 
 public class Testbot {
-	RobotInterface robot;
-	DrawControlChris drawChris;
+	PhysicalRobot robot;
 	
 	
 	Testbot(){		// hier ist n arsch voll platz fuer testkram (einfach in main "Testbot" statt "Plotbot" aufrufen)
@@ -24,7 +21,14 @@ public class Testbot {
 		
 		try {
 			//CHRIS
-			drawChris.movePenTo(0, 50);
+			robot.movePenTo2(0, 50);
+			robot.setPen(true);
+			robot.movePenToInStepsV1(-50, 50, 4);
+			Button.ENTER.waitForPressAndRelease();
+			robot.setPen(false);
+			robot.movePenTo2(0, 100);
+			robot.setPen(true);
+			robot.movePenToInStepsV1(-50, 100, 4);
 //			robot.setPen(true);
 //			drawChris.movePenToInStepsV3(-50, 50, 5);
 //			robot.setPen(false);

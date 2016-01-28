@@ -26,7 +26,7 @@ public class ArmModule{
 	
 	private boolean anglesAreSet = true;
 	private int slackAngle = 730; //TODO: needs to be measured!!!
-	private int motorAngleToMiddle = 4200;
+	private int motorAngleToMiddle = 4220;
 	private double angleToMiddle;
 	private double armMinAngle;
 	private double armMaxAngle; 
