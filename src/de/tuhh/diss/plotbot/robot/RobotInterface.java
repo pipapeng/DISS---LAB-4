@@ -43,4 +43,7 @@ public interface RobotInterface { //TODO: Brauchen wir das Interface ueberhaupt 
 	public void moveWheelsBackward() throws OutOfWorkspaceException;
 	public void waitForWheels();
 	public void stopWheels();	
+	
+	
+	public void movePenToInStepsV1(double xTarget, double yTarget, int stepSize) throws OutOfWorkspaceException;
 }

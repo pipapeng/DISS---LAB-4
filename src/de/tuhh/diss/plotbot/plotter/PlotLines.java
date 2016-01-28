@@ -35,15 +35,21 @@ public abstract class PlotLines {
 	
 	protected void plotHorizontalLine(double xStart, double yStart, double length) throws MotorException{
 		
-		robot.movePenToLennart(xStart, yStart);
-		robot.setPen(true);
-		robot.movePenHorizontalLennart(xStart, yStart, length, AMOUNTOFSTEPS);
+		try {
+			robot.movePenTo((int) xStart, (int) yStart);
+			robot.setPen(true);
+		
+			robot.movePenToInStepsV1(xStart+length, yStart, 3);
+		} catch (OutOfWorkspaceException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		robot.setPen(false);
 	}
 	
 	protected void plotVerticalLine(double xStart, double yStart, double length) throws MotorException, OutOfWorkspaceException{
 		
-		robot.movePenToLennart(xStart, yStart);
+		robot.movePenTo((int) xStart, (int) yStart);
 		robot.setPen(true);
 		robot.movePenVerticalLennart(xStart, yStart, length);
 		robot.setPen(false);
