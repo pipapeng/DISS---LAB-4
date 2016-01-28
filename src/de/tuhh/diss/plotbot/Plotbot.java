@@ -11,6 +11,7 @@ import lejos.nxt.NXT;
 
 
 public class Plotbot implements ButtonListener{
+	
 	private int choice;
 	private boolean calibrated = false;
 	
@@ -20,12 +21,11 @@ public class Plotbot implements ButtonListener{
 	
 	
 	public static void main(String[] args){
-		new Testbot();
+		new Plotbot();
 	}
 	
 	public Plotbot(){
 	
-		
 		try {
 			robot = PhysicalRobot.ROBOT;
 			userInterface = new UserInterface();
@@ -33,8 +33,7 @@ public class Plotbot implements ButtonListener{
 		} catch (MotorException e1) {
 
 			userInterface.motorException();
-			userInterface.shutDown();
-			NXT.shutDown();
+			userInterface.shutDown(false);
 		}
 
 		
@@ -99,15 +98,16 @@ public class Plotbot implements ButtonListener{
 			}while(choice != 3);
 		}
 
-		userInterface.shutDown();
+		userInterface.shutDown(false);
 		NXT.shutDown();
 	}
 
 	public void buttonPressed(Button b) {
 
 		if(userInterface.mainMenuActive == false && userInterface.sizeMenuActive == false){		//TODO: evtl. entfernen
-			plotter.stopImmediatly();															//TODO: evtl. entfernen
-			userInterface.stopedImmediatly();
+			
+			robot.stopAllMotors();
+			userInterface.shutDown(true);
 			NXT.shutDown();
 		}
 

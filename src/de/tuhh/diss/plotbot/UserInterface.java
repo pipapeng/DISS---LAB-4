@@ -130,23 +130,17 @@ public class UserInterface implements ButtonListener{
 		Delay.msDelay(TIMEDELAY);
 	}
 	
-	public void stopedImmediatly(){
-		
-		LCD.clear();
-		LCD.drawString("You have", 0, 1);
-		LCD.drawString("pressed ESC", 0, 2);
-		
-		LCD.drawString("Robot is", 0, 4);
-		LCD.drawString("shutting down!", 0, 5);
-		
-		Delay.msDelay(TIMEDELAY);
-	}
-	
-	public void shutDown(){
+	public void shutDown(boolean afterESC){
 
 		LCD.clear();
-		LCD.drawString("Shutting down", 0, 2);
-		LCD.drawString("Bye Bye...", 0, 4);
+		
+		if(afterESC){
+			LCD.drawString("You have", 0, 1);
+			LCD.drawString("pressed ESC", 0, 2);
+		}
+//						1234567812345678
+		LCD.drawString("Shutting down!", 0, 4);
+		LCD.drawString("Bye Bye...", 0, 5);
 		
 		Delay.msDelay(TIMEDELAY);
 	}
