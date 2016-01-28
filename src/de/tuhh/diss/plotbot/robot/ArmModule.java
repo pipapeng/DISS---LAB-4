@@ -26,10 +26,10 @@ public class ArmModule{
 	
 	private boolean anglesAreSet = true;
 	private int slackAngle = 730; //TODO: needs to be measured!!!
-	private int motorAngleToMiddle = 4700;
-	private int angleToMiddle;
-	private int armMinAngle;
-	private int armMaxAngle; 
+	private int motorAngleToMiddle = 4200;
+	private double angleToMiddle;
+	private double armMinAngle;
+	private double armMaxAngle; 
 	
 	private ShittyMotor motorArm;
 	private TouchSensor sensorArm;
@@ -50,11 +50,11 @@ public class ArmModule{
 		return ARMLENGTH;
 	}
 	
-	public int getArmMinAngle(){
+	public double getArmMinAngle(){
 		return armMinAngle;
 	}
 	
-	public int getArmMaxAngle(){
+	public double getArmMaxAngle(){
 		return armMaxAngle;
 	}
 	

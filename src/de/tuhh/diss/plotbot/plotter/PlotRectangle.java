@@ -7,7 +7,7 @@ import de.tuhh.diss.plotbot.robot.RobotInterface;
 public class PlotRectangle extends PlotLines{
 	
 	private static final int MINSIZE = 10;
-	private static final int MAXSIZE = 120;			// bei workspace von 45° bis 135°
+	private static final int MAXSIZE = 120;			// bei workspace von 45 bis 135
 	
 	
 	public PlotRectangle(RobotInterface robot) throws MotorException{

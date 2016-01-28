@@ -13,8 +13,8 @@ public interface RobotInterface { //TODO: Brauchen wir das Interface ueberhaupt 
 	
 	/////** ARM **/////
 	public int getArmLength();
-	public int getArmMinAngle();
-	public int getArmMaxAngle();
+	public double getArmMinAngle();
+	public double getArmMaxAngle();
 	public double getArmAngle();
 	public int getArmMotorSpeed();
 	public double getArmRotationSpeed();

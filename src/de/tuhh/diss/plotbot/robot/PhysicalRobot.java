@@ -3,6 +3,7 @@ package de.tuhh.diss.plotbot.robot;
 import de.tuhh.diss.plotbot.exceptions.MotorException;
 import de.tuhh.diss.plotbot.exceptions.OutOfWorkspaceException;
 import de.tuhh.diss.plotbot.utilities.Calc;
+import lejos.nxt.Button;
 import lejos.nxt.LCD;
 
 public class PhysicalRobot implements RobotInterface{
@@ -126,7 +127,7 @@ public class PhysicalRobot implements RobotInterface{
 	public void movePenJulius1(int xTarget, int yTarget) throws OutOfWorkspaceException{
 		double startAngle = ARM.getAngle();
 		double endAngle = Calc.getAnglePen(ArmModule.ARMLENGTH, xTarget);
-		double yNow = WHEELS.getYCenter() + Calc.getYCenterToPen(ArmModule.ARMLENGTH, startAngle);
+		double yNow;
 		double yDeviance;
 		double yDevianceAngle;
 		double ySum;
@@ -137,14 +138,17 @@ public class PhysicalRobot implements RobotInterface{
 				yDevianceAngle = Calc.getYCenterToPen(ArmModule.ARMLENGTH, startAngle) - Calc.getYCenterToPen(getArmLength(), endAngle);
 				ySum = yDevianceAngle + yDeviance;
 				
+				LCD.drawString(String.valueOf(ySum), 0, 6);
+				Button.ENTER.waitForPressAndRelease();
 				moveArmTo(endAngle, true);
 				moveWheels(ySum, true);
+				
 				
 				do{
 					necessaryWheelspeed = ARM.getRotationSpeed()*ArmModule.ARMLENGTH*Math.sin(Math.toRadians(ARM.getAngle())); // -90 ersetzen
 					WHEELS.setWheelSpeed(necessaryWheelspeed);
 				}while(ArmModule.isMoving()); // isMoving ins Interface //TODO: ERROR !!!!
-				
+
 //				isMoving
 //
 //				public boolean isMoving()
@@ -169,7 +173,7 @@ public class PhysicalRobot implements RobotInterface{
 	public void movePenJulius2(int xTarget, int yTarget, int steps) throws OutOfWorkspaceException{
 		double startAngle = ARM.getAngle();
 		double endAngle = Calc.getAnglePen(ArmModule.ARMLENGTH, xTarget);
-		double yNow = WHEELS.getYCenter() + Calc.getYCenterToPen(ArmModule.ARMLENGTH, startAngle);
+		double yNow;
 		double yDeviance;
 		double yDevianceAngle;
 		double ySum;
@@ -380,11 +384,11 @@ public class PhysicalRobot implements RobotInterface{
 		return ArmModule.ARMLENGTH;
 	}
 	
-	public int getArmMinAngle(){
+	public double getArmMinAngle(){
 		return ARM.getArmMinAngle();
 	}
 	
-	public int getArmMaxAngle(){
+	public double getArmMaxAngle(){
 		return ARM.getArmMaxAngle();
 	}
 	

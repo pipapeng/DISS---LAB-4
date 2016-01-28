@@ -105,7 +105,7 @@ public class WheelsModule {
 	 * @throws OutOfWorkspaceException thrown if target is not inside workspace
 	 */
 	public void moveWheels(double distance, boolean immediateReturn) throws OutOfWorkspaceException{
-
+		LCD.drawString("spd: " + String.valueOf(motorWheels.getSpeed()), 0, 3); //TODO: REMOVE
 		
 		if ((getYCenter() + distance) <= YCENTERMAX && (getYCenter() + distance) >= YCENTERMIN){
 			
