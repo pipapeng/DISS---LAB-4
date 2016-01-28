@@ -3,6 +3,7 @@ package de.tuhh.diss.plotbot.robot;
 import de.tuhh.diss.plotbot.exceptions.OutOfWorkspaceException;
 import de.tuhh.diss.plotbot.robot.*;
 import de.tuhh.diss.plotbot.utilities.Calc;
+import lejos.nxt.Button;
 import lejos.nxt.LCD;
 
 public class DrawControlChris {
@@ -50,8 +51,10 @@ public class DrawControlChris {
 	 */
 	public void movePenTo(double xTarget, double yTarget) throws OutOfWorkspaceException{
 		double distanceToTravel = yTarget - robot.getYCenter() - getYCenterToPen();
-		
-		robot.moveArmTo(getArmAngleForX(xTarget));
+		LCD.drawString("Dist: " + getArmAngleForX(xTarget), 0, 1);
+		LCD.drawString("ArmX: " + getArmAngleForX(xTarget), 0, 2);
+		Button.ENTER.waitForPressAndRelease();
+		robot.moveArmTo(getArmAngleForX(xTarget),true);
 		robot.moveWheels(distanceToTravel);
 	}
 	
@@ -154,7 +157,7 @@ public class DrawControlChris {
 	}
 	
 	
-	// Variante tasächlich Laenge wird zerlegt HIERMIT KANN MAN AUCH DIAGONAL ... THEORETISCH
+	// Variante tasaechlich Laenge wird zerlegt HIERMIT KANN MAN AUCH DIAGONAL ... THEORETISCH
 	public void movePenToInStepsV3(double xTarget, double yTarget, int stepSize) throws OutOfWorkspaceException{
 		double nextX, nextY, yCorrection, nextWheelSpeed;
 

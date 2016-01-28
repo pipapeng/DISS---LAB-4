@@ -8,7 +8,7 @@ public class PlotTUHH extends PlotLines{
 
 	private static final double SCALE = 1/6;
 	private static final int MINSIZE = 10;
-	private static final int MAXSIZE = (int) (START*(26*SCALE));	//TODO: das ist viel zu groﬂ
+	private static final int MAXSIZE = (int) (START*(26*SCALE));	//TODO: das ist viel zu gross
 																	//obere Grenze ist laenge vom rectangle <= start
 	
 	public PlotTUHH(RobotInterface robot){

@@ -25,56 +25,66 @@ public class Testbot {
 		try {
 			//CHRIS
 			drawChris.movePenTo(0, 50);
-			robot.setPen(true);
-			drawChris.movePenToInStepsV3(-50, 50, 5);
-			robot.setPen(false);
-			drawChris.movePenTo(0, 80);
-			robot.setPen(true);
-			drawChris.movePenToInStepsV2(-50, 80, 5);
-			robot.setPen(false);
-			drawChris.movePenTo(0, 110);
-			robot.setPen(true);
-			drawChris.movePenToInStepsV1(-50, 110, 5);
-			robot.setPen(false);
+//			robot.setPen(true);
+//			drawChris.movePenToInStepsV3(-50, 50, 5);
+//			robot.setPen(false);
+//			drawChris.movePenTo(0, 80);
+//			robot.setPen(true);
+//			drawChris.movePenToInStepsV2(-50, 80, 5);
+//			robot.setPen(false);
+//			drawChris.movePenTo(0, 110);
+//			robot.setPen(true);
+//			drawChris.movePenToInStepsV1(-50, 110, 5);
+//			robot.setPen(false);
 			
 			//JULIUS
-			robot.movePenTo(0, 50);
-			robot.setPen(true);
-			PhysicalRobot.ROBOT.movePenJulius1(-50, 50);
-			robot.setPen(false);
-			robot.movePenTo(0, 80);
-			robot.setPen(true);
-			PhysicalRobot.ROBOT.movePenJulius2(-50, 80, 10);
-			robot.setPen(false);
-			robot.movePenTo(0, 110);
-			robot.setPen(true);
-			PhysicalRobot.ROBOT.movePenJulius3(-50, 10);
-			robot.setPen(false);
-			robot.movePenTo(0, 140);
-			robot.setPen(true);
-			PhysicalRobot.ROBOT.movePenJulius4(-50, 10);
-			robot.setPen(false);
+//			LCD.drawString("Julius Start", 0, 6);
+//			Button.ENTER.waitForPressAndRelease();
+//			robot.movePenTo(0, 50);
+//			robot.setPen(true);
+//			PhysicalRobot.ROBOT.movePenJulius1(-50, 50);
+//			LCD.drawString("1", 0, 6);
+//			Button.ENTER.waitForPressAndRelease();
+//			robot.setPen(false);
+//			robot.movePenTo(0, 80);
+//			robot.setPen(true);
+//			PhysicalRobot.ROBOT.movePenJulius2(-50, 80, 10);
+//			LCD.drawString("2", 0, 6);
+//			Button.ENTER.waitForPressAndRelease();
+//			robot.setPen(false);
+//			robot.movePenTo(0, 110);
+//			robot.setPen(true);
+//			PhysicalRobot.ROBOT.movePenJulius3(-50, 10);
+//			LCD.drawString("3", 0, 6);
+//			Button.ENTER.waitForPressAndRelease();
+//			robot.setPen(false);
+//			robot.movePenTo(0, 140);
+//			robot.setPen(true);
+//			PhysicalRobot.ROBOT.movePenJulius4(-50, 10);
+//			LCD.drawString("4", 0, 6);
+//			Button.ENTER.waitForPressAndRelease();
+//			robot.setPen(false);
 			
-			//LENNART
-			try {
-				robot.movePenToLennart(0, 50);
-				robot.setPen(true);
-				robot.movePenHorizontalLennart(0, 50, -50, 10);
-				robot.setPen(false);
-				robot.setPen(true);
-				robot.movePenVerticalLennart(-50, 50, 50);
-				robot.setPen(false);
-				robot.setPen(true);
-				robot.movePenHorizontalLennart(-50, 100, 50, 10);
-				robot.setPen(false);
-				robot.setPen(true);
-				robot.movePenVerticalLennart(0, 100, -50);
-				robot.setPen(false);
-			} catch (MotorException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			
+//			//LENNART
+//			try {
+//				robot.movePenToLennart(0, 50);
+//				robot.setPen(true);
+//				robot.movePenHorizontalLennart(0, 50, -50, 10);
+//				robot.setPen(false);
+//				robot.setPen(true);
+//				robot.movePenVerticalLennart(-50, 50, 50);
+//				robot.setPen(false);
+//				robot.setPen(true);
+//				robot.movePenHorizontalLennart(-50, 100, 50, 10);
+//				robot.setPen(false);
+//				robot.setPen(true);
+//				robot.movePenVerticalLennart(0, 100, -50);
+//				robot.setPen(false);
+//			} catch (MotorException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
+//			
 		} catch (OutOfWorkspaceException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
