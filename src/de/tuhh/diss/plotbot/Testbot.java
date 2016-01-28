@@ -21,14 +21,15 @@ public class Testbot {
 		
 		try {
 			//CHRIS
-			robot.movePenTo2(0, 50);
+			robot.movePenTo(-60, 50);
+			robot.waitForArm();
 			robot.setPen(true);
-			robot.movePenToInStepsV1(-50, 50, 4);
+			robot.movePenToInStepsV1(60, 50, 4);
 			Button.ENTER.waitForPressAndRelease();
 			robot.setPen(false);
-			robot.movePenTo2(0, 100);
+			robot.movePenTo(0, 100);
 			robot.setPen(true);
-			robot.movePenToInStepsV1(-50, 100, 4);
+			robot.movePenToInStepsV1(50, 100, 4);
 //			robot.setPen(true);
 //			drawChris.movePenToInStepsV3(-50, 50, 5);
 //			robot.setPen(false);
