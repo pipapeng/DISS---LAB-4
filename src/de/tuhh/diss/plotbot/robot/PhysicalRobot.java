@@ -524,9 +524,9 @@ public class PhysicalRobot implements RobotInterface{
 	 * @param xTarget x coordinate of the target
 	 * @param yTarget y coordinate of the target
 	 */
-	public void movePenTo2(double xTarget, double yTarget) throws OutOfWorkspaceException{
+	public void movePenVertical(double xTarget, double yTarget) throws OutOfWorkspaceException{
 		double distanceToTravel = yTarget - getYCenter() - getYCenterToPen();
-		moveArmTo(getArmAngleForX(xTarget),true);
+		//moveArmTo(getArmAngleForX(xTarget),true);
 		moveWheels(distanceToTravel);
 	}
 	
@@ -555,9 +555,9 @@ public class PhysicalRobot implements RobotInterface{
 			
 			printDebugMsg(nextX, 0, nextWheelSpeed, yCorrection);
 			
-			setWheelSpeed((WHEELS.WHEELMOTORMAXSPEED/WheelsModule.WHEELGEARRATIO)/4);
+			setWheelSpeed((WHEELS.WHEELMOTORMAXSPEED/WheelsModule.WHEELGEARRATIO)/6);
 			moveArmTo(getArmAngleForX(nextX),true);
-			moveWheels(yCorrection);
+			moveWheels(yCorrection*.9);
 			waitForArm();
 			updateXNow();
 			updateYNow();
